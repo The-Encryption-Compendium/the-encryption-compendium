@@ -33,7 +33,7 @@ jobs:
       python: nightly
 
     ### OSX tests
-    - stage:
+    - stage: "Non-linux Django tests"
       name: "Django tests (OSX) (Python 3.6)"
       os: osx
       osx_image: xcode11.2
@@ -72,4 +72,4 @@ install:
 script:
   - export DJANGO_SECRET_KEY=$(python3 -c "import base64 as b, secrets as s; print(b.b64encode(s.token_bytes()).decode('utf-8'))")
   - cd src
-  - python3 manage.py test
+  - python manage.py test
