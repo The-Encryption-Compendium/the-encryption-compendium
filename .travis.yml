@@ -1,0 +1,60 @@
+language: python
+
+install:
+  - pip install -r requirements.txt
+  - pip install selenium
+
+env:
+  - DEVELOPMENT=yes DATABASE_ENGINE=sqlite3
+
+jobs:
+  allow_failures:
+    - env: TRAVIS_PYTHON_VERSION=nightly
+    - env: TRAVIS_OS_NAME=osx
+
+  include:
+    ### Linux tests
+    - stage: "Django unit/functional tests"
+      name: "Django tests (Linux) (Python 3.6)"
+      os: linux
+      python: 3.6
+    - stage:
+      name: "Django tests (Linux) (Python 3.7)"
+      os: linux
+      python: 3.7
+    - stage:
+      name: "Django tests (Linux) (Python 3.8)"
+      os: linux
+      python: 3.8
+    - stage:
+      name: "Django tests (Linux) (Python nightly)"
+      os: linux
+      python: nightly
+
+    ### OSX tests
+    - stage:
+      name: "Django tests (OSX) (Python 3.6)"
+      os: osx
+      python: 3.6
+    - stage:
+      name: "Django tests (OSX) (Python 3.7)"
+      os: osx
+      python: 3.7
+    - stage:
+      name: "Django tests (OSX) (Python 3.8)"
+      os: osx
+      python: 3.8
+    - stage:
+      name: "Django tests (OSX) (Python nightly)"
+      os: osx
+      python: nightly
+
+install:
+  - pip3 install --upgrade pip
+  - pip3 install -r requirements.txt
+  - pip3 install selenium
+
+script:
+  - export DJANGO_SECRET_KEY=$(python3 -c "import base64 as b, secrets as s; print(b.b64encode(s.token_bytes()).decode('utf-8'))")
+  - cd src
+  - python3 manage.py test
