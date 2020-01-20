@@ -11,6 +11,7 @@ jobs:
   allow_failures:
     - env: TRAVIS_PYTHON_VERSION=nightly
     - env: TRAVIS_OS_NAME=osx
+    - env: TRAVIS_OS_NAME=windows
 
   include:
     ### Linux tests
@@ -35,19 +36,33 @@ jobs:
     - stage:
       name: "Django tests (OSX) (Python 3.6)"
       os: osx
+      osx_image: xcode11.2
       python: 3.6
     - stage:
       name: "Django tests (OSX) (Python 3.7)"
       os: osx
+      osx_image: xcode11.2
       python: 3.7
     - stage:
       name: "Django tests (OSX) (Python 3.8)"
       os: osx
+      osx_image: xcode11.2
       python: 3.8
     - stage:
       name: "Django tests (OSX) (Python nightly)"
       os: osx
+      osx_image: xcode11.2
       python: nightly
+
+    ### Windows tests
+    - stage:
+      name: "Django tests (Windows) (Python 3.8)"
+      os: windows
+      language: shell
+      before_install:
+        - choco install python --version 3.8.0
+        - python -m pip install --upgrade PIP
+      env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
 
 install:
   - pip3 install --upgrade pip
