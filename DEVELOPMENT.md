@@ -52,7 +52,7 @@ The site uses a `.env` file to define configuration options. The default `.env` 
     or, as a `bash` one-liner:
 
     ```
-    $ python3 -c "import base64 as b, secrets as s; b.b64encode(s.token_bytes()).decode('utf-8')"
+    $ python3 -c "import base64 as b, secrets as s; print(b.b64encode(s.token_bytes()).decode('utf-8'))"
     ```
 
   - `DATABASE_ENGINE`: you should probably just set this to `sqlite` (make sure you have [SQLite](https://sqlite.org/index.html) installed on your machine, of course).
@@ -62,7 +62,7 @@ This repository provides some basic unit tests and functional tests for developm
 
 ```
 source ./venv/bin/activate
-cd ./site
+cd ./src
 python3 manage.py test
 ```
 
@@ -78,7 +78,7 @@ Create a `.env` file from `env.dist`, and then execute
 
 ```
 source ./venv/bin/activate
-cd ./site
+cd ./src
 python3 manage.py makemigrations
 python3 manage.py migrate --run-syncdb
 python3 manage.py runserver

@@ -1,0 +1,6 @@
+# Web development
+django[argon2] == 3.0.1
+gunicorn == 20.0.4
+
+# Deployment automation
+python-dotenv
