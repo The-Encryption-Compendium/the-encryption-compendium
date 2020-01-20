@@ -10,8 +10,8 @@ env:
 jobs:
   allow_failures:
     - env: TRAVIS_PYTHON_VERSION=nightly
-    - env: TRAVIS_OS_NAME=osx
-    - env: TRAVIS_OS_NAME=windows
+    - os: osx
+    - os: windows
 
   include:
     ### Linux tests
