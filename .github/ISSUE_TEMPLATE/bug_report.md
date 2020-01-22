@@ -11,11 +11,14 @@ assignees: ''
 A clear and concise description of what the bug is.
 
 **To Reproduce**
-As much as possible, please describe how to reproduce the bug (or, at least, what actions you took that caused the bug to appear). For instance:
+To the best of your ability, provide clear and concise instructions for how to reproduce the bug. For instance:
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
+
+If you are unable to reproduce the bug, please describe what you were doing before the bug occurred. The more information you are able to provide, the more likely we will be able to help you.
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
