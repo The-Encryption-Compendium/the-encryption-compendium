@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user
 from django.test import tag
-from encryption_compendium.test_utils import UnitTest
+from django.utils import timezone
+from encryption_compendium.test_utils import UnitTest, random_password
 from research_assistant.models import User
 
 """
@@ -22,10 +23,27 @@ class UserModelTestCase(UnitTest):
         self.assertTrue(user.is_active)
         self.assertFalse(user.is_superuser)
 
+        # Test User creation time (User should have been created in the last 30
+        # seconds).
+        current_time = timezone.now()
+        created_time = user.date_joined
+        delta = current_time - created_time
+        self.assertTrue(delta.seconds < 30)
+
         # We should now be able to login as the new user
         self.client.login(email=self.email, password=self.password)
         self.assertTrue(get_user(self.client).is_authenticated)
         self.assertEqual(get_user(self.client), user)
+
+    def test_invalid_logins(self):
+        # Attempt to login as a nonexistent user
+        self.client.login(email=self.email, password=self.password)
+        self.assertFalse(get_user(self.client).is_authenticated)
+
+        # Attempt to login as an existing user but with an invalid password
+        User.objects.create_user(email=self.email, password=self.password)
+        self.client.login(email=self.email, password=random_password(self.rd))
+        self.assertFalse(get_user(self.client).is_authenticated)
 
     @tag("admin")
     def test_create_new_superuser(self):
