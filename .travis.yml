@@ -1,9 +1,5 @@
 language: python
 
-install:
-  - pip install -r requirements.txt
-  - pip install selenium
-
 env:
   - DEVELOPMENT=yes DATABASE_ENGINE=sqlite3
 
@@ -62,7 +58,7 @@ jobs:
 install:
   - pip3 install --upgrade pip
   - pip3 install -r requirements.txt
-  - pip3 install selenium
+  - pip3 install selenium codecov
 
 script:
   - export DJANGO_SECRET_KEY="$(head -c 40 /dev/random | base64)"
@@ -71,3 +67,6 @@ script:
   - $PY manage.py makemigrations
   - $PY manage.py migrate --run-syncdb
   - $PY manage.py test
+
+after_success:
+  - codecov
