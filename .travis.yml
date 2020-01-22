@@ -16,47 +16,42 @@ jobs:
   include:
     ### Linux tests
     - stage: "Django unit/functional tests"
-      name: "Django tests (Linux) (Python 3.6)"
       os: linux
       python: 3.6
     - stage:
-      name: "Django tests (Linux) (Python 3.7)"
       os: linux
       python: 3.7
     - stage:
-      name: "Django tests (Linux) (Python 3.8)"
       os: linux
       python: 3.8
     - stage:
-      name: "Django tests (Linux) (Python nightly)"
       os: linux
       python: nightly
 
-    ### OSX tests
+    ### Code formatting tests. Ensure that any code committed to
+    ### the repository is consistent with formatting guidelines
+    ### set using Black.
+    - stage: "Code formatting check"
+      os: linux
+      python: 3.7
+      install:
+        - pip3 install --upgrade pip
+        - pip3 install black
+      script:
+        - find ./src -type f -name "*.py" | xargs black --check --diff
+
+    ### OSX and Windows tests
+    ### Note: these come last because none of these checks cause the build
+    ### to fail.
+
+    # OSX
     - stage: "Non-linux Django tests"
-      name: "Django tests (OSX) (Python 3.6)"
       os: osx
       osx_image: xcode11.2
-      python: 3.6
-    - stage:
-      name: "Django tests (OSX) (Python 3.7)"
-      os: osx
-      osx_image: xcode11.2
-      python: 3.7
-    - stage:
-      name: "Django tests (OSX) (Python 3.8)"
-      os: osx
-      osx_image: xcode11.2
-      python: 3.8
-    - stage:
-      name: "Django tests (OSX) (Python nightly)"
-      os: osx
-      osx_image: xcode11.2
-      python: nightly
+      language: shell
 
-    ### Windows tests
+    # Windows
     - stage:
-      name: "Django tests (Windows) (Python 3.8)"
       os: windows
       language: shell
       before_install:
@@ -70,6 +65,9 @@ install:
   - pip3 install selenium
 
 script:
-  - export DJANGO_SECRET_KEY=$(python3 -c "import base64 as b, secrets as s; print(b.b64encode(s.token_bytes()).decode('utf-8'))")
+  - export DJANGO_SECRET_KEY="$(head -c 40 /dev/random | base64)"
+  - if [ $(which python3) ]; then export PY=python3; else export PY=python; fi
   - cd src
-  - python manage.py test
+  - $PY manage.py makemigrations
+  - $PY manage.py migrate --run-syncdb
+  - $PY manage.py test

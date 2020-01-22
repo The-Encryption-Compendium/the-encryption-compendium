@@ -49,7 +49,8 @@ class AbstractTestCase(abc.ABC):
         self.rd = random.Random()
         self.rd.seed(seed)
 
-        ### Create a test username, email, and password
+        ### Create a test username, email, and password for tests involving
+        ### users.
         self.username = random_username(self.rd)
         self.password = random_password(self.rd)
         self.email = random_email(self.rd)

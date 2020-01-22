@@ -42,16 +42,17 @@ else:
     )
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
-if DEBUG and not SECRET_KEY:
-    SECRET_KEY = base64.b64encode(secrets.token_bytes()).decode("utf-8")
-else:
-    raise Exception(
-        (
-            "SECRET_KEY must be explicitly set (as an environmental "
-            "variable or in the .env file) when DEBUG is off."
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = base64.b64encode(secrets.token_bytes()).decode("utf-8")
+    else:
+        raise Exception(
+            (
+                "DJANGO_SECRET_KEY must be explicitly set (as an environmental "
+                "variable or in the .env file) when DEBUG is off."
+            )
         )
-    )
 
 ALLOWED_HOSTS = ["127.0.0.1"]
 if os.getenv("ALLOWED_HOSTS"):
@@ -127,8 +128,12 @@ elif DATABASE_ENGINE == "mysql":
 else:
     raise Exception("DATABASE_ENGINE must be either sqlite3 or mysql.")
 
-# Password validation
+# Authentication options
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
+
+AUTH_USER_MODEL = "research_assistant.User"
+
+AUTHENTICATION_BACKENDS = ["research_assistant.auth.EmailBackend"]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -169,3 +174,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "assets")]
+
+# Additional parameters
+
+MAX_PASSWORD_LENGTH = int(os.getenv("MAX_PASSWORD_LENGTH", 64))
+MIN_PASSWORD_LENGTH = int(os.getenv("MIN_PASSWORD_LENGTH", 8))
