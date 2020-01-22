@@ -53,12 +53,12 @@ jobs:
       before_install:
         - choco install python --version 3.8.0
         - python -m pip install --upgrade PIP
-      env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
+      env: DEVELOPMENT=yes DATABASE_ENGINE=sqlite3 PATH=/c/Python38:/c/Python38/Scripts:$PATH
 
 install:
   - pip3 install --upgrade pip
   - pip3 install -r requirements.txt
-  - pip3 install selenium codecov
+  - pip3 install selenium coverage
 
 script:
   - export DJANGO_SECRET_KEY="$(head -c 40 /dev/random | base64)"
@@ -66,7 +66,7 @@ script:
   - cd src
   - $PY manage.py makemigrations
   - $PY manage.py migrate --run-syncdb
-  - $PY manage.py test
+  - coverage run --source="." manage.py test
 
 after_success:
   - codecov
