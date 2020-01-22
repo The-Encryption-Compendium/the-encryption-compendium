@@ -10,43 +10,34 @@ jobs:
     - os: windows
 
   include:
+    ########################################################
+    ### Unit and functional testing
+    ########################################################
+
     ### Linux tests
     - stage: "Django unit/functional tests"
       os: linux
       python: 3.6
+
     - stage:
       os: linux
       python: 3.7
+
     - stage:
       os: linux
       python: 3.8
+
     - stage:
       os: linux
       python: nightly
 
-    ### Code formatting tests. Ensure that any code committed to
-    ### the repository is consistent with formatting guidelines
-    ### set using Black.
-    - stage: "Code formatting check"
-      os: linux
-      python: 3.7
-      install:
-        - pip3 install --upgrade pip
-        - pip3 install black
-      script:
-        - find ./src -type f -name "*.py" | xargs black --check --diff
-
-    ### OSX and Windows tests
-    ### Note: these come last because none of these checks cause the build
-    ### to fail.
-
-    # OSX
-    - stage: "Non-linux Django tests"
+    ### OSX tests
+    - stage:
       os: osx
       osx_image: xcode11.2
       language: shell
 
-    # Windows
+    ### Windows tests
     - stage:
       os: windows
       language: shell
@@ -55,8 +46,35 @@ jobs:
         - python -m pip install --upgrade PIP
       env: DEVELOPMENT=yes DATABASE_ENGINE=sqlite3 PATH=/c/Python38:/c/Python38/Scripts:$PATH
 
-install:
+    #############################################################
+    ### Ensure that any code committed to the repository is
+    ### consistent with formatting guidelines set by Black.
+    #############################################################
+    - stage: "Code formatting check"
+      os: linux
+      python: 3.7
+      install:
+        - pip3 install black
+      script:
+        - find ./src -type f -name "*.py" | xargs black --check --diff
+
+    #############################################################
+    ### Upload coverage results by running the tests with
+    ### Python 3.7.
+    #############################################################
+    - stage: "Upload coverage results"
+      os: linux
+      python: 3.7
+      before_install:
+        - pip3 install --upgrade pip
+        - pip3 install coverage codecov
+      after_success:
+        - $PY -m codecov
+
+before_install:
   - pip3 install --upgrade pip
+
+install:
   - pip3 install -r requirements.txt
   - pip3 install selenium coverage
 
@@ -67,6 +85,3 @@ script:
   - $PY manage.py makemigrations
   - $PY manage.py migrate --run-syncdb
   - coverage run --source="." manage.py test
-
-after_success:
-  - codecov
