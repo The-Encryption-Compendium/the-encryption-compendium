@@ -131,9 +131,9 @@ else:
 # Authentication options
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
-AUTH_USER_MODEL = "research_assistant.User"
+AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
 
-AUTHENTICATION_BACKENDS = ["research_assistant.auth.EmailBackend"]
+AUTH_USER_MODEL = "research_assistant.User"
 
 AUTH_PASSWORD_VALIDATORS = [
     {

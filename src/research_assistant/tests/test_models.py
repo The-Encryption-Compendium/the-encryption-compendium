@@ -14,8 +14,11 @@ Custom user model tests
 @tag("auth", "users")
 class UserModelTestCase(UnitTest):
     def test_create_new_user(self):
-        user = User.objects.create_user(email=self.email, password=self.password)
+        user = User.objects.create_user(
+            username=self.username, email=self.email, password=self.password
+        )
 
+        self.assertEqual(user.username, self.username)
         self.assertEqual(user.email, self.email)
         self.assertTrue(user.check_password(self.password))
 
@@ -31,24 +34,29 @@ class UserModelTestCase(UnitTest):
         self.assertTrue(delta.seconds < 30)
 
         # We should now be able to login as the new user
-        self.client.login(email=self.email, password=self.password)
+        self.client.login(username=self.username, password=self.password)
         self.assertTrue(get_user(self.client).is_authenticated)
         self.assertEqual(get_user(self.client), user)
 
     def test_invalid_logins(self):
         # Attempt to login as a nonexistent user
-        self.client.login(email=self.email, password=self.password)
+        self.client.login(username=self.username, password=self.password)
         self.assertFalse(get_user(self.client).is_authenticated)
 
         # Attempt to login as an existing user but with an invalid password
-        User.objects.create_user(email=self.email, password=self.password)
-        self.client.login(email=self.email, password=random_password(self.rd))
+        User.objects.create_user(
+            username=self.username, email=self.email, password=self.password
+        )
+        self.client.login(username=self.username, password=random_password(self.rd))
         self.assertFalse(get_user(self.client).is_authenticated)
 
     @tag("admin")
     def test_create_new_superuser(self):
-        user = User.objects.create_superuser(email=self.email, password=self.password)
+        user = User.objects.create_superuser(
+            username=self.username, email=self.email, password=self.password
+        )
 
+        self.assertEqual(user.username, self.username)
         self.assertEqual(user.email, self.email)
         self.assertTrue(user.check_password(self.password))
 
@@ -57,11 +65,13 @@ class UserModelTestCase(UnitTest):
         self.assertTrue(user.is_superuser)
 
     def test_can_disable_users(self):
-        user = User.objects.create_user(email=self.email, password=self.password)
+        user = User.objects.create_user(
+            username=self.username, email=self.email, password=self.password
+        )
         self.assertTrue(user.is_active)
 
         # Should be able to log in when user.is_active is True
-        result = self.client.login(email=self.email, password=self.password)
+        result = self.client.login(username=self.username, password=self.password)
         self.assertTrue(get_user(self.client).is_authenticated)
 
         # Deactivate the user. The open session should be closed, and it
@@ -72,5 +82,5 @@ class UserModelTestCase(UnitTest):
         self.client.logout()
         self.assertFalse(get_user(self.client).is_authenticated)
 
-        self.client.login(email=self.email, password=self.password)
+        self.client.login(username=self.username, password=self.password)
         self.assertFalse(get_user(self.client).is_authenticated)
