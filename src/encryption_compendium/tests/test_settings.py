@@ -33,7 +33,6 @@ Test settings for user password
 
 @tag("settings", "auth")
 class PasswordSettingsTestCase(UnitTest):
-
     def test_password_invalidation(self):
         user = User.objects.create_user(
             username=self.username, email=self.email, password=self.password,
@@ -43,12 +42,12 @@ class PasswordSettingsTestCase(UnitTest):
         max_len = settings.MAX_PASSWORD_LENGTH
 
         # Password too short
-        password = random_password(self.rd)[:min_len-1].encode("utf-8")
+        password = random_password(self.rd)[: min_len - 1].encode("utf-8")
         with self.assertRaises(ValidationError):
             validate_password(password)
 
         # Password too long
-        password = b64encode(token_bytes(200))[:max_len+1]
+        password = b64encode(token_bytes(200))[: max_len + 1]
         with self.assertRaises(ValidationError):
             validate_password(password)
 

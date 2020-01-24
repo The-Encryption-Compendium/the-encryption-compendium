@@ -10,7 +10,6 @@ Login form for researchers
 
 
 class MaximumLengthValidator:
-
     def __init__(self, max_length=settings.MAX_PASSWORD_LENGTH):
         self.max_length = max_length
 
