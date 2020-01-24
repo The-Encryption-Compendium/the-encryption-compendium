@@ -1,5 +1,7 @@
 language: python
 
+cache: pip
+
 env:
   - DEVELOPMENT=yes DATABASE_ENGINE=sqlite3
 
