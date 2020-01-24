@@ -2,7 +2,7 @@ from django.contrib.auth import get_user
 from django.test import tag
 from django.utils import timezone
 from encryption_compendium.test_utils import UnitTest, random_password
-from research_assistant.models import User
+from research_assistant.models import User, CompendiumEntry
 
 """
 ---------------------------------------------------
@@ -21,19 +21,31 @@ class UserModelTestCase(UnitTest):
         self.assertEqual(user.username, self.username)
         self.assertEqual(user.email, self.email)
         self.assertTrue(user.check_password(self.password))
+        self.assertTrue((timezone.now() - user.date_joined).seconds < 30)
 
         # Test User defaults
         self.assertTrue(user.is_active)
         self.assertFalse(user.is_superuser)
-
-        # Test User creation time (User should have been created in the last 30
-        # seconds).
-        current_time = timezone.now()
-        created_time = user.date_joined
-        delta = current_time - created_time
-        self.assertTrue(delta.seconds < 30)
+        self.assertFalse(user.is_staff)
 
         # We should now be able to login as the new user
+        self.client.login(username=self.username, password=self.password)
+        self.assertTrue(get_user(self.client).is_authenticated)
+        self.assertEqual(get_user(self.client), user)
+
+    def test_create_new_superuser(self):
+        user = User.objects.create_superuser(
+            username=self.username, email=self.email, password=self.password
+        )
+
+        self.assertEqual(user.username, self.username)
+        self.assertEqual(user.email, self.email)
+        self.assertTrue(user.check_password(self.password))
+        self.assertTrue(user.is_active)
+        self.assertTrue(user.is_superuser)
+        self.assertTrue((timezone.now() - user.date_joined).seconds < 30)
+
+        # Login as the user
         self.client.login(username=self.username, password=self.password)
         self.assertTrue(get_user(self.client).is_authenticated)
         self.assertEqual(get_user(self.client), user)
@@ -63,6 +75,7 @@ class UserModelTestCase(UnitTest):
         # Test superuser defaults
         self.assertTrue(user.is_active)
         self.assertTrue(user.is_superuser)
+        self.assertTrue(user.is_staff)
 
     def test_can_disable_users(self):
         user = User.objects.create_user(
@@ -84,3 +97,39 @@ class UserModelTestCase(UnitTest):
 
         self.client.login(username=self.username, password=self.password)
         self.assertFalse(get_user(self.client).is_authenticated)
+
+
+"""
+---------------------------------------------------
+CompendiumEntry model tests
+---------------------------------------------------
+"""
+
+
+class CompendiumEntryModelTestCase(UnitTest):
+    def setUp(self):
+        super().setUp()
+        self.title = self.username
+        self.abstract = "This is the abstract of our resource"
+        self.url = "https://example.com"
+
+    def test_create_resource(self):
+        entry = CompendiumEntry.objects.create(
+            title=self.title, abstract=self.abstract, url=self.url
+        )
+        self.assertEqual(entry.title, self.title)
+        self.assertEqual(entry.abstract, self.abstract)
+        self.assertEqual(entry.url, self.url)
+        self.assertEqual(entry.owner_id, None)
+        self.assertTrue((timezone.now() - entry.date_added).seconds < 10)
+
+        # URL and abstract fields can be blank
+        entry = CompendiumEntry.objects.create(title=self.title)
+        self.assertEqual(entry.abstract, None)
+        self.assertEqual(entry.url, None)
+
+    def test_attempt_create_resource_with_invalid_fields(self):
+        # TODO: empty title
+        # TODO: URL not actually a URL
+        # TODO: fields exceed maximum lengths
+        pass

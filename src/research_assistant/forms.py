@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext as _
 
-from research_assistant.models import User
+from research_assistant.models import User, CompendiumEntry
 
 """
 ---------------------------------------------------
@@ -65,3 +65,77 @@ class ResearchLoginForm(forms.Form):
 
         user = authenticate(username=username, password=password)
         return user
+
+
+"""
+---------------------------------------------------
+Model administration forms
+---------------------------------------------------
+"""
+
+
+class UserAdminForm(forms.ModelForm):
+    """
+    A ModelForm based off the custom User model for manually adding new users
+    to the site.
+    """
+
+    password_2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "Re-enter password"}),
+        label="Enter password again",
+    )
+
+    class Meta:
+        model = User
+        fields = (
+            "email",
+            "username",
+            "password",
+            "password_2",
+            "is_staff",
+            "is_superuser",
+        )
+
+        widgets = {
+            "email": forms.TextInput(attrs={"placeholder": "Email address"}),
+            "username": forms.TextInput(attrs={"placeholder": "Username"}),
+            "password": forms.PasswordInput(attrs={"placeholder": "Password"}),
+        }
+
+        labels = {
+            "is_staff": "Add as a staff member",
+            "is_superuser": "Add as superuser",
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        password_2 = cleaned_data.get("password_2")
+
+        if password != password_2:
+            error = forms.ValidationError(
+                _("The passwords you've entered don't match. Please try again."),
+                code="nonmatching_passwords",
+            )
+            self.add_error("password_2", error)
+
+        return cleaned_data
+
+
+class CompendiumEntryForm(forms.ModelForm):
+    class Meta:
+        model = CompendiumEntry
+        fields = (
+            "title",
+            "abstract",
+            "url",
+            "owner",
+        )
+
+        widgets = {
+            "abstract": forms.Textarea(),
+        }
+
+        labels = {
+            "url": "URL",
+        }
