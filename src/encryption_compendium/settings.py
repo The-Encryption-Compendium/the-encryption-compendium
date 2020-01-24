@@ -133,6 +133,9 @@ else:
 # Authentication options
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
+MAX_PASSWORD_LENGTH = int(os.getenv("MAX_PASSWORD_LENGTH", 64))
+MIN_PASSWORD_LENGTH = int(os.getenv("MIN_PASSWORD_LENGTH", 10))
+
 AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
 
 AUTH_USER_MODEL = "research_assistant.User"
@@ -140,6 +143,18 @@ AUTH_USER_MODEL = "research_assistant.User"
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": MIN_PASSWORD_LENGTH,
+        }
+    },
+    {
+        "NAME": "encryption_compendium.password_validation.MaximumLengthValidator",
+        "OPTIONS": {
+            "max_length": MAX_PASSWORD_LENGTH,
+        }
     },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
@@ -182,8 +197,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "assets")]
-
-# Additional parameters
-
-MAX_PASSWORD_LENGTH = int(os.getenv("MAX_PASSWORD_LENGTH", 64))
-MIN_PASSWORD_LENGTH = int(os.getenv("MIN_PASSWORD_LENGTH", 8))
