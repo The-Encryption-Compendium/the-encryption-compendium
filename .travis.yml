@@ -51,6 +51,37 @@ jobs:
       python: nightly
       before_script: export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
 
+    ### MySQL database unit tests
+    - stage:
+      os: linux
+      dist: bionic
+      python: 3.7
+      services:
+        - mysql
+      env: DEVELOPMENT=yes DATABASE_ENGINE=mysql
+      before_script:
+        - export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
+        - export MYSQL_DATABASE="testdb"
+        - export MYSQL_USER="root"
+        - export MYSQL_PASSWORD=""
+        - export DATABASE_HOST="localhost"
+        - mysql -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
+
+    - stage:
+      os: linux
+      dist: bionic
+      python: 3.8
+      services:
+        - mysql
+      env: DEVELOPMENT=yes DATABASE_ENGINE=mysql
+      before_script:
+        - export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
+        - export MYSQL_DATABASE="testdb"
+        - export MYSQL_USER="root"
+        - export MYSQL_PASSWORD=""
+        - export DATABASE_HOST="localhost"
+        - mysql -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
+
     ### OSX tests
     - stage:
       os: osx
