@@ -22,6 +22,7 @@ jobs:
     #############################################################
     - stage: "Code formatting check"
       os: linux
+      dist: bionic
       python: 3.7
       install:
         - pip3 install black
@@ -35,21 +36,25 @@ jobs:
     ### Linux tests
     - stage: "Unit tests"
       os: linux
+      dist: bionic
       python: 3.6
       before_script: export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
 
     - stage:
       os: linux
+      dist: bionic
       python: 3.7
       before_script: export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
 
     - stage:
       os: linux
+      dist: bionic
       python: 3.8
       before_script: export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
 
     - stage:
       os: linux
+      dist: bionic
       python: nightly
       before_script: export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
 
