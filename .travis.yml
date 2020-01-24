@@ -175,6 +175,7 @@ jobs:
         - wget "$URL" -O geckodriver.tar.gz
         - tar xf geckodriver.tar.gz && rm geckodriver.tar.gz
         - mv geckodriver ~/.local/bin/geckodriver
+        - export TEST_FLAGS=""
       after_success:
         - $PY -m codecov
 
