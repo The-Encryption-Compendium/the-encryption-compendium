@@ -25,7 +25,8 @@ jobs:
     ### check is run first since it's pretty fast.
     #############################################################
 
-    - stage: "Code formatting check"
+    - stage: "Run tests"
+      name: "Code formatting matches guidelines"
       python: 3.7
       install:
         - pip3 install black
@@ -33,25 +34,26 @@ jobs:
         - find ./src -type f -name "*.py" | xargs black --check --diff
 
     ########################################################
-    ### Unit testing
-    ### Unit tests use a MySQL database.
+    ### Unit testing using a MySQL database.
     ########################################################
 
     - stage:
+      name: "Python 3.7 unit tests"
       python: 3.7
       before_script:
         - export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
 
     - stage:
+      name: "Python 3.8 unit tests"
       python: 3.8
       before_script:
         - export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
 
     #############################################################
-    ### Run functional tests
+    ### Functional tests
     #############################################################
-    - stage: "Functional tests"
-      name: "Firefox (stable)"
+    - stage:
+      name: "Functional tests (Firefox stable)"
       python: 3.7
       addons:
         firefox: latest
@@ -67,8 +69,8 @@ jobs:
         - export TEST_FLAGS="--tag functional-tests ${TEST_FLAGS}"
         - firefox --version
 
-    - stage: "Functional tests"
-      name: "Firefox (beta)"
+    - stage:
+      name: "Functional tests (Firefox beta)"
       python: 3.7
       env:
         - ALLOW_FAILURE=yes
@@ -90,7 +92,7 @@ jobs:
         - firefox --version
 
     - stage:
-      name: "Chrome (stable)"
+      name: "Functional tests (Chrome stable)"
       python: 3.7
       addons:
         chrome: stable
@@ -108,7 +110,7 @@ jobs:
         - google-chrome --version
 
     - stage:
-      name: "Chrome (beta)"
+      name: "Functional tests (Chrome beta)"
       python: 3.7
       env:
         - ALLOW_FAILURE=yes
