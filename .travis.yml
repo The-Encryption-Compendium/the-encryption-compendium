@@ -7,7 +7,7 @@ dist: bionic
 services:
   - mysql
 env:
-  - DEVELOPMENT=yes DATABASE_ENGINE=mysql
+  - DEVELOPMENT=no DATABASE_ENGINE=mysql
 
 jobs:
 
