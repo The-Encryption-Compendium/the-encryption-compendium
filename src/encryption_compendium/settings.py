@@ -16,6 +16,8 @@ import logging
 import os
 import secrets
 
+from django.urls import reverse
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -150,6 +152,12 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
     "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
 ]
+
+# Login redirection
+
+LOGIN_URL = "/research/login"
+LOGIN_REDIRECT_URL = "/research/dashboard"
+LOGOUT_REDIRECT_URL = "/research/login"
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/

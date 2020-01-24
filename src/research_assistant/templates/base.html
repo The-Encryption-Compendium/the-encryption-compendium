@@ -1,0 +1,26 @@
+<!doctype html>
+{% spaceless %}
+{% load static %}
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, shrink-to-fit=no" />
+    <title>{% block title %}The Encryption Compendium{% endblock %}</title>
+
+    <link rel="favicon" type="image/png" href="{% static 'img/favicon.png' %}" />
+
+    {# Bootstrap stylesheet #}
+    {# <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" /> #}
+
+    {# Custom stylesheets #}
+    {# <link rel="stylesheet" href="{% static 'css/style.css' %}" /> #}
+
+    {% block head %}{% endblock %}
+  </head>
+
+  <body>
+    {% block body %}{% endblock %}
+  </body>
+</html>
+{% endspaceless %}

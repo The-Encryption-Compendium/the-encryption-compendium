@@ -131,10 +131,6 @@ class FunctionalTest(StaticLiveServerTestCase, AbstractTestCase):
 
     def setUp(self, **kwargs):
         AbstractTestCase.setUp(self, **kwargs)
-
-        ### Create a Selenium WebDriver to run functional tests
-        self.browser = webdriver.Firefox()
-
         dotenv.load_dotenv()
         staging_server = os.getenv("STAGING_SERVER")
         if staging_server:
@@ -142,6 +138,15 @@ class FunctionalTest(StaticLiveServerTestCase, AbstractTestCase):
 
             # Authenticate to staging server
             self.fail("TODO")
+
+        ### Create a Selenium WebDriver to run functional tests
+        browser = os.getenv("BROWSER", "Firefox")
+        if browser.lower() == "firefox":
+            self.browser = webdriver.Firefox()
+        elif browser.lower() == "chrome":
+            self.browser = webdriver.Chrome()
+        else:
+            raise Exception(f"Browser type '{browser}' not recognized.")
 
         if kwargs.get("preauth"):
             self.client.force_login(self.user)

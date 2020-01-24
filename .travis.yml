@@ -4,51 +4,19 @@ env:
   - DEVELOPMENT=yes DATABASE_ENGINE=sqlite3
 
 jobs:
+
   allow_failures:
     - env: TRAVIS_PYTHON_VERSION=nightly
+    - env: ALLOW_FAILURE=yes
     - os: osx
     - os: windows
 
   include:
-    ########################################################
-    ### Unit and functional testing
-    ########################################################
-
-    ### Linux tests
-    - stage: "Django unit/functional tests"
-      os: linux
-      python: 3.6
-
-    - stage:
-      os: linux
-      python: 3.7
-
-    - stage:
-      os: linux
-      python: 3.8
-
-    - stage:
-      os: linux
-      python: nightly
-
-    ### OSX tests
-    - stage:
-      os: osx
-      osx_image: xcode11.2
-      language: shell
-
-    ### Windows tests
-    - stage:
-      os: windows
-      language: shell
-      before_install:
-        - choco install python --version 3.8.0
-        - python -m pip install --upgrade PIP
-      env: DEVELOPMENT=yes DATABASE_ENGINE=sqlite3 PATH=/c/Python38:/c/Python38/Scripts:$PATH
 
     #############################################################
     ### Ensure that any code committed to the repository is
-    ### consistent with formatting guidelines set by Black.
+    ### consistent with formatting guidelines set by Black. This
+    ### check is run first since it's pretty fast.
     #############################################################
     - stage: "Code formatting check"
       os: linux
@@ -58,30 +26,178 @@ jobs:
       script:
         - find ./src -type f -name "*.py" | xargs black --check --diff
 
-    #############################################################
-    ### Upload coverage results by running the tests with
-    ### Python 3.7.
-    #############################################################
-    - stage: "Upload coverage results"
+    ########################################################
+    ### Unit testing
+    ########################################################
+
+    ### Linux tests
+    - stage: "Unit tests"
+      os: linux
+      python: 3.6
+      before_script: export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
+
+    - stage:
       os: linux
       python: 3.7
+      before_script: export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
+
+    - stage:
+      os: linux
+      python: 3.8
+      before_script: export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
+
+    - stage:
+      os: linux
+      python: nightly
+      before_script: export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
+
+    ### OSX tests
+    - stage:
+      os: osx
+      osx_image: xcode11.2
+      language: shell
+      before_script: export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
+
+    ### Windows tests
+    - stage:
+      os: windows
+      language: shell
       before_install:
-        - pip3 install --upgrade pip
-        - pip3 install coverage codecov
+        - export PATH=/c/Python38:/c/Python38/Scripts:$PATH
+        - choco install python --version 3.8.0
+        - python -m pip install --upgrade PIP
+      before_script:
+        # Don't include the --parallel flag (which is provided by the default $TEST_FLAGS)
+        # since it seems to cause issues on Windows.
+        - export TEST_FLAGS="--tag unit-tests"
+
+    #############################################################
+    ### Run functional tests
+    #############################################################
+    - stage: "Functional tests"
+      name: "Firefox (stable)"
+      os: linux
+      dist: bionic
+      python: 3.7
+      addons:
+        firefox: latest
+      services:
+        - xvfb
+      before_script:
+        # Selenium needs Geckodriver in order to test Firefox
+        - URL='https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz'
+        - wget "$URL" -O geckodriver.tar.gz
+        - tar xf geckodriver.tar.gz && rm geckodriver.tar.gz
+        - mv geckodriver ~/.local/bin/geckodriver
+        - export TEST_FLAGS="--tag functional-tests ${TEST_FLAGS}"
+        - firefox --version
+
+    - stage: "Functional tests"
+      name: "Firefox (beta)"
+      os: linux
+      dist: bionic
+      python: 3.7
+      env:
+        - ALLOW_FAILURE=yes
+      addons:
+        firefox: latest-beta
+      services:
+        - xvfb
+      before_script:
+        # Selenium needs Geckodriver in order to test Firefox
+        - URL='https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz'
+        - wget "$URL" -O geckodriver.tar.gz
+        - tar xf geckodriver.tar.gz && rm geckodriver.tar.gz
+        - mv geckodriver ~/.local/bin/geckodriver
+        - export TEST_FLAGS="--tag functional-tests ${TEST_FLAGS}"
+        - export DEVELOPMENT=yes
+        - export DATABASE_ENGINE=sqlite3
+        - firefox --version
+
+    - stage:
+      name: "Chrome (stable)"
+      os: linux
+      dist: bionic
+      python: 3.7
+      addons:
+        chrome: stable
+      services:
+        - xvfb
+      before_script:
+        # Selenium needs Chromedriver in order to test Chrome
+        - URL='https://chromedriver.storage.googleapis.com/79.0.3945.36/chromedriver_linux64.zip'
+        - curl "$URL" -o chromedriver.zip
+        - unzip chromedriver.zip && rm chromedriver.zip
+        - mv chromedriver ~/.local/bin/chromedriver
+        - export TEST_FLAGS="--tag functional-tests ${TEST_FLAGS}"
+        - export BROWSER="Chrome"
+        - google-chrome --version
+
+    - stage:
+      name: "Chrome (beta)"
+      os: linux
+      dist: bionic
+      python: 3.7
+      env:
+        - ALLOW_FAILURE=yes
+      addons:
+        chrome: beta
+      services:
+        - xvfb
+      before_script:
+        # Selenium needs Chromedriver in order to test Chrome
+        - URL='https://chromedriver.storage.googleapis.com/80.0.3987.16/chromedriver_linux64.zip'
+        - curl "$URL" -o chromedriver.zip
+        - unzip chromedriver.zip && rm chromedriver.zip
+        - mv chromedriver ~/.local/bin/chromedriver
+        - export TEST_FLAGS="--tag functional-tests ${TEST_FLAGS}"
+        - export BROWSER="Chrome"
+        - export DEVELOPMENT=yes
+        - export DATABASE_ENGINE=sqlite3
+        - google-chrome --version
+
+    #############################################################
+    ### Upload coverage results by running all of the tests (both
+    ### unit tests and functional tests).
+    #############################################################
+    - stage: "Run full tests and upload coverage results"
+      os: linux
+      dist: bionic
+      python: 3.7
+      addons:
+        firefox: latest
+      services:
+        - xvfb
+      before_script:
+        - pip3 install codecov
+        # Selenium needs Geckodriver in order to test Firefox
+        - URL='https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz'
+        - wget "$URL" -O geckodriver.tar.gz
+        - tar xf geckodriver.tar.gz && rm geckodriver.tar.gz
+        - mv geckodriver ~/.local/bin/geckodriver
       after_success:
         - $PY -m codecov
 
-before_install:
-  - pip3 install --upgrade pip
-
 install:
+  - pip3 install --upgrade pip
   - pip3 install -r requirements.txt
-  - pip3 install selenium coverage
+  - pip3 install coverage selenium tblib
+  # Create ~/.local/bin to store any additional binaries we may need for testing. Especially
+  # useful for the functional tests.
+  - mkdir -p ~/.local/bin/
+  # Export various useful environmental variables that didn't need to be specified in the
+  # env section.
+  - export DJANGO_SECRET_KEY="$(head -c 40 /dev/random | base64)"
+  - export TEST_FLAGS="--parallel 4"
+  - export PATH="~/.local/bin:$PATH"
+  - if [ $(which python3) ]; then export PY=python3; else export PY=python; fi
 
 script:
-  - export DJANGO_SECRET_KEY="$(head -c 40 /dev/random | base64)"
-  - if [ $(which python3) ]; then export PY=python3; else export PY=python; fi
+  # This script is run for all tests
+  - echo $PATH
+  - echo $PY && which $PY
+  - echo $TEST_FLAGS
   - cd src
   - $PY manage.py makemigrations
   - $PY manage.py migrate --run-syncdb
-  - coverage run --source="." manage.py test
+  - coverage run --source="." manage.py test ${TEST_FLAGS}
