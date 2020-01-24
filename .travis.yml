@@ -38,13 +38,13 @@ jobs:
     ########################################################
 
     - stage:
-      name: "Python 3.7 unit tests"
+      name: "Unit tests (Python 3.7)"
       python: 3.7
       before_script:
         - export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
 
     - stage:
-      name: "Python 3.8 unit tests"
+      name: "Unit tests (Python 3.8)"
       python: 3.8
       before_script:
         - export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
