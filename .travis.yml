@@ -1,9 +1,13 @@
 language: python
-
 cache: pip
 
+os: linux
+dist: bionic
+
+services:
+  - mysql
 env:
-  - DEVELOPMENT=yes DATABASE_ENGINE=sqlite3
+  - DEVELOPMENT=yes DATABASE_ENGINE=mysql
 
 jobs:
 
@@ -20,9 +24,8 @@ jobs:
     ### consistent with formatting guidelines set by Black. This
     ### check is run first since it's pretty fast.
     #############################################################
+
     - stage: "Code formatting check"
-      os: linux
-      dist: bionic
       python: 3.7
       install:
         - pip3 install black
@@ -31,96 +34,30 @@ jobs:
 
     ########################################################
     ### Unit testing
+    ### Unit tests use a MySQL database.
     ########################################################
 
-    ### Linux tests
-    - stage: "Unit tests"
-      os: linux
-      dist: bionic
-      python: 3.6
-      before_script: export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
-
     - stage:
-      os: linux
-      dist: bionic
       python: 3.7
-      before_script: export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
-
-    - stage:
-      os: linux
-      dist: bionic
-      python: 3.8
-      before_script: export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
-
-    - stage:
-      os: linux
-      dist: bionic
-      python: nightly
-      before_script: export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
-
-    ### MySQL database unit tests
-    - stage:
-      os: linux
-      dist: bionic
-      python: 3.7
-      services:
-        - mysql
-      env: DEVELOPMENT=yes DATABASE_ENGINE=mysql
       before_script:
         - export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
-        - export MYSQL_DATABASE="testdb"
-        - export MYSQL_USER="root"
-        - export MYSQL_PASSWORD=""
-        - export DATABASE_HOST="localhost"
-        - mysql -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
 
     - stage:
-      os: linux
-      dist: bionic
       python: 3.8
-      services:
-        - mysql
-      env: DEVELOPMENT=yes DATABASE_ENGINE=mysql
       before_script:
         - export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
-        - export MYSQL_DATABASE="testdb"
-        - export MYSQL_USER="root"
-        - export MYSQL_PASSWORD=""
-        - export DATABASE_HOST="localhost"
-        - mysql -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
-
-    ### OSX tests
-    - stage:
-      os: osx
-      osx_image: xcode11.2
-      language: shell
-      before_script: export TEST_FLAGS="--tag unit-tests ${TEST_FLAGS}"
-
-    ### Windows tests
-    - stage:
-      os: windows
-      language: shell
-      before_install:
-        - export PATH=/c/Python38:/c/Python38/Scripts:$PATH
-        - choco install python --version 3.8.0
-        - python -m pip install --upgrade PIP
-      before_script:
-        # Don't include the --parallel flag (which is provided by the default $TEST_FLAGS)
-        # since it seems to cause issues on Windows.
-        - export TEST_FLAGS="--tag unit-tests"
 
     #############################################################
     ### Run functional tests
     #############################################################
     - stage: "Functional tests"
       name: "Firefox (stable)"
-      os: linux
-      dist: bionic
       python: 3.7
       addons:
         firefox: latest
       services:
         - xvfb
+        - mysql
       before_script:
         # Selenium needs Geckodriver in order to test Firefox
         - URL='https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz'
@@ -132,8 +69,6 @@ jobs:
 
     - stage: "Functional tests"
       name: "Firefox (beta)"
-      os: linux
-      dist: bionic
       python: 3.7
       env:
         - ALLOW_FAILURE=yes
@@ -141,6 +76,10 @@ jobs:
         firefox: latest-beta
       services:
         - xvfb
+        - mysql
+      before_install:
+        - export DEVELOPMENT=yes
+        - export DATABASE_ENGINE=mysql
       before_script:
         # Selenium needs Geckodriver in order to test Firefox
         - URL='https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz'
@@ -148,19 +87,16 @@ jobs:
         - tar xf geckodriver.tar.gz && rm geckodriver.tar.gz
         - mv geckodriver ~/.local/bin/geckodriver
         - export TEST_FLAGS="--tag functional-tests ${TEST_FLAGS}"
-        - export DEVELOPMENT=yes
-        - export DATABASE_ENGINE=sqlite3
         - firefox --version
 
     - stage:
       name: "Chrome (stable)"
-      os: linux
-      dist: bionic
       python: 3.7
       addons:
         chrome: stable
       services:
         - xvfb
+        - mysql
       before_script:
         # Selenium needs Chromedriver in order to test Chrome
         - URL='https://chromedriver.storage.googleapis.com/79.0.3945.36/chromedriver_linux64.zip'
@@ -173,8 +109,6 @@ jobs:
 
     - stage:
       name: "Chrome (beta)"
-      os: linux
-      dist: bionic
       python: 3.7
       env:
         - ALLOW_FAILURE=yes
@@ -182,6 +116,10 @@ jobs:
         chrome: beta
       services:
         - xvfb
+        - mysql
+      before_install:
+        - export DEVELOPMENT=yes
+        - export DATABASE_ENGINE=mysql
       before_script:
         # Selenium needs Chromedriver in order to test Chrome
         - URL='https://chromedriver.storage.googleapis.com/80.0.3987.16/chromedriver_linux64.zip'
@@ -190,8 +128,6 @@ jobs:
         - mv chromedriver ~/.local/bin/chromedriver
         - export TEST_FLAGS="--tag functional-tests ${TEST_FLAGS}"
         - export BROWSER="Chrome"
-        - export DEVELOPMENT=yes
-        - export DATABASE_ENGINE=sqlite3
         - google-chrome --version
 
     #############################################################
@@ -199,13 +135,12 @@ jobs:
     ### unit tests and functional tests).
     #############################################################
     - stage: "Run full tests and upload coverage results"
-      os: linux
-      dist: bionic
       python: 3.7
       addons:
         firefox: latest
       services:
         - xvfb
+        - mysql
       before_script:
         - pip3 install codecov
         # Selenium needs Geckodriver in order to test Firefox
@@ -230,6 +165,12 @@ install:
   - export TEST_FLAGS="--parallel 4"
   - export PATH="~/.local/bin:$PATH"
   - if [ $(which python3) ]; then export PY=python3; else export PY=python; fi
+  # MySQL environmental variables for tests that use a MySQL database
+  - export MYSQL_DATABASE="testdb"
+  - export MYSQL_USER="root"
+  - export MYSQL_PASSWORD=""
+  - export DATABASE_HOST="localhost"
+  - if [ $DATABASE_ENGINE = "mysql" ]; then mysql -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"; fi
 
 script:
   # This script is run for all tests
