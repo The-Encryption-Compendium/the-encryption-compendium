@@ -66,7 +66,9 @@ Tags for entries in the compendium
 
 
 class CompendiumEntryTag(models.Model):
-    tagname = models.CharField(max_length=MAX_TAG_LENGTH)
+    tagname = models.CharField(
+        max_length=MAX_TAG_LENGTH, blank=False, null=False, unique=True
+    )
 
 
 """

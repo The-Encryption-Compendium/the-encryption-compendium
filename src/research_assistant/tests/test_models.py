@@ -1,8 +1,9 @@
+from django import db
 from django.contrib.auth import get_user
 from django.test import tag
 from django.utils import timezone
 from encryption_compendium.test_utils import UnitTest, random_password
-from research_assistant.models import User, CompendiumEntry
+from research_assistant.models import User, CompendiumEntry, CompendiumEntryTag
 
 """
 ---------------------------------------------------
@@ -97,6 +98,27 @@ class UserModelTestCase(UnitTest):
 
         self.client.login(username=self.username, password=self.password)
         self.assertFalse(get_user(self.client).is_authenticated)
+
+
+"""
+---------------------------------------------------
+CompendiumEntryTag model tests
+---------------------------------------------------
+"""
+
+
+class CompendiumEntryTagModelTestCase(UnitTest):
+    @tag("tmp")
+    def test_create_new_tag(self):
+        self.assertEqual(len(CompendiumEntryTag.objects.all()), 0)
+        new_tag = CompendiumEntryTag.objects.create(tagname="my-new-tag")
+        self.assertEqual(len(CompendiumEntryTag.objects.all()), 1)
+        self.assertEqual(new_tag.tagname, "my-new-tag")
+
+        # Tag names should be unique. This is how we ensure that we can identify
+        # pairs of CompendiumEntries that share the same tags.
+        with self.assertRaises(db.utils.IntegrityError):
+            CompendiumEntryTag.objects.create(tagname="my-new-tag")
 
 
 """
