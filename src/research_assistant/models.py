@@ -19,10 +19,13 @@ MAX_USERNAME_LENGTH = 20
 MAX_PASSWORD_LENGTH = settings.MAX_PASSWORD_LENGTH
 MIN_PASSWORD_LENGTH = settings.MIN_PASSWORD_LENGTH
 
-"""ResearchResource model"""
+"""CompendiumEntry model"""
 MAX_TITLE_LENGTH = 150
 MAX_ABSTRACT_LENGTH = 5000
 MAX_URL_LENGTH = 100
+
+"""CompendiumEntryTag model"""
+MAX_TAG_LENGTH = 30
 
 """
 ---------------------------------------------------
@@ -57,6 +60,17 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 """
 ---------------------------------------------------
+Tags for entries in the compendium
+---------------------------------------------------
+"""
+
+
+class CompendiumEntryTag(models.Model):
+    tagname = models.CharField(max_length=MAX_TAG_LENGTH)
+
+
+"""
+---------------------------------------------------
 Model to represent articles/research/etc that's been added to
 the database.
 ---------------------------------------------------
@@ -67,6 +81,8 @@ class CompendiumEntry(models.Model):
     title = models.CharField(max_length=MAX_TITLE_LENGTH, blank=False)
     abstract = models.CharField(max_length=MAX_ABSTRACT_LENGTH, blank=True, null=True)
     url = models.URLField(max_length=MAX_URL_LENGTH, blank=True, null=True)
+
+    tags = models.ManyToManyField(CompendiumEntryTag)
 
     date_added = models.DateTimeField(default=timezone.now)
     owner = models.ForeignKey("User", on_delete=models.SET_NULL, blank=True, null=True)
