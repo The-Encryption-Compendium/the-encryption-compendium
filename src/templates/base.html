@@ -10,11 +10,18 @@
 
     <link rel="favicon" type="image/png" href="{% static 'img/favicon.png' %}" />
 
+    {% comment %}
+    Stylesheets and custom CSS for the page.
+    Note that templates that override this block will need to insert {{ block.super }} if
+    they want to keep the CSS that's inserted below.
+    {% endcomment %}
+    {% block css %}
     {# Bootstrap stylesheet #}
-    {# <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" /> #}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
 
     {# Custom stylesheets #}
-    {# <link rel="stylesheet" href="{% static 'css/style.css' %}" /> #}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+    {% endblock %}
 
     {% block head %}{% endblock %}
   </head>
@@ -22,5 +29,15 @@
   <body>
     {% block body %}{% endblock %}
   </body>
+
+  {% comment %}
+  Put JavaScript at the bottom of the page to make it load faster.
+  Note that templates that override the 'javascripts' block will need to insert {{ block.super }}
+  if they want to keep the JavaScript that's inserted below.
+  {% endcomment %}
+  {% block javascripts %}
+  <script type="application/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+  <script type="application/javascript" src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  {% endblock %}
 </html>
 {% endspaceless %}

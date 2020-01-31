@@ -19,11 +19,15 @@ class ResearchLoginForm(forms.Form):
     """
 
     username = forms.CharField(
-        widget=forms.TextInput(attrs={"placeholder": "Username"}),
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Username"}
+        ),
         help_text="Enter the username you registered with",
     )
     password = forms.CharField(
-        widget=forms.PasswordInput(attrs={"placeholder": "Password"}),
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control", "placeholder": "Password"}
+        ),
         help_text="Enter your password",
     )
 
@@ -125,17 +129,8 @@ class UserAdminForm(forms.ModelForm):
 class CompendiumEntryForm(forms.ModelForm):
     class Meta:
         model = CompendiumEntry
-        fields = (
-            "title",
-            "abstract",
-            "url",
-            "owner",
-        )
+        fields = ("title", "abstract", "url", "owner")
 
-        widgets = {
-            "abstract": forms.Textarea(),
-        }
+        widgets = {"abstract": forms.Textarea()}
 
-        labels = {
-            "url": "URL",
-        }
+        labels = {"url": "URL"}

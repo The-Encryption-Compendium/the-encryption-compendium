@@ -3,11 +3,26 @@
 {% block title %}Login | {{ block.super }}{% endblock %}
 
 {% block body %}
-<form method="POST">
-  {% csrf_token %}
-  {{ form.as_table }}
-  <button type="submit">
-    Log in
-  </button>
-</form>
+<div class="container justify-content-md-center my-4">
+  <form method="POST">
+    <div class="container auth-form">
+      {% csrf_token %}
+
+      <h2 class="text-center display-5 mb-4">
+        Login
+      </h2>
+
+      {% for field in form %}
+      <div class="form-group">
+        {{ field }}
+      </div>
+      {% endfor %}
+      <div class="text-center">
+        <button class="btn btn-primary" type="submit">
+          Log in
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
 {% endblock %}

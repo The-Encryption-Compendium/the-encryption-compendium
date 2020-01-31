@@ -1,0 +1,5 @@
+/* Custom CSS for the site */
+
+div.auth-form {
+  max-width: 500px;
+}
