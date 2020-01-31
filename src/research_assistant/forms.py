@@ -129,11 +129,15 @@ class CompendiumEntryForm(forms.ModelForm):
             "title",
             "abstract",
             "url",
-            "owner",
+            "owner",  # logged by the server. can be removed from the form
+            "tags",
         )
 
         widgets = {
             "abstract": forms.Textarea(),
+            "owner": forms.TextInput(
+                attrs={"disabled": True}
+            ),  # logged by the server. can be removed from the form
         }
 
         labels = {
