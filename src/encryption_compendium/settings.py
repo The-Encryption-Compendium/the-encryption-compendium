@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "research_assistant",
+    "taggit",
 ]
 
 MIDDLEWARE = [
@@ -193,3 +194,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "assets")]
+
+# Taggit case setting
+TAGGIT_CASE_INSENSITIVE = True
