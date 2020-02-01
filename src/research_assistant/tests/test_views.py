@@ -45,6 +45,45 @@ class LoginTestCase(UnitTest):
 
 """
 ---------------------------------------------------
+Tests for user logout
+---------------------------------------------------
+"""
+
+
+class LogoutTestCase(UnitTest):
+    def setUp(self):
+        super().setUp(preauth=True)
+
+    def test_logout(self):
+        # Since we passed preauth=True in the UnitTest setUp function, we should
+        # already be authenticated with the site.
+        self.assertTrue(get_user(self.client).is_authenticated)
+
+        # Simulate hitting the "logout" button
+        self.client.get(reverse("research logout"))
+        self.assertFalse(get_user(self.client).is_authenticated)
+
+    def test_no_redirect_login_to_logout(self):
+        # Normally, if we try to visit a page in the researcher interface before
+        # logging in, we should be redirected to that page after a successful
+        # login. However, this should not apply if we try to go to the logout
+        # endpoint.
+        self.client.logout()
+        self.assertFalse(get_user(self.client).is_authenticated)
+
+        login_url = reverse("research login")
+        response = self.client.get(reverse("research logout"), follow=True)
+        location, _ = response.redirect_chain[-1]
+        self.assertEqual(location, login_url)
+
+        self.client.post(
+            location, {"username": self.username, "password": self.password}
+        )
+        self.assertTrue(get_user(self.client).is_authenticated)
+
+
+"""
+---------------------------------------------------
 Tests for dashboard view
 ---------------------------------------------------
 """

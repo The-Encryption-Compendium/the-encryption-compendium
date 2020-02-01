@@ -1,4 +1,4 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
@@ -32,6 +32,13 @@ def research_login(request):
             return redirect(redirect_url)
 
     return render(request, "login.html", context={"form": form})
+
+
+@require_http_methods(["GET"])
+def research_logout(request):
+    if request.user.is_authenticated:
+        logout(request)
+    return redirect("research login")
 
 
 """
