@@ -81,7 +81,7 @@ class FunctionalLoginTestCase(FunctionalTest):
 
         # Meepy enters the correct username and password, and logs in successfully
         self.get_passbox().send_keys(self.password)
-        self.browser.find_element_by_id("login-button").click()
+        self.get_passbox().send_keys(Keys.ENTER)
 
         self.wait_for(lambda: self.assertIn("Dashboard", self.browser.title))
 
