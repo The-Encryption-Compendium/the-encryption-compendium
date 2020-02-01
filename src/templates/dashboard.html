@@ -3,8 +3,16 @@
 {% block title %}Dashboard | {{ block.super }}{% endblock %}
 
 {% block body %}
-<h1>Hello {{ user.username|title }}!</h1>
-<div>
-    <a id="new_article_link" href="{% url 'research new article' %}">Add new article</a>
+
+{% include "includes/navbar.html" %}
+
+<div class="d-flex">
+  {% include "includes/sidebar.html" %}
+  <h1>Hello {{ user.username|title }}!</h1>
+  <div>
+      <a id="new_article_link" href="{% url 'research new article' %}">
+        Add new article
+      </a>
+  </div>
 </div>
 {% endblock %}

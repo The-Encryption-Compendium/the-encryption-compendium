@@ -1,5 +1,9 @@
 /* Custom CSS for the site */
 
+html {
+  font-family: sans-serif;
+}
+
 .auth-form {
   max-width: 500px;
 }
@@ -9,4 +13,24 @@
   margin-bottom: 1rem;
   max-width: 768px;
   display: inline-block;
+}
+
+/*****************************
+ * CSS for dashboard sidebar
+ *****************************/
+.sidebar-wrapper {
+  background-color: #888888;
+  min-height: 100vh;
+  max-width: 30vw;
+}
+
+#sidebar-wrapper .sidebar-heading {
+  font-size: 1.5rem;
+}
+
+/*****************************
+ * CSS for navigation bars
+ *****************************/
+.dashboard-navbar {
+  background-color: #444444;
 }
