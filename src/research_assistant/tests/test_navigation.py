@@ -31,9 +31,26 @@ class FunctionalLoginTestCase(FunctionalTest):
         self.get_userbox = lambda: self.browser.find_element_by_id("id_username")
         self.get_passbox = lambda: self.browser.find_element_by_id("id_password")
 
+    """
+    Helper functions
+    """
+
+    def get_userbox(self):
+        return self.browser.find_element_by_id("id_username")
+
+    def get_passbox(self):
+        return self.browser.find_element_by_id("id_password")
+
+    def go_to_login_page(self):
+        self.browser.get(self.live_server_url + reverse("research login"))
+
+    """
+    Tests
+    """
+
     def test_login_as_existing_user(self):
         # Meepy visits the login page of the site.
-        self.browser.get(self.live_server_url + reverse("research login"))
+        self.go_to_login_page()
         self.assertEqual(self.browser.title, "Login | The Encryption Compendium")
 
         # Meepy enters her username and password into the 'username' and
@@ -51,9 +68,14 @@ class FunctionalLoginTestCase(FunctionalTest):
         # Meepy is successfully logged in, and directed to her dashboard
         self.wait_for(lambda: self.assertIn("Dashboard", self.browser.title))
 
+        # Now if she tries to go back to the login page, she's redirected back to
+        # her dashboard.
+        self.go_to_login_page()
+        self.wait_for(lambda: self.assertIn("Dashboard", self.browser.title))
+
     def test_invalid_login(self):
         # Meepy visits the login page, but enters the incorrect username.
-        self.browser.get(self.live_server_url + reverse("research login"))
+        self.go_to_login_page()
         initial_url = self.browser.current_url
 
         self.get_userbox().send_keys(random_username(self.rd))
@@ -91,6 +113,20 @@ class FunctionalLoginTestCase(FunctionalTest):
         # Meepy forgets to log in before visiting the dashboard. She's redirected to
         # the login page.
         pass
+
+    def test_logout(self):
+        # Meepy logs in to the site.
+        self.go_to_login_page()
+        self.get_userbox().send_keys(self.username)
+        self.get_passbox().send_keys(self.password)
+        self.browser.find_element_by_id("login-button").click()
+
+        self.wait_for(lambda: self.assertIn("Dashboard", self.browser.title))
+
+        # Meepy clicks the "logout" button in the corner of the page to log out.
+        navbar = self.browser.find_element_by_id("navbar")
+        navbar.find_element_by_id("logout-button").click()
+        self.wait_for(lambda: self.assertIn("Login", self.browser.title))
 
 
 """

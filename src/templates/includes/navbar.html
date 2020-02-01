@@ -2,9 +2,9 @@
 Navigation bar across the top of the site for the researcher view.
 {% endcomment %}
 
-<nav class="navbar dashboard-navbar">
+<nav class="navbar dashboard-navbar" id="navbar">
   <ul class="navbar-nav ml-auto mt-2">
-    <a class="nav-link"> {# href="{% url 'logout' %}"> #}
+    <a class="nav-link" href="{% url 'research logout' %}">
       <button class="btn btn-primary" id="logout-button">
         Logout
       </button>
