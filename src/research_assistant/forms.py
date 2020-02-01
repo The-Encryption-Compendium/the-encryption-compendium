@@ -127,8 +127,19 @@ class UserAdminForm(forms.ModelForm):
 class CompendiumEntryForm(forms.ModelForm):
     class Meta:
         model = CompendiumEntry
-        fields = ("title", "abstract", "url", "owner")
+        fields = (
+            "title",
+            "abstract",
+            "url",
+            "owner",  # logged by the server. can be removed from the form
+            "tags",
+        )
 
-        widgets = {"abstract": forms.Textarea()}
+        widgets = {
+            "abstract": forms.Textarea(),
+            "owner": forms.TextInput(
+                attrs={"disabled": True}
+            ),  # logged by the server. can be removed from the form
+        }
 
         labels = {"url": "URL"}

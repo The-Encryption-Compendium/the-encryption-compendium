@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 
-from research_assistant.forms import ResearchLoginForm
+from research_assistant.forms import ResearchLoginForm, CompendiumEntryForm
 
 # Create your views here.
 
@@ -45,3 +45,15 @@ Researcher interface
 @require_http_methods(["GET"])
 def research_dashboard(request):
     return render(request, "dashboard.html")
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def research_new_article(request):
+    form = CompendiumEntryForm(request.POST if request.POST else None)
+    if request.POST and form.is_valid():
+        article = form.save()
+        article.user = request.user
+        article.save()
+        return redirect("research dashboard")
+    return render(request, "new_article.html", context={"form": form})

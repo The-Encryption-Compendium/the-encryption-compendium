@@ -4,3 +4,6 @@ gunicorn == 20.0.4
 
 # Deployment automation
 python-dotenv
+
+#module for handling article tags 
+django-taggit

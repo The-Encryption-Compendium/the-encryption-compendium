@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from taggit.managers import TaggableManager
 
 from research_assistant.managers import UserManager
 
@@ -87,4 +88,5 @@ class CompendiumEntry(models.Model):
     tags = models.ManyToManyField(CompendiumEntryTag)
 
     date_added = models.DateTimeField(default=timezone.now)
-    owner = models.ForeignKey("User", on_delete=models.SET_NULL, blank=True, null=True)
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    tags = TaggableManager()

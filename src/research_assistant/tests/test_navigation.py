@@ -85,6 +85,18 @@ class FunctionalLoginTestCase(FunctionalTest):
 
         self.wait_for(lambda: self.assertIn("Dashboard", self.browser.title))
 
+    def test_redirect_to_login_if_unauthenticated(self):
+        # Meepy forgets to log in before visiting the dashboard. She's redirected to
+        # the login page.
+        pass
+
+
+"""
+---------------------------------------------------
+Dashboard tests
+---------------------------------------------------
+"""
+
 
 @tag("dashboard")
 class FunctionalResearchDashboardTestCase(FunctionalTest):
@@ -92,7 +104,31 @@ class FunctionalResearchDashboardTestCase(FunctionalTest):
     Meepy logs in and checks her dashboard.
     """
 
-    def test_redirect_to_login_if_unauthenticated(self):
-        # Meepy forgets to log in before visiting the dashboard. She's redirected to
-        # the login page.
-        pass
+    def setUp(self):
+        super().setUp(create_user=True, preauth=True)
+
+    def test_new_article_link_in_dashboard(self):
+        # Meepy wants to add a new article to the compendium
+        # Meepy visits her dashboard
+        self.browser.get(self.live_server_url + reverse("research dashboard"))
+        self.assertEqual(self.browser.title, "Dashboard | The Encryption Compendium")
+
+        # She notices a "Add new article" link and clicks it
+        self.browser.find_element_by_link_text("Add new article").click()
+
+        self.assertEqual(self.browser.title, "New Article | The Encryption Compendium")
+
+    def test_new_article_form(self):
+        # Meepy fills in the form for new article
+        self.browser.get(self.live_server_url + reverse("research new article"))
+        inputbox = self.browser.find_element_by_id("id_title")
+        inputbox.send_keys("Test article")
+        inputbox = self.browser.find_element_by_id("id_abstract")
+        inputbox.send_keys("Abstract for test article")
+        inputbox = self.browser.find_element_by_id("id_url")
+        inputbox.send_keys("https://www.google.com")
+        inputbox = self.browser.find_element_by_id("id_tags")
+        inputbox.send_keys("test, ignore_article, article_ignore")
+        self.browser.find_element_by_tag_name("button").click()
+
+        self.assertEqual(self.browser.title, "Dashboard | The Encryption Compendium")
