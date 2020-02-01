@@ -43,9 +43,7 @@ class ResearchLoginForm(forms.Form):
 
         if not User.objects.filter(username=username).exists():
             raise forms.ValidationError(
-                _(f"User '%(username)s' does not exist."),
-                params={"username": username},
-                code="nonexistent",
+                _(f"Username does not exist."), code="nonexistent"
             )
 
         user = User.objects.get(username=username)

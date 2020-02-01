@@ -28,6 +28,8 @@ class FunctionalLoginTestCase(FunctionalTest):
 
     def setUp(self):
         super().setUp(create_user=True)
+        self.get_userbox = lambda: self.browser.find_element_by_id("id_username")
+        self.get_passbox = lambda: self.browser.find_element_by_id("id_password")
 
     def test_login_as_existing_user(self):
         # Meepy visits the login page of the site.
@@ -36,8 +38,8 @@ class FunctionalLoginTestCase(FunctionalTest):
 
         # Meepy enters her username and password into the 'username' and
         # 'password' boxes.
-        userbox = self.browser.find_element_by_id("id_username")
-        passbox = self.browser.find_element_by_id("id_password")
+        userbox = self.get_userbox()
+        passbox = self.get_passbox()
 
         self.assertEqual(userbox.get_attribute("placeholder"), "Username")
         self.assertEqual(passbox.get_attribute("placeholder"), "Password")
@@ -47,6 +49,40 @@ class FunctionalLoginTestCase(FunctionalTest):
         passbox.send_keys(Keys.ENTER)
 
         # Meepy is successfully logged in, and directed to her dashboard
+        self.wait_for(lambda: self.assertIn("Dashboard", self.browser.title))
+
+    def test_invalid_login(self):
+        # Meepy visits the login page, but enters the incorrect username.
+        self.browser.get(self.live_server_url + reverse("research login"))
+        initial_url = self.browser.current_url
+
+        self.get_userbox().send_keys(random_username(self.rd))
+        self.get_passbox().send_keys(self.password)
+        self.get_passbox().send_keys(Keys.ENTER)
+
+        self.wait_for(
+            lambda: self.assertIn("Username does not exist.", self.browser.page_source)
+        )
+        self.assertEqual(self.browser.current_url, initial_url)
+
+        # Meepy enters the correct username, but the incorrect password
+        self.get_userbox().clear()
+        self.get_userbox().send_keys(self.username)
+        self.get_passbox().send_keys(random_password(self.rd))
+        self.get_passbox().send_keys(Keys.ENTER)
+
+        self.wait_for(
+            lambda: self.assertIn(
+                "Sorry, that login was invalid. Please try again.",
+                self.browser.page_source,
+            )
+        )
+        self.assertEqual(self.browser.current_url, initial_url)
+
+        # Meepy enters the correct username and password, and logs in successfully
+        self.get_passbox().send_keys(self.password)
+        self.browser.find_element_by_id("login-button").click()
+
         self.wait_for(lambda: self.assertIn("Dashboard", self.browser.title))
 
 

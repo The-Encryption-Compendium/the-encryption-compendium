@@ -12,13 +12,35 @@
         Login
       </h2>
 
+      {% if form.non_field_errors %}
+      <span class="d-flex justify-content-center">
+        <div class="form-error alert alert-danger mx-auto" role="alert">
+          {% if form.non_field_errors|length == 1 %}
+
+          <div class="text-center">
+            {% for error in form.non_field_errors %}
+            {{ error }}
+            {% endfor %}
+          </div>
+
+          {% else %}
+
+          Unable to log in. The following errors were encountered:
+          {{ form.non_field_errors }}
+
+          {% endif %}
+        </div>
+      </span>
+      {% endif %}
+
       {% for field in form %}
       <div class="form-group">
         {{ field }}
+        {% include "includes/field_errors.html" with errors=field.errors only %}
       </div>
       {% endfor %}
       <div class="text-center">
-        <button class="btn btn-primary" type="submit">
+        <button id="login-button" class="btn btn-primary" type="submit">
           Log in
         </button>
       </div>

@@ -1,5 +1,12 @@
 /* Custom CSS for the site */
 
-div.auth-form {
+.auth-form {
   max-width: 500px;
+}
+
+.form-error {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  max-width: 768px;
+  display: inline-block;
 }

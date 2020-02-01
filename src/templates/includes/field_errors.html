@@ -1,0 +1,15 @@
+{% comment %}
+Generic template for displaying errors in forms.
+{% endcomment %}
+
+{% if errors %}
+<div class="form-error alert alert-danger mx-auto" role="alert">
+  {% if errors|length == 1 %}
+    {% for error in errors %}
+    {{ error|escape }}
+    {% endfor %}
+  {% else %}
+    {{ errors }}
+  {% endif %}
+</div>
+{% endif %}

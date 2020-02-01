@@ -108,7 +108,6 @@ CompendiumEntryTag model tests
 
 
 class CompendiumEntryTagModelTestCase(UnitTest):
-    @tag("tmp")
     def test_create_new_tag(self):
         self.assertEqual(len(CompendiumEntryTag.objects.all()), 0)
         new_tag = CompendiumEntryTag.objects.create(tagname="my-new-tag")
