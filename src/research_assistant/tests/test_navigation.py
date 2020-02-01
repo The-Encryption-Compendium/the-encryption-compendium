@@ -80,6 +80,8 @@ class FunctionalLoginTestCase(FunctionalTest):
         self.assertEqual(self.browser.current_url, initial_url)
 
         # Meepy enters the correct username and password, and logs in successfully
+        self.get_userbox().clear()
+        self.get_userbox().send_keys(self.username)
         self.get_passbox().send_keys(self.password)
         self.get_passbox().send_keys(Keys.ENTER)
 
