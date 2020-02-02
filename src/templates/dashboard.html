@@ -5,14 +5,22 @@
 {% block body %}
 
 {% include "includes/navbar.html" %}
-
+{% load static %}
 <div class="d-flex">
   {% include "includes/sidebar.html" %}
-  <h1>Hello {{ user.username|title }}!</h1>
-  <div>
+  <div class="container m-2">
+    <h1>Hello {{ user.username|title }}!</h1>
+    <hr>
+    <div>
       <a id="new_article_link" href="{% url 'research new article' %}">
-        Add new article
+        <button class="btn btn-primary">
+          <div class="my-1">
+            <img class="action-icon mr-1" src="{% static 'svg/add.svg' %}">
+            Add new compendium entry
+          </div>
+        </button>
       </a>
+    </div>
   </div>
 </div>
 {% endblock %}

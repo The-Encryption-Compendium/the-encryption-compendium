@@ -15,6 +15,12 @@ html {
   display: inline-block;
 }
 
+.action-icon {
+  display: inline-block;
+  vertical-align: middle;
+  height: 2rem;
+}
+
 /*****************************
  * CSS for dashboard sidebar
  *****************************/
