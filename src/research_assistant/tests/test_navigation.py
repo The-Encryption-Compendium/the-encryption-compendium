@@ -125,7 +125,10 @@ class FunctionalLoginTestCase(FunctionalTest):
 
         # Meepy clicks the "logout" button in the corner of the page to log out.
         navbar = self.browser.find_element_by_id("navbar")
-        navbar.find_element_by_id("logout-button").click()
+        profile_button = navbar.find_element_by_id("user-profile-dropdown-button")
+        profile_button.click()
+        logout_button = profile_button.find_element_by_id("logout-button")
+        logout_button.click()
         self.wait_for(lambda: self.assertIn("Login", self.browser.title))
 
 
@@ -152,7 +155,7 @@ class FunctionalResearchDashboardTestCase(FunctionalTest):
         self.assertEqual(self.browser.title, "Dashboard | The Encryption Compendium")
 
         # She notices a "Add new article" link and clicks it
-        self.browser.find_element_by_link_text("Add new article").click()
+        self.browser.find_element_by_link_text("Add new compendium entry").click()
 
         self.assertEqual(self.browser.title, "New Article | The Encryption Compendium")
 
