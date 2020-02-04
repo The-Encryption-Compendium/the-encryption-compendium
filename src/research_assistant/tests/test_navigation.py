@@ -127,9 +127,12 @@ class FunctionalLoginTestCase(FunctionalTest):
         # button.
         navbar = self.browser.find_element_by_id("navbar")
         profile_button = navbar.find_element_by_id("user-profile-dropdown-button")
-        profile_button.click()
         logout_button = navbar.find_element_by_id("logout-button")
+
+        profile_button.click()
+        self.wait_for(lambda: self.assertTrue(logout_button.is_displayed()))
         logout_button.click()
+
         self.wait_for(lambda: self.assertIn("Login", self.browser.title))
 
 
