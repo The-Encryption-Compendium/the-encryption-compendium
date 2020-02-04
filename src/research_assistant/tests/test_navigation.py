@@ -123,11 +123,12 @@ class FunctionalLoginTestCase(FunctionalTest):
 
         self.wait_for(lambda: self.assertIn("Dashboard", self.browser.title))
 
-        # Meepy clicks the "logout" button in the corner of the page to log out.
+        # Meepy clicks the profile button in the navbar, and then clicks the logout
+        # button.
         navbar = self.browser.find_element_by_id("navbar")
         profile_button = navbar.find_element_by_id("user-profile-dropdown-button")
         profile_button.click()
-        logout_button = profile_button.find_element_by_id("logout-button")
+        logout_button = navbar.find_element_by_id("logout-button")
         logout_button.click()
         self.wait_for(lambda: self.assertIn("Login", self.browser.title))
 
