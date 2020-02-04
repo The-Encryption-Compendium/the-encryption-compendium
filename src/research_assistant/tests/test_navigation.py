@@ -125,13 +125,15 @@ class FunctionalLoginTestCase(FunctionalTest):
 
         # Meepy clicks the profile button in the navbar, and then clicks the logout
         # button.
+        # Use the execute_script() function instead of directly clicking the logout button,
+        # since otherwise we can run into "element cannot be scrolled into view" errors.
         navbar = self.browser.find_element_by_id("navbar")
         profile_button = navbar.find_element_by_id("user-profile-dropdown-button")
-        logout_button = navbar.find_element_by_id("logout-button")
+        self.browser.execute_script("arguments[0].click();", profile_button)
 
-        profile_button.click()
-        self.wait_for(lambda: self.assertTrue(logout_button.is_displayed()))
-        logout_button.click()
+        menu = navbar.find_element_by_id("user-settings-dropdown-menu")
+        logout_button = menu.find_element_by_id("logout-button")
+        self.browser.execute_script("arguments[0].click();", logout_button)
 
         self.wait_for(lambda: self.assertIn("Login", self.browser.title))
 
