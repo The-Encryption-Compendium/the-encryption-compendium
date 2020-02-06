@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, reverse
+from django.views.generic.base import RedirectView
 from research_assistant import urls as research_urls
 
 urlpatterns = [
@@ -23,4 +24,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     ### URLs for the research_assistant app
     url(r"^research/", include(research_urls)),
+    ### Temporarily redirect / to the login view
+    path(
+        r"", RedirectView.as_view(url="/research/login", permanent=False), name="index"
+    ),
 ]
