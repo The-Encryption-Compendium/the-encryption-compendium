@@ -103,6 +103,7 @@ class FunctionalLoginTestCase(FunctionalTest):
 
         # Meepy enters the correct username and password, and logs in successfully
         self.get_userbox().clear()
+        self.get_passbox().clear()
         self.get_userbox().send_keys(self.username)
         self.get_passbox().send_keys(self.password)
         self.get_passbox().send_keys(Keys.ENTER)
