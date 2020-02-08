@@ -1,0 +1,5 @@
+selenium
+tblib
+black
+pylint
+pre-commit
