@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
-from taggit.managers import TaggableManager
 
 from research_assistant.managers import UserManager
 

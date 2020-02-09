@@ -7,4 +7,5 @@ urlpatterns = [
     url(r"^logout", research_logout, name="research logout"),
     url(r"^dashboard", research_dashboard, name="research dashboard"),
     url(r"^new_article", research_new_article, name="research new article"),
+    url(r"^new_tag", research_add_tag, name="research add tag"),
 ]

@@ -1,6 +1,6 @@
 from django.test import tag
 from encryption_compendium.test_utils import UnitTest, random_password
-from research_assistant.forms import ResearchLoginForm, CompendiumEntryForm
+from research_assistant.forms import ResearchLoginForm, CompendiumEntryForm, NewTagForm
 from research_assistant.models import User, CompendiumEntryTag
 
 """
@@ -54,6 +54,7 @@ Entry upload form tests
 """
 
 
+@tag("compendium-entries")
 class CompendiumEntryFormTestCase(UnitTest):
     def setUp(self):
         super().setUp()
@@ -88,3 +89,30 @@ class CompendiumEntryFormTestCase(UnitTest):
         ### Submit an entry to the form that uses multiple tags
         # TODO
         pass
+
+
+"""
+---------------------------------------------------
+Form to add new tags
+---------------------------------------------------
+"""
+
+
+@tag("compendium-entries")
+class NewTagFormTestCase(UnitTest):
+    def setUp(self):
+        super().setUp()
+
+    def test_add_new_tag_to_the_database(self):
+        # By default, there shouldn't be any tags in the database
+        self.assertEqual(len(CompendiumEntryTag.objects.all()), 0)
+
+        # Add a new tag view the NewTagForm
+        form = NewTagForm(data={"tagname": "my test tag"})
+        self.assertTrue(form.is_valid())
+        form.save()
+
+        # The new tag should now be saved to the database
+        tags = CompendiumEntryTag.objects.all()
+        self.assertEqual(len(tags), 1)
+        self.assertEqual(tags[0].tagname, "my test tag")

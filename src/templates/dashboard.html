@@ -8,14 +8,34 @@
 {{ block.super }}
 {% load static %}
 <div>
-  <a id="new_article_link" href="{% url 'research new article' %}">
-    <button class="btn btn-primary">
-      <div class="my-1">
-        <img class="action-icon mr-1" src="{% static 'svg/add.svg' %}">
-        Add new compendium entry
-      </div>
-    </button>
-  </a>
+  <div class="row">
+    {# Button to add new compendium entries #}
+    <div class="col">
+      <a id="new_article_link" href="{% url 'research new article' %}">
+        <button class="btn btn-primary">
+          <div class="my-1">
+            <img class="action-icon mr-1" src="{% static 'svg/add.svg' %}">
+            Add new compendium entry
+          </div>
+        </button>
+      </a>
+    </div>
+
+    <div class="w-100 mb-4"></div>
+
+    {# Button to add new tags #}
+    <div class="col">
+      <a id="new_tag_link" href="{% url 'research add tag' %}">
+        <button class="btn btn-primary">
+          <div class="my-1">
+            <img class="action-icon mr-1" src="{% static 'svg/add.svg' %}">
+            Add new tag
+          </div>
+        </button>
+      </a>
+    </div>
+
+  </div>
 </div>
 
 {% endblock %}

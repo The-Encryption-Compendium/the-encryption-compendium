@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext as _
 
-from research_assistant.models import User, CompendiumEntry
+from research_assistant.models import User, CompendiumEntry, CompendiumEntryTag
 
 """
 ---------------------------------------------------
@@ -71,6 +71,45 @@ class ResearchLoginForm(forms.Form):
 
 """
 ---------------------------------------------------
+Form for adding new entries to the compendium
+---------------------------------------------------
+"""
+
+
+class CompendiumEntryForm(forms.ModelForm):
+    class Meta:
+        model = CompendiumEntry
+        fields = (
+            "title",
+            "abstract",
+            "url",
+            "tags",
+        )
+
+        widgets = {
+            "abstract": forms.Textarea(),
+        }
+
+        labels = {"url": "URL"}
+
+
+"""
+---------------------------------------------------
+Add a new tag to use with CompendiumEntry
+---------------------------------------------------
+"""
+
+
+class NewTagForm(forms.ModelForm):
+    class Meta:
+        model = CompendiumEntryTag
+        fields = ("tagname",)
+
+        labels = {"tagname": "Tag name"}
+
+
+"""
+---------------------------------------------------
 Model administration forms
 ---------------------------------------------------
 """
@@ -122,20 +161,3 @@ class UserAdminForm(forms.ModelForm):
             self.add_error("password_2", error)
 
         return cleaned_data
-
-
-class CompendiumEntryForm(forms.ModelForm):
-    class Meta:
-        model = CompendiumEntry
-        fields = (
-            "title",
-            "abstract",
-            "url",
-            "tags",
-        )
-
-        widgets = {
-            "abstract": forms.Textarea(),
-        }
-
-        labels = {"url": "URL"}

@@ -4,7 +4,7 @@ from django.utils.translation import gettext as _
 
 """
 ---------------------------------------------------
-Login form for researchers
+Restrict the maximum password length
 ---------------------------------------------------
 """
 

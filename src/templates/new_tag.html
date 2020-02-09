@@ -1,7 +1,7 @@
 {% extends "dashboard_base.html" %}
 
-{% block title %}New entry | {{ block.super }}{% endblock %}
-{% block page_header %}New compendium entry{% endblock %}
+{% block title %}New tag | {{ block.super }}{% endblock %}
+{% block page_header %}Add a new tag{% endblock %}
 
 {% block contents %}
 {{ block.super }}
@@ -22,9 +22,8 @@
     </div>
   </div>
 
-  <button id="entry-submit-button" class="btn btn-primary" type="submit">
-    Add entry
+  <button id="tag-submit-button" class="btn btn-primary" type="submit">
+    Add new tag
   </button>
-
 </form>
 {% endblock %}
