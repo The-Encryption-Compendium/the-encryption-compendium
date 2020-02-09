@@ -85,8 +85,7 @@ class CompendiumEntry(models.Model):
     abstract = models.CharField(max_length=MAX_ABSTRACT_LENGTH, blank=True, null=True)
     url = models.URLField(max_length=MAX_URL_LENGTH, blank=True, null=True)
 
-    tags = models.ManyToManyField(CompendiumEntryTag)
+    tags = models.ManyToManyField(CompendiumEntryTag, blank=True)
 
     date_added = models.DateTimeField(default=timezone.now)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
-    tags = TaggableManager()

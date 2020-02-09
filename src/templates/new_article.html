@@ -1,13 +1,30 @@
-{% extends "base.html" %}
+{% extends "dashboard_base.html" %}
 
 {% block title %}New Article | {{ block.super }}{% endblock %}
+{% block page_header %}New compendium entry{% endblock %}
 
-{% block body %}
+{% block contents %}
+{{ block.super }}
 <form method="POST">
   {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">
+
+  <div class="container float-left">
+    <div class="row">
+      {% for field in form %}
+      <div class="col-2 mb-3">
+        <p>{{ field.label }}</p>
+      </div>
+      <div class="col-8 mb-3">
+        {{ field }}
+      </div>
+      <div class="w-100"></div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <button id="entry-submit-button" class="btn btn-primary" type="submit">
     Enter
   </button>
+
 </form>
 {% endblock %}

@@ -1,9 +1,12 @@
 {% extends "dashboard_base.html" %}
 
+{% block title %}Dashboard | {{ block.super }}{% endblock %}
+{% block page_header %}Hello {{ user.username|title }}!{% endblock %}
+
 {% block contents %}
+
+{{ block.super }}
 {% load static %}
-<h1>Hello {{ user.username|title }}!</h1>
-<hr>
 <div>
   <a id="new_article_link" href="{% url 'research new article' %}">
     <button class="btn btn-primary">

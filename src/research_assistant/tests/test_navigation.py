@@ -177,6 +177,6 @@ class FunctionalResearchDashboardTestCase(FunctionalTest):
         inputbox.send_keys("https://www.google.com")
         inputbox = self.browser.find_element_by_id("id_tags")
         inputbox.send_keys("test, ignore_article, article_ignore")
-        self.browser.find_element_by_tag_name("button").click()
+        self.browser.find_element_by_id("entry-submit-button").click()
 
         self.assertEqual(self.browser.title, "Dashboard | The Encryption Compendium")
