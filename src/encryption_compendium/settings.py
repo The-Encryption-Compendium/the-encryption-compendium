@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "research_assistant",
+    "research_settings",
 ]
 
 MIDDLEWARE = [

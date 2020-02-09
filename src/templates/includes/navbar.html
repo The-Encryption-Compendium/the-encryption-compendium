@@ -16,8 +16,9 @@ Navigation bar across the top of the site for the researcher view.
             {{ user.username }}
           </a>
           <div id="user-settings-dropdown-menu" class="dropdown-menu" aria-labelledby="user-profile-dropdown">
+            <a class="dropdown-item" href="{% url 'research dashboard' %}">Home</a>
             <a class="dropdown-item" href="#">Profile</a>
-            <a class="dropdown-item" href="#">Settings</a>
+            <a class="dropdown-item" id="user-settings" href="{% url 'research settings' %}">Settings</a>
             <div class="dropdown-divider"></div>
             <a id="logout-button" class="dropdown-item" href="{% url 'research logout' %}">Logout</a>
           </div>
