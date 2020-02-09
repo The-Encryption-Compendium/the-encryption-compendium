@@ -94,6 +94,8 @@ jobs:
     - stage:
       name: "Functional tests (Chrome stable)"
       python: 3.7
+      env:
+        - ALLOW_FAILURE=yes
       addons:
         chrome: stable
       services:
