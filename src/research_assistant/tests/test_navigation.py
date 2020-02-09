@@ -164,7 +164,7 @@ class FunctionalResearchDashboardTestCase(FunctionalTest):
         # She notices a "Add new article" link and clicks it
         self.browser.find_element_by_link_text("Add new compendium entry").click()
 
-        self.assertEqual(self.browser.title, "New Article | The Encryption Compendium")
+        self.assertEqual(self.browser.title, "New entry | The Encryption Compendium")
 
     def test_new_article_form(self):
         # Meepy fills in the form for new article
