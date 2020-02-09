@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "research_assistant",
     "taggit",
+    "research_settings",
 ]
 
 MIDDLEWARE = [
