@@ -116,3 +116,14 @@ class NewTagFormTestCase(UnitTest):
         tags = CompendiumEntryTag.objects.all()
         self.assertEqual(len(tags), 1)
         self.assertEqual(tags[0].tagname, "my test tag")
+
+    def test_add_invalid_tag_to_the_database(self):
+        ### Try to double-add a tag
+        tag = CompendiumEntryTag(tagname="test-tag").save()
+
+        form = NewTagForm(data={"tagname": "test-tag"})
+        self.assertFalse(form.is_valid())
+
+        ### Try to add an empty tag
+        form = NewTagForm(data={"tagname": ""})
+        self.assertFalse(form.is_valid())

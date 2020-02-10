@@ -8,22 +8,51 @@
 <form method="POST">
   {% csrf_token %}
 
+  {% if success or form.non_field_errors %}
+  <span class="d-flex justify-content-center">
+    {% if success %}
+    <div class="alert alert-success mx-auto">
+      Successfully created new tag.
+    </div>
+    {% else %}
+    <div class="alert alert-danger mx-auto" role="alert">
+      An error occurred: {{ form.non_field_errors }}
+    </div>
+    {% endif %}
+  </span>
+  {% endif %}
+
   <div class="container float-left">
     <div class="row">
       {% for field in form %}
+
       <div class="col-2 mb-3">
         <p>{{ field.label }}</p>
       </div>
       <div class="col-8 mb-3">
         {{ field }}
+
+        <br>
+
+        {% comment %}
+        Display any errors associated with this field that may have occurred
+        when we try to add a new tag.
+        {% endcomment %}
+        {% include "includes/field_errors.html" with errors=field.errors only %}
       </div>
       <div class="w-100"></div>
       {% endfor %}
+
     </div>
   </div>
 
   <button id="tag-submit-button" class="btn btn-primary" type="submit">
     Add new tag
   </button>
+
+  {# Display all of the tags that already exist #}
+  {% for tag in existing_tags %}
+    <p>{{ tag.tagname }}</p>
+  {% endfor %}
 </form>
 {% endblock %}

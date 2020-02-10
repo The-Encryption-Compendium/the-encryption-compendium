@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from research_assistant.forms import ResearchLoginForm, CompendiumEntryForm, NewTagForm
+from research_assistant.models import CompendiumEntryTag
 
 # Create your views here.
 
@@ -69,7 +70,15 @@ def research_new_article(request):
 @require_http_methods(["GET", "POST"])
 def research_add_tag(request):
     form = NewTagForm(request.POST if request.POST else None)
+    success = None
+
     if request.POST and form.is_valid():
         tag = form.save()
-        return redirect("research dashboard")
-    return render(request, "new_tag.html", context={"form": form})
+        success = True
+
+    tags = CompendiumEntryTag.objects.all()
+    return render(
+        request,
+        "new_tag.html",
+        context={"form": form, "existing_tags": tags, "success": success},
+    )
