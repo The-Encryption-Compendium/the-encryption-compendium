@@ -107,6 +107,16 @@ class NewTagForm(forms.ModelForm):
 
         labels = {"tagname": "Tag name"}
 
+    """
+    Form validation
+    """
+
+    def clean_tagname(self):
+        tagname = self.cleaned_data.get("tagname")
+        if tagname:
+            tagname = tagname.lower()
+        return tagname
+
 
 """
 ---------------------------------------------------

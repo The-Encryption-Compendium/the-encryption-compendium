@@ -127,3 +127,22 @@ class NewTagFormTestCase(UnitTest):
         ### Try to add an empty tag
         form = NewTagForm(data={"tagname": ""})
         self.assertFalse(form.is_valid())
+
+    def test_tags_are_case_insensitive(self):
+        # Tags should be case-insensitive, e.g. 'Encryption' should be the same
+        # as 'encryption'. When adding a new tag through this form, ensure that
+        # the tags are automatically de-capitalized.
+
+        # Add a new tag via the NewTagForm
+        form = NewTagForm(data={"tagname": "ENCRYPTION"})
+        self.assertTrue(form.is_valid())
+        form.save()
+
+        tags = CompendiumEntryTag.objects.all()
+        self.assertEqual(len(tags), 1)
+        self.assertEqual(tags[0].tagname, "encryption")
+
+        # Attempt to add a new tag with the same name (but different
+        # capitalization).
+        form = NewTagForm(data={"tagname": "Encryption"})
+        self.assertFalse(form.is_valid())
