@@ -1,11 +1,11 @@
 from django.test import tag
-from encryption_compendium.test_utils import UnitTest, random_password
+from encryption_compendium.test_utils import random_email, random_password, UnitTest
 from research_assistant.forms import ResearchLoginForm, CompendiumEntryForm, NewTagForm
 from research_assistant.models import User, CompendiumEntryTag
 
 """
 ---------------------------------------------------
-Login form tests
+Auth-related forms
 ---------------------------------------------------
 """
 
@@ -45,6 +45,18 @@ class ResearchLoginFormTestCase(UnitTest):
         data = {"username": self.username, "password": random_password(self.rd)}
         form = ResearchLoginForm(data=data)
         self.assertFalse(form.is_valid())
+
+
+class AddNewUserFormTestCase(UnitTest):
+    def test_validate_new_user(self):
+        data = {"email": random_email()}
+        self.assertTrue(AddNewUserForm(data=data).is_valid())
+
+    def test_invalid_user_email(self):
+        data = {"email": "hello, world"}
+        self.assertFalse(AddNewUserForm(data=data).is_valid())
+        data = {"email": "user123@"}
+        self.assertFalse(AddNewUserForm(data=data).is_valid())
 
 
 """

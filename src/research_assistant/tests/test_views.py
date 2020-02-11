@@ -1,7 +1,12 @@
 from django.contrib.auth import get_user
 from django.test import tag
 from django.urls import reverse
-from encryption_compendium.test_utils import random_username, random_password, UnitTest
+from encryption_compendium.test_utils import (
+    random_email,
+    random_username,
+    random_password,
+    UnitTest,
+)
 from research_assistant.models import User, CompendiumEntryTag
 from unittest import skip
 
@@ -42,6 +47,48 @@ class LoginTestCase(UnitTest):
         self.assertEqual(
             original_db_entry, User.objects.get(username=self.username).password
         )
+
+
+"""
+---------------------------------------------------
+Tests for email verification and user signup
+---------------------------------------------------
+"""
+
+
+@tag("auth")
+class AddNewUserTest(UnitTest):
+    def setUp(self):
+        super().setUp(preauth=True)
+        self.user.is_staff = True
+        self.user.save()
+        self.new_user_email = random_email(self.rd)
+        self.form_data = {"email": self.new_user_email}
+
+    def test_page_uses_correct_templates(self):
+        response = self.client.get(reverse("add new user"))
+        self.assertTemplateUsed("base.html")
+        self.assertTemplateUsed("dashboard_base.html")
+        self.assertTemplateUsed("add_user.html")
+
+    @tag("email")
+    def test_add_new_user_to_site(self):
+        # Have the staff user send a new email verification token to get
+        # a new user signed up.
+        self.assertEqual(len(EmailVerificationToken.objects.all()), 0)
+        response = self.client.post(reverse("add new user"), self.form_data)
+
+        self.assertEqual(len(EmailVerificationToken.objects.all()), 1)
+        self.assertTrue(
+            EmailVerificationToken.filter(email=self.new_user_email).exists()
+        )
+
+        # TODO: check that email was sent
+        self.fail("TODO")
+
+    def test_only_staff_users_can_add_new_users(self):
+        # Only users that are staff members can send email verification tokens
+        self.fail("TODO")
 
 
 """
