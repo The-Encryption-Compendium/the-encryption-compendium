@@ -4,7 +4,12 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext as _
 
-from research_assistant.models import User, CompendiumEntry, CompendiumEntryTag
+from research_assistant.models import (
+    CompendiumEntry,
+    CompendiumEntryTag,
+    EmailVerificationToken,
+    User,
+)
 
 """
 ---------------------------------------------------
@@ -67,6 +72,20 @@ class ResearchLoginForm(forms.Form):
 
         user = authenticate(username=username, password=password)
         return user
+
+
+"""
+---------------------------------------------------
+Signup-related forms
+---------------------------------------------------
+"""
+
+
+class AddNewUserForm(forms.ModelForm):
+    class Meta:
+        model = EmailVerificationToken
+        fields = ("email",)
+        labels = {"email": "New user email"}
 
 
 """
