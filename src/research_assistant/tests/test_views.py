@@ -7,7 +7,7 @@ from encryption_compendium.test_utils import (
     random_password,
     UnitTest,
 )
-from research_assistant.models import User, CompendiumEntryTag
+from research_assistant.models import CompendiumEntryTag, EmailVerificationToken, User
 from unittest import skip
 
 """

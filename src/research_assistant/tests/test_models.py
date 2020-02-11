@@ -3,7 +3,12 @@ from django.contrib.auth import get_user
 from django.test import tag
 from django.utils import timezone
 from encryption_compendium.test_utils import UnitTest, random_password
-from research_assistant.models import User, CompendiumEntry, CompendiumEntryTag
+from research_assistant.models import (
+    CompendiumEntry,
+    CompendiumEntryTag,
+    EmailVerificationToken,
+    User,
+)
 
 """
 ---------------------------------------------------
@@ -98,6 +103,30 @@ class UserModelTestCase(UnitTest):
 
         self.client.login(username=self.username, password=self.password)
         self.assertFalse(get_user(self.client).is_authenticated)
+
+
+"""
+---------------------------------------------------
+EmailVerificationToken model tests
+---------------------------------------------------
+"""
+
+
+class EmailVerificationModelTestCase(UnitTest):
+    def test_generate_new_token(self):
+        self.assertEqual(len(EmailVerificationToken.objects.all()), 0)
+        new_token = EmailVerificationToken.objects.create(email="user@example.com")
+        self.assertEqual(len(EmailVerificationToken.objects.all()), 1)
+
+        # Emails should be unique
+        with self.assertRaises(db.utils.IntegrityError):
+            EmailVerificationToken.objects.create(email="user@example.com")
+
+        # Tokens should be unique
+        with self.assertRaises(db.utils.IntegrityError):
+            EmailVerificationToken.objects.create(
+                email="user2@example.com", token=new_token.token
+            )
 
 
 """

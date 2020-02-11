@@ -63,6 +63,9 @@ class AddNewUserFormTestCase(UnitTest):
         data = {"email": "user123@"}
         self.assertFalse(AddNewUserForm(data=data).is_valid())
 
+        # Email must be specified
+        self.assertFalse(AddNewUserForm(data={}).is_valid())
+
 
 """
 ---------------------------------------------------
