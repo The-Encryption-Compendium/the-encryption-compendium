@@ -79,8 +79,10 @@ class AddNewUserTest(UnitTest):
         response = self.client.post(reverse("add new user"), self.form_data)
 
         self.assertEqual(len(EmailVerificationToken.objects.all()), 1)
+        tokens = EmailVerificationToken.objects.all()
+
         self.assertTrue(
-            EmailVerificationToken.filter(email=self.new_user_email).exists()
+            EmailVerificationToken.objects.filter(email=self.new_user_email).exists()
         )
 
         # TODO: check that email was sent

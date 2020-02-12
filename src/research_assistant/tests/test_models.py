@@ -118,11 +118,13 @@ class EmailVerificationModelTestCase(UnitTest):
         new_token = EmailVerificationToken.objects.create(email="user@example.com")
         self.assertEqual(len(EmailVerificationToken.objects.all()), 1)
 
-        # Emails should be unique
+    def test_emails_are_unique(self):
+        EmailVerificationToken.objects.create(email="user@example.com")
         with self.assertRaises(db.utils.IntegrityError):
             EmailVerificationToken.objects.create(email="user@example.com")
 
-        # Tokens should be unique
+    def test_tokens_are_unique(self):
+        new_token = EmailVerificationToken.objects.create(email="user@example.com")
         with self.assertRaises(db.utils.IntegrityError):
             EmailVerificationToken.objects.create(
                 email="user2@example.com", token=new_token.token

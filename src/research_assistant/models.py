@@ -1,10 +1,14 @@
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse
 
 from research_assistant.managers import UserManager
+
+from uuid import uuid4
 
 """
 ---------------------------------------------------
@@ -88,3 +92,21 @@ class CompendiumEntry(models.Model):
 
     date_added = models.DateTimeField(default=timezone.now)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+
+
+"""
+---------------------------------------------------
+Tokens that are sent out when verifying a new user's email.
+---------------------------------------------------
+"""
+
+
+class EmailVerificationToken(models.Model):
+    email = models.EmailField(
+        max_length=MAX_EMAIL_ADDRESS_LENGTH, blank=False, null=False, unique=True
+    )
+    token = models.UUIDField(default=uuid4, unique=True)
+
+    @property
+    def email_verification_location(self):
+        return f"{reverse('add new user')}?token={self.token}"

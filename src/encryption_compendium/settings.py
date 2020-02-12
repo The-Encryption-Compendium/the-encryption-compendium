@@ -195,5 +195,8 @@ STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "assets")]
 
-# Taggit case setting
-TAGGIT_CASE_INSENSITIVE = True
+# Email options
+EMAIL_USER = os.getenv("EMAIL_USER")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
+EMAIL_USE_TLS = bool(os.getenv("EMAIL_USE_TLS", True))

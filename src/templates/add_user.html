@@ -1,0 +1,29 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Add new user | {{ block.super }}{% endblock %}
+{% block page_header %}Add a new research user to the site{% endblock %}
+
+{% block contents %}
+{{ block.super }}
+<form method="POST">
+  {% csrf_token %}
+
+  <div class="container float-left">
+    <div class="row">
+      {% for field in form %}
+      <div class="col-2 mb-3">
+        <p>{{ field.label }}</p>
+      </div>
+      <div class="col-8 mb-3">
+        {{ field }}
+      </div>
+      <div class="w-100"></div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <button id="new-user-submit-button" class="btn btn-primary" type="submit">
+    Add new user
+  </button>
+</form>
+{% endblock %}
