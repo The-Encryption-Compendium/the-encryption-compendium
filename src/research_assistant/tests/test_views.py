@@ -1,4 +1,6 @@
 from django.contrib.auth import get_user
+from django.conf import settings
+from django.core import mail
 from django.test import tag
 from django.urls import reverse
 from encryption_compendium.test_utils import (
@@ -73,9 +75,11 @@ class AddNewUserTest(UnitTest):
 
     @tag("email")
     def test_add_new_user_to_site(self):
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertEqual(len(EmailVerificationToken.objects.all()), 0)
+
         # Have the staff user send a new email verification token to get
         # a new user signed up.
-        self.assertEqual(len(EmailVerificationToken.objects.all()), 0)
         response = self.client.post(reverse("add new user"), self.form_data)
 
         self.assertEqual(len(EmailVerificationToken.objects.all()), 1)
@@ -85,12 +89,25 @@ class AddNewUserTest(UnitTest):
             EmailVerificationToken.objects.filter(email=self.new_user_email).exists()
         )
 
-        # TODO: check that email was sent
-        self.fail("TODO")
+        # Check that the email was sent
+        self.assertEqual(len(mail.outbox), 1)
 
     def test_only_staff_users_can_add_new_users(self):
-        # Only users that are staff members can send email verification tokens
-        self.fail("TODO")
+        ### Only users that are staff members can send email verification tokens
+        # Set User to be non-staff, and log the client back in
+        self.user.is_staff = False
+        self.user.save()
+        self.client.login(username=self.username, password=self.password)
+        self.assertTrue(get_user(self.client).is_authenticated)
+
+        # User should be redirected to the login page (which in turn will redirect
+        # them to the dashboard).
+        response = self.client.get(reverse("add new user"), follow=True)
+        location, _ = response.redirect_chain[0]
+        self.assertTrue(location.startswith(settings.LOGIN_URL))
+
+        login_response = self.client.get(settings.LOGIN_URL, follow=True)
+        self.assertEqual(response.redirect_chain[-1], login_response.redirect_chain[-1])
 
 
 """
