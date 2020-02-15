@@ -110,6 +110,53 @@ class AddNewUserTest(UnitTest):
         self.assertEqual(response.redirect_chain[-1], login_response.redirect_chain[-1])
 
 
+class SignupNewUserTest(UnitTest):
+    """
+    Tests for the sign up view that appears when a user tries to sign up
+    using the link from their email invite.
+    """
+
+    def setUp(self):
+        super().setUp()
+
+        # Create a new email verification token
+        self.token = EmailVerificationToken.objects.create(email=self.email)
+
+    def test_sign_up_with_valid_token(self):
+        # Ensure that the user we want to sign up as doesn't exist before
+        # running tests
+        self.assertFalse(User.objects.filter(username=self.username).exists())
+
+        # Visit the signup page using a valid token
+        url = self.token.email_verification_location
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed("sign_up.html")
+
+        # The email field should be default be populated with the email
+        # corresponding to the provided token
+        self.assertIn(self.token.email, response.content)
+
+        # Sign up as a new user to the site
+        response = self.client.post(
+            url,
+            {
+                "email": self.email,
+                "username": self.username,
+                "password": self.password,
+                "password_2": self.password,
+            },
+        )
+        self.assertTrue(User.objects.filter(username=self.username).exists())
+
+    def test_cannot_sign_up_with_invalid_token(self):
+        # If the token is invalid, we should get a 403 Forbidden response
+        # from the server.
+        url = self.token.email_verification_location
+        self.token.delete()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+
 """
 ---------------------------------------------------
 Tests for user logout
@@ -118,6 +165,10 @@ Tests for user logout
 
 
 class LogoutTestCase(UnitTest):
+    """
+    Tests for the logout view that logs a user out of the site.
+    """
+
     def setUp(self):
         super().setUp(preauth=True)
 

@@ -5,6 +5,7 @@ from research_assistant.forms import (
     ResearchLoginForm,
     CompendiumEntryForm,
     NewTagForm,
+    SignupForm,
 )
 from research_assistant.models import User, CompendiumEntryTag
 
@@ -66,6 +67,16 @@ class AddNewUserFormTestCase(UnitTest):
         # Email must be specified
         self.assertFalse(AddNewUserForm(data={}).is_valid())
 
+
+class SignUpFormTestCase(UnitTest):
+    def test_validate_new_user(self):
+        data = {
+            "email": self.email,
+            "username": self.username,
+            "password": self.password,
+            "password_2": self.password,
+        }
+        self.assertTrue(SignupForm(data=data).is_valid())
 
 """
 ---------------------------------------------------

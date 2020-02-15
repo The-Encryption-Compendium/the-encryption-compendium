@@ -10,6 +10,7 @@ from encryption_compendium.test_utils import (
     random_email,
     random_password,
 )
+from research_assistant.models import EmailVerificationToken
 from selenium.webdriver.common.keys import Keys
 
 """
@@ -20,7 +21,7 @@ Login tests
 
 
 @tag("auth", "login")
-class FunctionalLoginTestCase(FunctionalTest):
+class LoginFunctionalTestCase(FunctionalTest):
     """
     Meepy the Anthropomorphic Router has an account on the site. She tries to
     login to her dashboard.
@@ -126,8 +127,9 @@ class FunctionalLoginTestCase(FunctionalTest):
 
         # Meepy clicks the profile button in the navbar, and then clicks the logout
         # button.
-        # Use the execute_script() function instead of directly clicking the logout button,
-        # since otherwise we can run into "element cannot be scrolled into view" errors.
+        # Use the execute_script() function instead of directly clicking the logout
+        # button, since otherwise we can run into "element cannot be scrolled into
+        # view" errors.
         navbar = self.browser.find_element_by_id("navbar")
         profile_button = navbar.find_element_by_id("user-profile-dropdown-button")
         self.browser.execute_script("arguments[0].click();", profile_button)
@@ -138,6 +140,29 @@ class FunctionalLoginTestCase(FunctionalTest):
 
         self.wait_for(lambda: self.assertIn("Login", self.browser.title))
 
+"""
+---------------------------------------------------
+Signup tests
+---------------------------------------------------
+"""
+
+@tag("auth")
+class SignupFunctionalTestCase(FunctionalTest):
+    """
+    Use a valid signup token to sign up as a new user to the site.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.token = EmailVerificationToken(email=self.email)
+
+    def test_sign_up_with_valid_token(self):
+        # Meepy receives an email with URL that allows her to sign up
+        # as a new user to the site. She visits that URL.
+        self.browser.get(self.token.email_verification_location)
+        self.assertIn("Sign up", self.browser.title)
+
+        self.fail("TODO")
 
 """
 ---------------------------------------------------
@@ -147,7 +172,7 @@ Dashboard tests
 
 
 @tag("dashboard")
-class FunctionalResearchDashboardTestCase(FunctionalTest):
+class ResearchDashboardFunctionalTestCase(FunctionalTest):
     """
     Meepy logs in and checks her dashboard.
     """
@@ -180,3 +205,11 @@ class FunctionalResearchDashboardTestCase(FunctionalTest):
         self.browser.find_element_by_id("entry-submit-button").click()
 
         self.assertEqual(self.browser.title, "Dashboard | The Encryption Compendium")
+
+
+"""
+---------------------------------------------------
+Signup tests
+---------------------------------------------------
+"""
+
