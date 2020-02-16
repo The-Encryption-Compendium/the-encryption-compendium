@@ -2,7 +2,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
 from django.core.mail import send_mail
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from research_assistant.forms import (
@@ -11,6 +11,7 @@ from research_assistant.forms import (
     NewTagForm,
     ResearchLoginForm,
     SignupForm,
+    TokenDeleteForm,
 )
 from research_assistant.models import CompendiumEntryTag, SignupToken
 
@@ -55,17 +56,28 @@ def research_logout(request):
 @require_http_methods(["GET", "POST"])
 def add_new_user(request):
     form = AddNewUserForm(request.POST if request.POST else None)
-    if request.POST and form.is_valid():
+    if request.POST and "create_user" in request.POST and form.is_valid():
         token = form.save()
         url = request.build_absolute_uri(token.signup_location)
         send_mail(
             "You have been invited to create researcher account for The Encryption Compendium.",
             f"Use this link to sign up:\n\n{url}",
             settings.EMAIL_HOST_USER,
-            [form["email"]],
+            [form.cleaned_data["email"]],
         )
+    elif request.POST and "del_email" in request.POST:
+        delete_form = TokenDeleteForm({"email": request.POST["del_email"]})
+        if delete_form.is_valid():
+            email = delete_form.cleaned_data["email"]
+            SignupToken.objects.get(email=email).delete()
 
-    return render(request, "add_user.html", context={"form": form})
+    outstanding_tokens = SignupToken.objects.all()
+
+    return render(
+        request,
+        "add_user.html",
+        context={"form": form, "outstanding_tokens": outstanding_tokens},
+    )
 
 
 @require_http_methods(["GET", "POST"])

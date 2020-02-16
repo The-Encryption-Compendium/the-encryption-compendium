@@ -35,6 +35,21 @@
       </a>
     </div>
 
+    <div class="w-100 mb-4"></div>
+
+    {% if request.user.is_staff %}
+    <div class="col">
+      <a id="invite_user_button" href="{% url 'add new user' %}">
+        <button class="btn btn-primary">
+          <div class="my-1">
+            <img class="action-icon mr-1" src="{% static 'svg/add.svg' %}">
+            Invite a new user
+          </div>
+        </button>
+      </a>
+    </div>
+    {% endif %}
+
   </div>
 </div>
 

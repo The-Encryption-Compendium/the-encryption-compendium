@@ -65,7 +65,7 @@ class AddNewUserTest(UnitTest):
         self.user.is_staff = True
         self.user.save()
         self.new_user_email = random_email(self.rd)
-        self.form_data = {"email": self.new_user_email}
+        self.form_data = {"email": self.new_user_email, "create_user": ""}
 
     def test_page_uses_correct_templates(self):
         response = self.client.get(reverse("add new user"))
@@ -89,6 +89,7 @@ class AddNewUserTest(UnitTest):
 
         # Check that the email was sent
         self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, [self.new_user_email])
 
     def test_only_staff_users_can_add_new_users(self):
         ### Only users that are staff members can send email verification tokens
@@ -106,6 +107,19 @@ class AddNewUserTest(UnitTest):
 
         login_response = self.client.get(settings.LOGIN_URL, follow=True)
         self.assertEqual(response.redirect_chain[-1], login_response.redirect_chain[-1])
+
+    def test_delete_invited_users_token(self):
+        token = SignupToken.objects.create(email=self.new_user_email)
+        self.assertTrue(SignupToken.objects.filter(email=self.new_user_email).exists())
+
+        # Outstanding tokens should appear on the page
+        response = self.client.get(reverse("add new user"))
+        self.assertIn(self.new_user_email, response.content.decode("utf-8"))
+
+        data = {"del_email": self.new_user_email}
+        response = self.client.post(reverse("add new user"), data)
+        self.assertFalse(SignupToken.objects.filter(email=self.new_user_email).exists())
+        self.assertNotIn(self.new_user_email, response.content.decode("utf-8"))
 
 
 class SignupNewUserTest(UnitTest):

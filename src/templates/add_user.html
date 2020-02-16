@@ -1,29 +1,50 @@
 {% extends "dashboard_base.html" %}
 
-{% block title %}Add new user | {{ block.super }}{% endblock %}
+{% block title %}Invite new user | {{ block.super }}{% endblock %}
 {% block page_header %}Add a new research user to the site{% endblock %}
 
 {% block contents %}
+{% load static %}
 {{ block.super }}
 <form method="POST">
   {% csrf_token %}
 
-  <div class="container float-left">
+  <div class="container-fluid float-left mb-4">
     <div class="row">
       {% for field in form %}
       <div class="col-2 mb-3">
         <p>{{ field.label }}</p>
       </div>
-      <div class="col-8 mb-3">
+      <div class="col-6 mb-3">
         {{ field }}
       </div>
       <div class="w-100"></div>
       {% endfor %}
     </div>
+    <button id="new_user_submit_button" class="btn btn-primary" type="submit" name="create_user">
+      Add new user
+    </button>
   </div>
+</form>
 
-  <button id="new-user-submit-button" class="btn btn-primary" type="submit">
-    Add new user
-  </button>
+<form method="POST">
+  {% csrf_token %}
+  {# Display all of the invites that haven't been accepted yet #}
+  <div class="mx-auto container">
+    <h2 class="text-center display-5 mb-4">Outstanding invites</h2>
+
+    {% for token in outstanding_tokens %}
+    <div style="display: flex; align-items: center;" class="row border-top py-3">
+      <div class="text-right text-monospace col-6">
+        <p class="my-0">{{ token.email }}</p>
+      </div>
+      <div class="col-4">
+        <button type="submit" class="btn mx-auto d-block" name="del_email" value="{{ token.email }}">
+          <img style="height: 2.5rem;" alt="delete token" src="{% static 'svg/close.svg' %}" role="button">
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
 </form>
 {% endblock %}
