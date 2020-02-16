@@ -44,11 +44,10 @@
       {% endfor %}
 
     </div>
+    <button id="tag-submit-button" class="btn btn-primary" type="submit">
+      Add new tag
+    </button>
   </div>
-
-  <button id="tag-submit-button" class="btn btn-primary" type="submit">
-    Add new tag
-  </button>
 
   {# Display all of the tags that already exist #}
   {% for tag in existing_tags %}
