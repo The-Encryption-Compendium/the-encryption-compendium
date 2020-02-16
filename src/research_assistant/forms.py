@@ -7,7 +7,7 @@ from django.utils.translation import gettext as _
 from research_assistant.models import (
     CompendiumEntry,
     CompendiumEntryTag,
-    EmailVerificationToken,
+    SignupToken,
     User,
 )
 
@@ -83,7 +83,7 @@ Signup-related forms
 
 class AddNewUserForm(forms.ModelForm):
     class Meta:
-        model = EmailVerificationToken
+        model = SignupToken
         fields = ("email",)
         labels = {"email": "New user email"}
 

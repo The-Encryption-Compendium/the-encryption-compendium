@@ -12,7 +12,7 @@ from research_assistant.forms import (
     ResearchLoginForm,
     SignupForm,
 )
-from research_assistant.models import CompendiumEntryTag, EmailVerificationToken
+from research_assistant.models import CompendiumEntryTag, SignupToken
 
 # Create your views here.
 
@@ -57,7 +57,7 @@ def add_new_user(request):
     form = AddNewUserForm(request.POST if request.POST else None)
     if request.POST and form.is_valid():
         token = form.save()
-        url = request.build_absolute_uri(token.email_verification_location)
+        url = request.build_absolute_uri(token.signup_location)
         send_mail(
             "You have been invited to create researcher account for The Encryption Compendium.",
             f"Use this link to sign up:\n\n{url}",
@@ -77,7 +77,7 @@ def sign_up(request):
         valid_token = False
     else:
         # Check that token is valid
-        matching_token = EmailVerificationToken.objects.filter(token=token)
+        matching_token = SignupToken.objects.filter(token=token)
         if not matching_token.exists():
             valid_token = False
         else:

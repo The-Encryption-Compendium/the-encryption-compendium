@@ -10,7 +10,7 @@ from encryption_compendium.test_utils import (
     random_email,
     random_password,
 )
-from research_assistant.models import EmailVerificationToken, User
+from research_assistant.models import SignupToken, User
 from selenium.webdriver.common.keys import Keys
 
 """
@@ -158,14 +158,12 @@ class SignupFunctionalTestCase(FunctionalTest):
         super().setUp()
 
         # Generate a signup token for a new user
-        self.token = EmailVerificationToken.objects.create(email=self.email)
+        self.token = SignupToken.objects.create(email=self.email)
 
     def test_sign_up_with_valid_token(self):
         # Meepy receives an email with URL that allows her to sign up
         # as a new user to the site. She visits that URL.
-        self.browser.get(
-            f"{self.live_server_url}{self.token.email_verification_location}"
-        )
+        self.browser.get(f"{self.live_server_url}{self.token.signup_location}")
         self.assertIn("Sign up", self.browser.title)
 
         # In the email field, she sees the email to which the signup token
@@ -190,7 +188,7 @@ class SignupFunctionalTestCase(FunctionalTest):
         )
         self.wait_for(
             lambda: self.assertFalse(
-                EmailVerificationToken.objects.filter(email=self.email).exists()
+                SignupToken.objects.filter(email=self.email).exists()
             )
         )
 

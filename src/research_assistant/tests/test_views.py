@@ -9,7 +9,7 @@ from encryption_compendium.test_utils import (
     random_password,
     UnitTest,
 )
-from research_assistant.models import CompendiumEntryTag, EmailVerificationToken, User
+from research_assistant.models import CompendiumEntryTag, SignupToken, User
 from unittest import skip
 
 """
@@ -76,18 +76,16 @@ class AddNewUserTest(UnitTest):
     @tag("email")
     def test_add_new_user_to_site(self):
         self.assertEqual(len(mail.outbox), 0)
-        self.assertEqual(len(EmailVerificationToken.objects.all()), 0)
+        self.assertEqual(len(SignupToken.objects.all()), 0)
 
         # Have the staff user send a new email verification token to get
         # a new user signed up.
         response = self.client.post(reverse("add new user"), self.form_data)
 
-        self.assertEqual(len(EmailVerificationToken.objects.all()), 1)
-        tokens = EmailVerificationToken.objects.all()
+        self.assertEqual(len(SignupToken.objects.all()), 1)
+        tokens = SignupToken.objects.all()
 
-        self.assertTrue(
-            EmailVerificationToken.objects.filter(email=self.new_user_email).exists()
-        )
+        self.assertTrue(SignupToken.objects.filter(email=self.new_user_email).exists())
 
         # Check that the email was sent
         self.assertEqual(len(mail.outbox), 1)
@@ -120,7 +118,7 @@ class SignupNewUserTest(UnitTest):
         super().setUp()
 
         # Create a new email verification token
-        self.token = EmailVerificationToken.objects.create(email=self.email)
+        self.token = SignupToken.objects.create(email=self.email)
 
     def test_sign_up_with_valid_token(self):
         # Ensure that the user we want to sign up as doesn't exist before
@@ -128,7 +126,7 @@ class SignupNewUserTest(UnitTest):
         self.assertFalse(User.objects.filter(username=self.username).exists())
 
         # Visit the signup page using a valid token
-        url = self.token.email_verification_location
+        url = self.token.signup_location
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed("sign_up.html")
@@ -152,7 +150,7 @@ class SignupNewUserTest(UnitTest):
     def test_cannot_sign_up_with_invalid_token(self):
         # If the token is invalid, we should get a 403 Forbidden response
         # from the server.
-        url = self.token.email_verification_location
+        url = self.token.signup_location
         self.token.delete()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)

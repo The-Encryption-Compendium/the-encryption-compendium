@@ -101,12 +101,12 @@ Tokens that are sent out when verifying a new user's email.
 """
 
 
-class EmailVerificationToken(models.Model):
+class SignupToken(models.Model):
     email = models.EmailField(
         max_length=MAX_EMAIL_ADDRESS_LENGTH, blank=False, null=False, unique=True
     )
     token = models.UUIDField(default=uuid4, unique=True)
 
     @property
-    def email_verification_location(self):
+    def signup_location(self):
         return f"{reverse('sign up')}?token={self.token}"

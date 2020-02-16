@@ -6,7 +6,7 @@ from encryption_compendium.test_utils import UnitTest, random_password
 from research_assistant.models import (
     CompendiumEntry,
     CompendiumEntryTag,
-    EmailVerificationToken,
+    SignupToken,
     User,
 )
 
@@ -107,28 +107,26 @@ class UserModelTestCase(UnitTest):
 
 """
 ---------------------------------------------------
-EmailVerificationToken model tests
+SignupToken model tests
 ---------------------------------------------------
 """
 
 
 class EmailVerificationModelTestCase(UnitTest):
     def test_generate_new_token(self):
-        self.assertEqual(len(EmailVerificationToken.objects.all()), 0)
-        new_token = EmailVerificationToken.objects.create(email="user@example.com")
-        self.assertEqual(len(EmailVerificationToken.objects.all()), 1)
+        self.assertEqual(len(SignupToken.objects.all()), 0)
+        new_token = SignupToken.objects.create(email="user@example.com")
+        self.assertEqual(len(SignupToken.objects.all()), 1)
 
     def test_emails_are_unique(self):
-        EmailVerificationToken.objects.create(email="user@example.com")
+        SignupToken.objects.create(email="user@example.com")
         with self.assertRaises(db.utils.IntegrityError):
-            EmailVerificationToken.objects.create(email="user@example.com")
+            SignupToken.objects.create(email="user@example.com")
 
     def test_tokens_are_unique(self):
-        new_token = EmailVerificationToken.objects.create(email="user@example.com")
+        new_token = SignupToken.objects.create(email="user@example.com")
         with self.assertRaises(db.utils.IntegrityError):
-            EmailVerificationToken.objects.create(
-                email="user2@example.com", token=new_token.token
-            )
+            SignupToken.objects.create(email="user2@example.com", token=new_token.token)
 
 
 """
