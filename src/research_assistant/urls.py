@@ -6,6 +6,7 @@ from research_settings import urls as settings_urls
 
 urlpatterns = [
     url(r"^add-user", add_new_user, name="add new user"),
+    url(r"^sign-up", sign_up, name="sign up"),
     url(r"^dashboard", research_dashboard, name="research dashboard"),
     url(r"^login", research_login, name="research login"),
     url(r"^logout", research_logout, name="research logout"),

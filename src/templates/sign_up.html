@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Sign up | {{ block.super }}{% endblock %}
+
+{% block body %}
+{{ block.super }}
+<div class="container justify-content-md-center my-4">
+  <div class="container signup-form">
+    <h2 class="text-center display-5 mb-4">
+      Login
+    </h2>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+      <span class="d-flex justify-content-center">
+        <div class="alert alert-danger mx-auto" role="alert">
+          An error occurred: {{ form.non_field_errors }}
+        </div>
+      </span>
+      {% endif %}
+
+      <div class="container float-left">
+        <div class="row">
+          {% for field in form %}
+
+          <div class="col-2 mb-3 pr-3">
+            <p>{{ field.label }}</p>
+          </div>
+          <div class="col-8 mb-3">
+            {{ field }}
+
+            <br>
+
+            {% comment %}
+            Display any errors associated with this field that may have occurred
+            when we try to add a new tag.
+            {% endcomment %}
+            {% include "includes/field_errors.html" with errors=field.errors only %}
+          </div>
+          <div class="w-100"></div>
+          {% endfor %}
+
+        </div>
+      </div>
+
+      <div class="text-center">
+        <button id="signup-submit-button" class="btn btn-primary" type="submit">
+          Sign up
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

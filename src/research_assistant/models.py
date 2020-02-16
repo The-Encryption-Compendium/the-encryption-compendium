@@ -109,4 +109,4 @@ class EmailVerificationToken(models.Model):
 
     @property
     def email_verification_location(self):
-        return f"{reverse('add new user')}?token={self.token}"
+        return f"{reverse('sign up')}?token={self.token}"

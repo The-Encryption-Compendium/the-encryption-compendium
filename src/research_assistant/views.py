@@ -2,6 +2,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
 from django.core.mail import send_mail
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from research_assistant.forms import (
@@ -9,6 +10,7 @@ from research_assistant.forms import (
     CompendiumEntryForm,
     NewTagForm,
     ResearchLoginForm,
+    SignupForm,
 )
 from research_assistant.models import CompendiumEntryTag, EmailVerificationToken
 
@@ -64,6 +66,39 @@ def add_new_user(request):
         )
 
     return render(request, "add_user.html", context={"form": form})
+
+
+@require_http_methods(["GET", "POST"])
+def sign_up(request):
+    # Request must include a valid authentication token
+    token = request.GET.get("token", None)
+    valid_token = True
+    if token is None:
+        valid_token = False
+    else:
+        # Check that token is valid
+        matching_token = EmailVerificationToken.objects.filter(token=token)
+        if not matching_token.exists():
+            valid_token = False
+        else:
+            matching_token = matching_token[0]
+
+    if not valid_token:
+        return HttpResponseForbidden()
+
+    # Display signup form
+    form = SignupForm(
+        request.POST if request.POST else None, initial={"email": matching_token.email}
+    )
+    if request.POST and form.is_valid():
+        new_user = form.save()
+        matching_token.delete()
+
+        # Log the user in and redirect them to the dashboard
+        login(request, new_user)
+        return redirect("research dashboard")
+
+    return render(request, "sign_up.html", context={"form": form})
 
 
 """

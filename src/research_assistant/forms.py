@@ -88,6 +88,40 @@ class AddNewUserForm(forms.ModelForm):
         labels = {"email": "New user email"}
 
 
+class SignupForm(forms.ModelForm):
+    password_2 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control", "placeholder": "Enter your password again"},
+        ),
+        help_text="Enter your password again",
+        label="",
+    )
+
+    class Meta:
+        model = User
+        fields = ("email", "username", "password", "password_2")
+        labels = {
+            "email": "Email",
+            "username": "Username",
+            "password": "Password",
+        }
+
+        widgets = {
+            "email": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter your email address",
+                },
+            ),
+            "username": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Pick a username"},
+            ),
+            "password": forms.PasswordInput(
+                attrs={"class": "form-control", "placeholder": "Choose your password"},
+            ),
+        }
+
+
 """
 ---------------------------------------------------
 Form for adding new entries to the compendium
