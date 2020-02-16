@@ -135,7 +135,7 @@ class SignupNewUserTest(UnitTest):
 
         # The email field should be default be populated with the email
         # corresponding to the provided token
-        self.assertIn(self.token.email, response.content)
+        self.assertIn(self.token.email, response.content.decode("utf-8"))
 
         # Sign up as a new user to the site
         response = self.client.post(
@@ -156,6 +156,7 @@ class SignupNewUserTest(UnitTest):
         self.token.delete()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
+
 
 """
 ---------------------------------------------------

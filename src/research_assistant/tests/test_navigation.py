@@ -10,7 +10,7 @@ from encryption_compendium.test_utils import (
     random_email,
     random_password,
 )
-from research_assistant.models import EmailVerificationToken
+from research_assistant.models import EmailVerificationToken, User
 from selenium.webdriver.common.keys import Keys
 
 """
@@ -140,11 +140,13 @@ class LoginFunctionalTestCase(FunctionalTest):
 
         self.wait_for(lambda: self.assertIn("Login", self.browser.title))
 
+
 """
 ---------------------------------------------------
 Signup tests
 ---------------------------------------------------
 """
+
 
 @tag("auth")
 class SignupFunctionalTestCase(FunctionalTest):
@@ -154,15 +156,44 @@ class SignupFunctionalTestCase(FunctionalTest):
 
     def setUp(self):
         super().setUp()
-        self.token = EmailVerificationToken(email=self.email)
+
+        # Generate a signup token for a new user
+        self.token = EmailVerificationToken.objects.create(email=self.email)
 
     def test_sign_up_with_valid_token(self):
         # Meepy receives an email with URL that allows her to sign up
         # as a new user to the site. She visits that URL.
-        self.browser.get(self.token.email_verification_location)
+        self.browser.get(
+            f"{self.live_server_url}{self.token.email_verification_location}"
+        )
         self.assertIn("Sign up", self.browser.title)
 
-        self.fail("TODO")
+        # In the email field, she sees the email to which the signup token
+        # was sent.
+        self.assertEqual(
+            self.browser.find_element_by_id("id_email").get_attribute("value"),
+            self.email,
+        )
+
+        # Meepy enters her details into the other fields of the form
+        self.browser.find_element_by_id("id_username").send_keys(self.username)
+        self.browser.find_element_by_id("id_password").send_keys(self.password)
+        self.browser.find_element_by_id("id_password_2").send_keys(self.password)
+        self.browser.find_element_by_id("signup-submit-button").click()
+
+        # A new user is created for Meepy, and the token that was issued to her
+        # is deleted.
+        self.wait_for(
+            lambda: self.assertTrue(
+                User.objects.filter(username=self.username).exists()
+            )
+        )
+        self.wait_for(
+            lambda: self.assertFalse(
+                EmailVerificationToken.objects.filter(email=self.email).exists()
+            )
+        )
+
 
 """
 ---------------------------------------------------
@@ -212,4 +243,3 @@ class ResearchDashboardFunctionalTestCase(FunctionalTest):
 Signup tests
 ---------------------------------------------------
 """
-
