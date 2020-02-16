@@ -89,6 +89,7 @@ class AddNewUserTest(UnitTest):
 
         # Check that the email was sent
         self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, [self.new_user_email])
 
     def test_only_staff_users_can_add_new_users(self):
         ### Only users that are staff members can send email verification tokens
@@ -154,6 +155,38 @@ class SignupNewUserTest(UnitTest):
         self.token.delete()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
+
+
+class DeleteTokenViewTestCase(UnitTest):
+    """
+    Use the token deletion endpoint to delete a user's token
+    """
+
+    def setUp(self):
+        super().setUp(preauth=True)
+        self.user.is_staff = True
+        self.user.save()
+
+        self.new_user_email = random_email(self.rd)
+        self.token = SignupToken.objects.create(email=self.new_user_email)
+
+    def test_delete_invited_users_token(self):
+        self.assertTrue(SignupToken.objects.filter(email=self.new_user_email).exists())
+
+        data = {"email": self.new_user_email}
+        response = self.client.post(reverse("delete invite token"), data)
+
+        self.assertFalse(SignupToken.objects.filter(email=self.new_user_email).exists())
+
+    def test_nonstaff_cannot_delete_tokens(self):
+        # Only users for which user.is_staff is True should be able to
+        # delete an invite token.
+        self.user.is_staff = False
+        self.user.save()
+
+        data = {"email": self.new_user_email}
+        response = self.client.post(reverse("delete invite token"), data)
+        self.assertTrue(SignupToken.objects.filter(email=self.new_user_email).exists())
 
 
 """

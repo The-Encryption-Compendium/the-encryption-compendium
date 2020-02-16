@@ -9,6 +9,7 @@ from research_assistant.models import (
     CompendiumEntryTag,
     SignupToken,
     User,
+    MAX_EMAIL_ADDRESS_LENGTH,
 )
 
 """
@@ -120,6 +121,23 @@ class SignupForm(forms.ModelForm):
                 attrs={"class": "form-control", "placeholder": "Choose your password"},
             ),
         }
+
+
+class TokenDeleteForm(forms.Form):
+
+    email = forms.CharField(max_length=MAX_EMAIL_ADDRESS_LENGTH)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        email = cleaned_data.get("email")
+        if not SignupToken.objects.filter(email=email).exists():
+            raise ValidationError(
+                _("Token does not exist for %(email)s"),
+                params={"email": email},
+                code="token_does_not_exist",
+            )
+
+        return cleaned_data
 
 
 """

@@ -2,7 +2,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
 from django.core.mail import send_mail
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from research_assistant.forms import (
@@ -11,6 +11,7 @@ from research_assistant.forms import (
     NewTagForm,
     ResearchLoginForm,
     SignupForm,
+    TokenDeleteForm,
 )
 from research_assistant.models import CompendiumEntryTag, SignupToken
 
@@ -55,6 +56,7 @@ def research_logout(request):
 @require_http_methods(["GET", "POST"])
 def add_new_user(request):
     form = AddNewUserForm(request.POST if request.POST else None)
+    outstanding_tokens = SignupToken.objects.all()
     if request.POST and form.is_valid():
         token = form.save()
         url = request.build_absolute_uri(token.signup_location)
@@ -62,10 +64,32 @@ def add_new_user(request):
             "You have been invited to create researcher account for The Encryption Compendium.",
             f"Use this link to sign up:\n\n{url}",
             settings.EMAIL_HOST_USER,
-            [form["email"]],
+            [form.cleaned_data["email"]],
         )
 
-    return render(request, "add_user.html", context={"form": form})
+    return render(
+        request,
+        "add_user.html",
+        context={"form": form, "outstanding_tokens": outstanding_tokens},
+    )
+
+
+@login_required
+@user_passes_test(lambda user: user.is_staff)
+@require_http_methods(["POST"])
+def delete_invite_token(request):
+    """
+    Endpoint to delete a token belonging to somebody who's been invited to
+    the site.
+    """
+    form = TokenDeleteForm(request.POST)
+    if form.is_valid():
+        email = form.cleaned_data["email"]
+        token = SignupToken.objects.get(email=email)
+        token.delete()
+        return HttpResponse("")
+    else:
+        return HttpResponseBadRequest("")
 
 
 @require_http_methods(["GET", "POST"])

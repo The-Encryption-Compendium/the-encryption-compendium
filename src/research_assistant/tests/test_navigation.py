@@ -2,6 +2,7 @@
 Functional tests for the reesearch_assistant app
 """
 
+from django.core import mail
 from django.test import tag
 from django.urls import reverse
 from encryption_compendium.test_utils import (
@@ -146,6 +147,45 @@ class LoginFunctionalTestCase(FunctionalTest):
 Signup tests
 ---------------------------------------------------
 """
+
+
+@tag("auth")
+class InviteUserFunctionalTestCase(FunctionalTest):
+    """
+    Functional tests for inviting a new user to the site using a signup token.
+    """
+
+    def setUp(self):
+        super().setUp(preauth=True)
+        self.user.is_staff = True
+        self.user.save()
+
+    @tag("tmp")
+    def test_invite_new_user_to_site(self):
+        # Check that database hasn't been modified in a way that would interfere
+        # with the tests.
+        self.assertEquals(len(mail.outbox), 0)
+
+        # Meepy, a staff member on the site, goes to the page to invite a new user
+        self.browser.get(f"{self.live_server_url}{reverse('research dashboard')}")
+        self.wait_for(lambda: self.assertIn("Dashboard", self.browser.title))
+        self.browser.find_element_by_id("invite_user_button").click()
+        self.wait_for(lambda: self.assertIn("Invite new user", self.browser.title))
+
+        # She enters the email address for a new user into the 'email' input
+        new_user_email = random_email(self.rd)
+        self.browser.find_element_by_id("id_email").send_keys(new_user_email)
+        self.browser.find_element_by_id("new_user_submit_button").click()
+
+        # The site creates a new SignupToken for the provided email address, and
+        # sends an email to the invited user.
+        self.wait_for(
+            lambda: self.assertTrue(
+                SignupToken.objects.filter(email=new_user_email).exists()
+            )
+        )
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(mail.outbox[0].to, [new_user_email])
 
 
 @tag("auth")
