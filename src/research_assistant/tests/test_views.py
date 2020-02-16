@@ -65,7 +65,7 @@ class AddNewUserTest(UnitTest):
         self.user.is_staff = True
         self.user.save()
         self.new_user_email = random_email(self.rd)
-        self.form_data = {"email": self.new_user_email}
+        self.form_data = {"email": self.new_user_email, "create_user": ""}
 
     def test_page_uses_correct_templates(self):
         response = self.client.get(reverse("add new user"))
@@ -107,6 +107,19 @@ class AddNewUserTest(UnitTest):
 
         login_response = self.client.get(settings.LOGIN_URL, follow=True)
         self.assertEqual(response.redirect_chain[-1], login_response.redirect_chain[-1])
+
+    def test_delete_invited_users_token(self):
+        token = SignupToken.objects.create(email=self.new_user_email)
+        self.assertTrue(SignupToken.objects.filter(email=self.new_user_email).exists())
+
+        # Outstanding tokens should appear on the page
+        response = self.client.get(reverse("add new user"))
+        self.assertIn(self.new_user_email, response.content.decode("utf-8"))
+
+        data = {"del_email": self.new_user_email}
+        response = self.client.post(reverse("add new user"), data)
+        self.assertFalse(SignupToken.objects.filter(email=self.new_user_email).exists())
+        self.assertNotIn(self.new_user_email, response.content.decode("utf-8"))
 
 
 class SignupNewUserTest(UnitTest):
@@ -155,38 +168,6 @@ class SignupNewUserTest(UnitTest):
         self.token.delete()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
-
-
-class DeleteTokenViewTestCase(UnitTest):
-    """
-    Use the token deletion endpoint to delete a user's token
-    """
-
-    def setUp(self):
-        super().setUp(preauth=True)
-        self.user.is_staff = True
-        self.user.save()
-
-        self.new_user_email = random_email(self.rd)
-        self.token = SignupToken.objects.create(email=self.new_user_email)
-
-    def test_delete_invited_users_token(self):
-        self.assertTrue(SignupToken.objects.filter(email=self.new_user_email).exists())
-
-        data = {"email": self.new_user_email}
-        response = self.client.post(reverse("delete invite token"), data)
-
-        self.assertFalse(SignupToken.objects.filter(email=self.new_user_email).exists())
-
-    def test_nonstaff_cannot_delete_tokens(self):
-        # Only users for which user.is_staff is True should be able to
-        # delete an invite token.
-        self.user.is_staff = False
-        self.user.save()
-
-        data = {"email": self.new_user_email}
-        response = self.client.post(reverse("delete invite token"), data)
-        self.assertTrue(SignupToken.objects.filter(email=self.new_user_email).exists())
 
 
 """

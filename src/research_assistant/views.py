@@ -56,8 +56,7 @@ def research_logout(request):
 @require_http_methods(["GET", "POST"])
 def add_new_user(request):
     form = AddNewUserForm(request.POST if request.POST else None)
-    outstanding_tokens = SignupToken.objects.all()
-    if request.POST and form.is_valid():
+    if request.POST and "create_user" in request.POST and form.is_valid():
         token = form.save()
         url = request.build_absolute_uri(token.signup_location)
         send_mail(
@@ -66,30 +65,19 @@ def add_new_user(request):
             settings.EMAIL_HOST_USER,
             [form.cleaned_data["email"]],
         )
+    elif request.POST and "del_email" in request.POST:
+        delete_form = TokenDeleteForm({"email": request.POST["del_email"]})
+        if delete_form.is_valid():
+            email = delete_form.cleaned_data["email"]
+            SignupToken.objects.get(email=email).delete()
+
+    outstanding_tokens = SignupToken.objects.all()
 
     return render(
         request,
         "add_user.html",
         context={"form": form, "outstanding_tokens": outstanding_tokens},
     )
-
-
-@login_required
-@user_passes_test(lambda user: user.is_staff)
-@require_http_methods(["POST"])
-def delete_invite_token(request):
-    """
-    Endpoint to delete a token belonging to somebody who's been invited to
-    the site.
-    """
-    form = TokenDeleteForm(request.POST)
-    if form.is_valid():
-        email = form.cleaned_data["email"]
-        token = SignupToken.objects.get(email=email)
-        token.delete()
-        return HttpResponse("")
-    else:
-        return HttpResponseBadRequest("")
 
 
 @require_http_methods(["GET", "POST"])

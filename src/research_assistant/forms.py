@@ -131,7 +131,7 @@ class TokenDeleteForm(forms.Form):
         cleaned_data = super().clean()
         email = cleaned_data.get("email")
         if not SignupToken.objects.filter(email=email).exists():
-            raise ValidationError(
+            raise forms.ValidationError(
                 _("Token does not exist for %(email)s"),
                 params={"email": email},
                 code="token_does_not_exist",
