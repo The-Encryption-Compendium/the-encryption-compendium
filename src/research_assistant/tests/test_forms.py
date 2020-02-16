@@ -78,6 +78,7 @@ class SignUpFormTestCase(UnitTest):
         }
         self.assertTrue(SignupForm(data=data).is_valid())
 
+
 """
 ---------------------------------------------------
 Entry upload form tests
