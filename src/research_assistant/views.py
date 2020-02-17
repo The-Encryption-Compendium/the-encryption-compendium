@@ -132,7 +132,7 @@ def research_new_article(request):
     form = CompendiumEntryForm(request.POST if request.POST else None)
     if request.POST and form.is_valid():
         article = form.save()
-        article.user = request.user
+        article.owner = request.user
         article.save()
         return redirect("research dashboard")
     return render(request, "new_article.html", context={"form": form})
