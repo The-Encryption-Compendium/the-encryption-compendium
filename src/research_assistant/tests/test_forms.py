@@ -69,14 +69,21 @@ class AddNewUserFormTestCase(UnitTest):
 
 
 class SignUpFormTestCase(UnitTest):
-    def test_validate_new_user(self):
-        data = {
+    def setUp(self):
+        super().setUp()
+        self.data = {
             "email": self.email,
             "username": self.username,
             "password": self.password,
             "password_2": self.password,
         }
-        self.assertTrue(SignupForm(data=data).is_valid())
+
+    def test_validate_new_user(self):
+        self.assertTrue(SignupForm(data=self.data).is_valid())
+
+    def test_passwords_must_match(self):
+        self.data["password_2"] = random_password(self.rd)
+        self.assertFalse(SignupForm(data=self.data).is_valid())
 
 
 """

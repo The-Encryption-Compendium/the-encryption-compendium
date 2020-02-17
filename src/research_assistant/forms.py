@@ -122,6 +122,17 @@ class SignupForm(forms.ModelForm):
             ),
         }
 
+    def clean_password_2(self):
+        password = self.cleaned_data.get("password")
+        password_2 = self.cleaned_data.get("password_2")
+
+        if password != password_2:
+            raise forms.ValidationError(
+                _("Passwords must match."), code="nonmatching_passwords"
+            )
+
+        return password_2
+
 
 class TokenDeleteForm(forms.Form):
 
