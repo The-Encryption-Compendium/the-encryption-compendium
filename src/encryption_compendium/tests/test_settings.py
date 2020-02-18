@@ -54,3 +54,9 @@ class PasswordSettingsTestCase(UnitTest):
         # Password is too similar to user information
         with self.assertRaises(ValidationError):
             validate_password(password, user=user)
+
+        # Password is too common
+        with self.assertRaises(ValidationError):
+            validate_password("password12345")
+        with self.assertRaises(ValidationError):
+            validate_password("1234567890")
