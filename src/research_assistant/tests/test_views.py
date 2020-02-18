@@ -96,7 +96,7 @@ class AddNewUserTest(UnitTest):
         self.assertEqual(mail.outbox[0].to, [self.new_user_email])
 
         # The page should say that we successfuly added a new user.
-        self.assertIn("Your invite was sent!", response.content)
+        self.assertIn("Your invite was sent!", response.content.decode("utf-8"))
 
     def test_only_staff_users_can_add_new_users(self):
         ### Only users that are staff members can send email verification tokens
@@ -134,7 +134,10 @@ class AddNewUserTest(UnitTest):
         response = self.client.post(reverse("add new user"), data)
 
         self.assertEqual(len(SignupToken.objects.all()), 1)
-        self.assertIn("Signup token with this Email already exists.", response.content)
+        self.assertIn(
+            "Signup token with this Email already exists.",
+            response.content.decode("utf-8"),
+        )
 
 
 class SignupNewUserTest(UnitTest):

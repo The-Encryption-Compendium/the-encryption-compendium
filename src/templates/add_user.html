@@ -9,7 +9,7 @@
 <form method="POST">
   {% csrf_token %}
 
-  {% if success or form.non_field_errors %}
+  {% if created_user %}
   <span class="d-flex justify-content-center">
     <div class="alert alert-success mx-auto">
       Your invite was sent!
@@ -20,7 +20,7 @@
   {% if form.non_field_errors %}
   <span class="d-flex justify-content-center">
     <div class="alert alert-danger mx-auto" role="alert">
-      An error occurred: {{ form.non_field_errors }}
+      {{ form.non_field_errors }}
     </div>
   </span>
   {% endif %}

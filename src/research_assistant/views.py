@@ -55,7 +55,12 @@ def research_logout(request):
 @user_passes_test(lambda user: user.is_staff)
 @require_http_methods(["GET", "POST"])
 def add_new_user(request):
+    """
+    An admin view that allows staff members to invite new researchers to create an
+    account on the site.
+    """
     form = AddNewUserForm(request.POST if request.POST else None)
+    created_user = False
     if request.POST and "create_user" in request.POST and form.is_valid():
         token = form.save()
         url = request.build_absolute_uri(token.signup_location)
@@ -65,6 +70,7 @@ def add_new_user(request):
             settings.EMAIL_HOST_USER,
             [form.cleaned_data["email"]],
         )
+        created_user = True
     elif request.POST and "del_email" in request.POST:
         delete_form = TokenDeleteForm({"email": request.POST["del_email"]})
         if delete_form.is_valid():
@@ -76,7 +82,11 @@ def add_new_user(request):
     return render(
         request,
         "add_user.html",
-        context={"form": form, "outstanding_tokens": outstanding_tokens},
+        context={
+            "form": form,
+            "outstanding_tokens": outstanding_tokens,
+            "created_user": created_user,
+        },
     )
 
 
