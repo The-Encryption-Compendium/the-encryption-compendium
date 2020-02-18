@@ -9,12 +9,47 @@
 <div class="d-flex">
   <div class="container m-2">
     <div class="list-group">
-      <a id="my_info_link" href="#" class="list-group-item list-group-item-action">
-        My info
-      </a>
-      <a id="my_entries_link" href="{% url 'research my entries' %}" class="list-group-item list-group-item-action">
-        List my entries
-      </a>
+      <div class="container p-2">
+        <div class="row">
+          <div class="col-sm">
+            Your username: {{ info.username }}
+          </div>
+          <div class="col-sm">
+            Your email: {{ info.email }}
+          </div>
+          <div class="col-sm">
+            You have {{ info.number_of_entries }} contributions so far.
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Title</th>
+              <th scope="col">URL</th>
+              <th scope="col">Tags</th>
+            </tr>
+          </thead>
+          <tbody>
+              {% for entry in entries %}
+              <tr>
+                  <th scope="row">{{ entry.id }}</th>
+                  <td>{{ entry.title }}</td>
+                  <td>
+                    {% if entry.url %}
+                    <a href="{{ entry.url}}">
+                      {{ entry.url }}
+                    </a>
+                    {% endif %}
+                  </td>
+                  <td>{{ entry.tags }}</td>
+              </tr>
+              {%endfor%}
+          </tbody>
+      </table>
+      </div>
     </div>
   </div>
 </div>
