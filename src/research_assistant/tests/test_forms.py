@@ -7,7 +7,7 @@ from research_assistant.forms import (
     NewTagForm,
     SignupForm,
 )
-from research_assistant.models import User, CompendiumEntryTag
+from research_assistant.models import CompendiumEntryTag, SignupToken, User
 
 """
 ---------------------------------------------------
@@ -54,6 +54,9 @@ class ResearchLoginFormTestCase(UnitTest):
 
 
 class AddNewUserFormTestCase(UnitTest):
+    def setUp(self):
+        super().setUp(create_user=True)
+
     def test_validate_new_user(self):
         data = {"email": random_email(self.rd)}
         self.assertTrue(AddNewUserForm(data=data).is_valid())
@@ -66,6 +69,10 @@ class AddNewUserFormTestCase(UnitTest):
 
         # Email must be specified
         self.assertFalse(AddNewUserForm(data={}).is_valid())
+
+        # The email cannot already be in use by a user on the site.
+        data = {"email": self.email}
+        self.assertFalse(AddNewUserForm(data=data).is_valid())
 
 
 class SignUpFormTestCase(UnitTest):

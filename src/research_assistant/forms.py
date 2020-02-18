@@ -88,6 +88,19 @@ class AddNewUserForm(forms.ModelForm):
         fields = ("email",)
         labels = {"email": "New user email"}
 
+    def clean(self):
+        cleaned_data = super().clean()
+        email = cleaned_data.get("email")
+
+        # Email cannot already belong to a registered user
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError(
+                _("%(email)s is already registered with a user."),
+                params={"email": email},
+            )
+
+        return cleaned_data
+
 
 class SignupForm(forms.ModelForm):
     password_2 = forms.CharField(
