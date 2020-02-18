@@ -60,6 +60,10 @@ Tests for email verification and user signup
 
 @tag("auth")
 class AddNewUserTest(UnitTest):
+    """
+    Tests for the view to invite new users to join the site.
+    """
+
     def setUp(self):
         super().setUp(preauth=True)
         self.user.is_staff = True
@@ -91,6 +95,9 @@ class AddNewUserTest(UnitTest):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to, [self.new_user_email])
 
+        # The page should say that we successfuly added a new user.
+        self.assertIn("Your invite was sent!", response.content)
+
     def test_only_staff_users_can_add_new_users(self):
         ### Only users that are staff members can send email verification tokens
         # Set User to be non-staff, and log the client back in
@@ -120,6 +127,14 @@ class AddNewUserTest(UnitTest):
         response = self.client.post(reverse("add new user"), data)
         self.assertFalse(SignupToken.objects.filter(email=self.new_user_email).exists())
         self.assertNotIn(self.new_user_email, response.content.decode("utf-8"))
+
+    def test_cannot_send_token_when_outstanding_token_exists(self):
+        token = SignupToken.objects.create(email=self.new_user_email)
+        data = {"email": self.new_user_email, "create_user": ""}
+        response = self.client.post(reverse("add new user"), data)
+
+        self.assertEqual(len(SignupToken.objects.all()), 1)
+        self.assertIn("Signup token with this Email already exists.", response.content)
 
 
 class SignupNewUserTest(UnitTest):
@@ -179,7 +194,7 @@ Tests for user logout
 
 class LogoutTestCase(UnitTest):
     """
-    Tests for the logout view that logs a user out of the site.
+    Tests for the logout view.
     """
 
     def setUp(self):

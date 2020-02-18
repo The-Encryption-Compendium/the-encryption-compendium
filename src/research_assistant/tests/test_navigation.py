@@ -160,7 +160,6 @@ class InviteUserFunctionalTestCase(FunctionalTest):
         self.user.is_staff = True
         self.user.save()
 
-    @tag("tmp")
     def test_invite_new_user_to_site(self):
         # Check that database hasn't been modified in a way that would interfere
         # with the tests.

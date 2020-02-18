@@ -95,7 +95,7 @@ class AddNewUserForm(forms.ModelForm):
         # Email cannot already belong to a registered user
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError(
-                _("%(email)s is already registered with a user."),
+                _("This email address has already been registered."),
                 params={"email": email},
             )
 
