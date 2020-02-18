@@ -13,7 +13,7 @@ from research_assistant.forms import (
     SignupForm,
     TokenDeleteForm,
 )
-from research_assistant.models import CompendiumEntryTag, SignupToken
+from research_assistant.models import CompendiumEntry, CompendiumEntryTag, SignupToken
 
 # Create your views here.
 
@@ -123,7 +123,22 @@ Researcher interface
 @login_required
 @require_http_methods(["GET"])
 def research_dashboard(request):
-    return render(request, "dashboard.html")
+    context = {"entries": []}
+    all_entries = CompendiumEntry.objects.all()
+    for entry in all_entries:
+        entry_dict = {
+            "id": entry.id,
+            "url": entry.url,
+            "title": entry.title,
+            "owner": entry.owner,
+        }
+        tags_query_set = entry.tags.all()
+        tags = []
+        for tag in tags_query_set:
+            tags.append(tag.tagname)
+        entry_dict["tags"] = ", ".join(tags)
+        context["entries"].append(entry_dict)
+    return render(request, "dashboard.html", context=context)
 
 
 @login_required
