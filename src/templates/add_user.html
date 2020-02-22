@@ -49,7 +49,7 @@
       <tbody>
         {% for token in outstanding_tokens %}
         <tr>
-          <td class="uk-width-1-10"><button class="uk-close"></button></td>
+          <td class="uk-width-1-10"><button name="del_email" value="{{ token.email }}" class="uk-close"></button></td>
           <td class="uk-width-9-10"><p>{{ token.email }}</p></td>
         </tr>
         {% endfor %}
