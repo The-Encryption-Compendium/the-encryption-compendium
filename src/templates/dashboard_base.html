@@ -3,12 +3,10 @@
 {% block body %}
 
 {% include "includes/navbar.html" %}
-<div class="d-flex">
-  <div class="container-fluid mx-auto mt-4">
-    {% block contents %}
-    <h3>{% block page_header %}{% endblock %}</h3>
-    <hr>
-    {% endblock %}
-  </div>
+<div class="uk-container">
+  {% block contents %}
+  <h1 class="uk-h1">{% block page_header %}{% endblock %}</h1>
+  <hr>
+  {% endblock %}
 </div>
 {% endblock %}

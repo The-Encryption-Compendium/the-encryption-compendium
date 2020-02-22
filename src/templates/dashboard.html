@@ -8,44 +8,45 @@
 {{ block.super }}
 {% load static %}
 <div class="container mx-md-n5">
-  <div class="row">
+  <ul class="uk-list">
+
     {# Button to add new compendium entries #}
-    <div class="col px-md-5">
+    <li>
       <a id="new_article_link" href="{% url 'research new article' %}">
-        <button class="uk-button">
+        <button class="uk-button uk-button-primary">
           <div class="my-1">
-            <img class="action-icon mr-1" src="{% static 'svg/add.svg' %}">
+            <i class="uk-icon-justify uk-icon-plus"></i>
             Add new compendium entry
           </div>
         </button>
       </a>
-    </div>
-
+    </li>
 
     {# Button to add new tags #}
-    <div class="col px-md-5">
+    <li>
       <a id="new_tag_link" href="{% url 'research add tag' %}">
-        <button class="uk-button">
+        <button class="uk-button uk-button-primary">
           <div class="my-1">
-            <img class="action-icon mr-1" src="{% static 'svg/add.svg' %}">
+            <i class="uk-icon-justify uk-icon-plus"></i>
             Add new tag
           </div>
         </button>
       </a>
-    </div>
+    </li>
 
     {% if request.user.is_staff %}
-    <div class="col px-md-5">
+    <li>
       <a id="invite_user_button" href="{% url 'add new user' %}">
-        <button class="uk-button">
+        <button class="uk-button uk-button-primary">
           <div class="my-1">
-            <img class="action-icon mr-1" src="{% static 'svg/add.svg' %}">
+            <i class="uk-icon-justify uk-icon-plus"></i>
             Invite a new user
           </div>
         </button>
       </a>
-    </div>
+    </li>
     {% endif %}
+  </ul>
 
   </div>
   <div class="uk-container">
