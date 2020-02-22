@@ -5,24 +5,37 @@
 
 {% block contents %}
 {{ block.super }}
-<form method="POST">
+<form class="uk-panel uk-panel-box uk-form" method="POST">
   {% csrf_token %}
 
-  <div class="container float-left">
-    <div class="row">
-      {% for field in form %}
-      <div class="col-2 mb-3">
-        <p>{{ field.label }}</p>
-      </div>
-      <div class="col-8 mb-3">
-        {{ field }}
-      </div>
-      <div class="w-100"></div>
-      {% endfor %}
-    </div>
-    <button id="entry-submit-button" class="btn btn-primary" type="submit">
-      Add entry
-    </button>
-  </div>
+  <fieldset class="uk-margin-bottom">
+    {% for field in form %}
+    <h3 class="uk-h3">{{ field.label }}</h3>
+    {{ field }}
+    {% endfor %}
+  </fieldset>
+
+  <button id="entry-submit-button" class="uk-button" type="submit">
+    Add entry
+  </button>
 </form>
+{% endblock %}
+
+{% block css %}
+{{ block.super }}
+{% load static %}
+<link rel="stylesheet" href="{% static 'codemirror/lib/codemirror.css' %}">
+<link rel="stylesheet" href="{% static 'css/components/htmleditor.min.css' %}">
+{% endblock %}
+
+{% block javascripts %}
+{{ block.super }}
+{% load static %}
+<script src="{% static 'codemirror/lib/codemirror.js' %}"></script>
+<script src="{% static 'codemirror/mode/markdown/markdown.js' %}"></script>
+<script src="{% static 'codemirror/addon/mode/overlay.js' %}"></script>
+<script src="{% static 'codemirror/mode/xml/xml.js' %}"></script>
+<script src="{% static 'codemirror/mode/gfm/gfm.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="{% static 'js/components/htmleditor.min.js' %}"></script>
 {% endblock %}

@@ -186,7 +186,13 @@ class CompendiumEntryForm(forms.ModelForm):
         )
 
         widgets = {
-            "abstract": forms.Textarea(),
+            "abstract": forms.Textarea(
+                attrs={
+                    "id": "entry_abstract",
+                    # Use UIkit to render the abstract as Markdown
+                    "data-uk-htmleditor": "{markdown:true}",
+                }
+            ),
         }
 
         labels = {"url": "URL"}
