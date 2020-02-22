@@ -3,7 +3,7 @@ Generic template for displaying errors in forms.
 {% endcomment %}
 
 {% if errors %}
-<div class="form-error alert alert-danger mx-auto" role="alert">
+<div class="uk-alert uk-alert-danger" role="alert">
   {% if errors|length == 1 %}
     {% for error in errors %}
     {{ error|escape }}

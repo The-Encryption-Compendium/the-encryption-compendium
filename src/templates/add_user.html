@@ -6,7 +6,7 @@
 {% block contents %}
 {% load static %}
 {{ block.super }}
-<form method="POST">
+<form method="POST" class="uk-form">
   {% csrf_token %}
 
   {% if created_user %}
@@ -18,50 +18,43 @@
   {% endif %}
 
   {% if form.non_field_errors %}
-  <span class="d-flex justify-content-center">
-    <div class="alert alert-danger mx-auto" role="alert">
-      {{ form.non_field_errors }}
-    </div>
-  </span>
+  <div class="uk-alert uk-alert-danger" role="alert">
+    {{ form.non_field_errors }}
+  </div>
   {% endif %}
 
-  <div class="container-fluid float-left mb-4">
-    <div class="row">
-      {% for field in form %}
-      <div class="col-2 mb-3">
-        <p>{{ field.label }}</p>
-      </div>
-      <div class="col-6 mb-3">
-        {{ field }}
-      </div>
-      {% include "includes/field_errors.html" with errors=field.errors only %}
-      <div class="w-100"></div>
-      {% endfor %}
+  <fieldset>
+
+    {% for field in form %}
+    <div class="uk-form-row">
+      {{ field }}
     </div>
-    <button id="new_user_submit_button" class="btn btn-primary" type="submit" name="create_user">
-      Add new user
-    </button>
+    {% include "includes/field_errors.html" with errors=field.errors only %}
+    {% endfor %}
+
+  </fieldset>
+  <button id="new_user_submit_button" class="uk-button" type="submit" name="create_user">
+    Add new user
+  </button>
   </div>
 </form>
 
-<form method="POST">
-  {% csrf_token %}
-  {# Display all of the invites that haven't been accepted yet #}
-  <div class="mx-auto container">
+<div class="uk-container">
+  <form class="uk-form" method="POST">
+    {% csrf_token %}
+    {# Display all of the invites that haven't been accepted yet #}
     <h2 class="text-center display-5 mb-4">Outstanding invites</h2>
 
-    {% for token in outstanding_tokens %}
-    <div style="display: flex; align-items: center;" class="row border-top py-3">
-      <div class="text-right text-monospace col-6">
-        <p class="my-0">{{ token.email }}</p>
-      </div>
-      <div class="col-4">
-        <button type="submit" class="btn mx-auto d-block" name="del_email" value="{{ token.email }}">
-          <img style="height: 2.5rem;" alt="delete token" src="{% static 'svg/close.svg' %}" role="button">
-        </button>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-</form>
+    <table class="uk-table">
+      <tbody>
+        {% for token in outstanding_tokens %}
+        <tr>
+          <td class="uk-width-1-10"><button class="uk-close"></button></td>
+          <td class="uk-width-9-10"><p>{{ token.email }}</p></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </form>
+</div>
 {% endblock %}
