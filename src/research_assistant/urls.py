@@ -13,6 +13,8 @@ urlpatterns = [
     url(r"^logout", research_logout, name="research logout"),
     url(r"^new-article", research_new_article, name="research new article"),
     url(r"^new-tag", research_add_tag, name="research add tag"),
+    path("my-entries/", research_my_entries, name="research my entries"),
+    path("list-my-entries/", research_edit_entries, name="list my entries"),
     path("settings/", include(settings_urls)),
     path("profile/", include(profile_url)),
 ]

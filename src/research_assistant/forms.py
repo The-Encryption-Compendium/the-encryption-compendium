@@ -266,3 +266,14 @@ class UserAdminForm(forms.ModelForm):
             self.add_error("password_2", error)
 
         return cleaned_data
+
+
+class EntryDeleteForm(forms.Form):
+
+    entry_id = forms.IntegerField()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        entry_id = cleaned_data.get("entry_id")
+
+        return cleaned_data
