@@ -3,13 +3,19 @@ Navigation bar across the top of the site for the researcher view.
 {% endcomment %}
 
 <nav class="uk-navbar uk-navbar-attached" id="navbar">
-  <ul class="uk-navbar-nav">
-    <li>
-      <a class="uk-navbar-brand" href="{% url 'research dashboard' %}">
-        The Encryption Compendium
-      </a>
-    </li>
-  </ul>
+  {# Left part of navbar #}
+  <a class="uk-navbar-brand" href="{% url 'research dashboard' %}">
+    The Encryption Compendium
+  </a>
+
+  <div class="uk-navbar-content uk-hidden-small">
+    <form class="uk-form uk-margin-remove uk-display-inline-block">
+      <input type="text" placeholder="Search...">
+      <button class="uk-button uk-button-primary uk-margin-left">Submit</button>
+    </form>
+  </div>
+
+  {# Right part of navbar #}
   <div class="uk-navbar-flip">
     <ul class="uk-navbar-nav">
       <li class="uk-parent" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
