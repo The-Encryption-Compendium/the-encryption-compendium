@@ -8,7 +8,6 @@ from research_settings.forms import PasswordChangeForm
 @login_required
 @require_http_methods(["GET", "POST"])
 def research_settings(request):
-
     passchange_form = PasswordChangeForm(request.POST if request.POST else None)
     if request.method == "POST":
         if passchange_form.is_valid():
