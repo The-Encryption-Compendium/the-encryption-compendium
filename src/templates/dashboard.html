@@ -12,7 +12,7 @@
     {# Button to add new compendium entries #}
     <div class="col px-md-5">
       <a id="new_article_link" href="{% url 'research new article' %}">
-        <button class="btn btn-primary">
+        <button class="uk-button">
           <div class="my-1">
             <img class="action-icon mr-1" src="{% static 'svg/add.svg' %}">
             Add new compendium entry
@@ -25,7 +25,7 @@
     {# Button to add new tags #}
     <div class="col px-md-5">
       <a id="new_tag_link" href="{% url 'research add tag' %}">
-        <button class="btn btn-primary">
+        <button class="uk-button">
           <div class="my-1">
             <img class="action-icon mr-1" src="{% static 'svg/add.svg' %}">
             Add new tag
@@ -37,7 +37,7 @@
     {% if request.user.is_staff %}
     <div class="col px-md-5">
       <a id="invite_user_button" href="{% url 'add new user' %}">
-        <button class="btn btn-primary">
+        <button class="uk-button">
           <div class="my-1">
             <img class="action-icon mr-1" src="{% static 'svg/add.svg' %}">
             Invite a new user
@@ -48,8 +48,8 @@
     {% endif %}
 
   </div>
-  <div class="container px-md-10 py-3">
-    <table class="table table-striped">
+  <div class="uk-container">
+    <table class="uk-table">
       <thead>
         <tr>
           <th scope="col">#</th>

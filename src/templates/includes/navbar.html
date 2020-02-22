@@ -2,33 +2,37 @@
 Navigation bar across the top of the site for the researcher view.
 {% endcomment %}
 
-<nav class="navbar navbar-expand-sm navbar-light bg-light" id="navbar">
-  <a class="navbar-brand mb-0 h1" href="{% url 'research dashboard' %}">The Encryption Compendium</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-
-      {% comment %}
-      User-related button. Includes options for doing things like changing settings
-      and logging out.
-      {% endcomment %}
-      <button id="user-profile-dropdown-button" class="btn p-0 nav-button">
-        <li class="p-0 nav-item dropdown">
-          <a class="px-4 nav-link dropdown-toggle" href="#" id="user-profile-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {{ user.username }}
-          </a>
-          <div id="user-settings-dropdown-menu" class="dropdown-menu" aria-labelledby="user-profile-dropdown">
-            <a class="dropdown-item" href="{% url 'research dashboard' %}">Home</a>
-            <a class="dropdown-item" href="{% url 'research profile' %}">Profile</a>
-            <a class="dropdown-item" id="user-settings" href="{% url 'research settings' %}">Settings</a>
-            <div class="dropdown-divider"></div>
-            <a id="logout-button" class="dropdown-item" href="{% url 'research logout' %}">Logout</a>
-          </div>
-        </li>
-      </button>
+<nav class="uk-navbar uk-navbar-attached">
+  <ul class="uk-navbar-nav">
+    <li>
+      <a class="uk-navbar-brand" href="{% url 'research dashboard' %}">
+        The Encryption Compendium
+      </a>
+    </li>
+  </ul>
+  <div class="uk-navbar-flip">
+    <ul class="uk-navbar-nav">
+      <li class="uk-parent" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+        <a href="#">
+          {{ user.username }} <i class="uk-icon-caret-down"></i>
+        </a>
+        <div class="uk-dropdown uk-dropdown-navbar uk-dropdown-top">
+          <ul class="uk-nav uk-nav-dropdown">
+            <li>
+              <a href="{% url 'research dashboard' %}">Home</a>
+            </li>
+            <li>
+              <a href="{% url 'research profile' %}">Profile</a>
+            </li>
+            <li>
+              <a href="{% url 'research settings' %}" id="user-settings">Settings</a>
+            </li>
+            <li>
+              <a href="{% url 'research logout' %}" id="logout-button">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </li>
     </ul>
   </div>
 </nav>
