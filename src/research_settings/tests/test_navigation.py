@@ -46,8 +46,6 @@ class FunctionalPasswordChangeTests(FunctionalTest):
         change_password_link = self.browser.find_element_by_id("change-password-link")
         self.browser.execute_script("arguments[0].click();", change_password_link)
 
-        self.wait_for(lambda: self.assertIn("Change Password", self.browser.title))
-
         # Meepy enters her current and new password (twice) and she should be
         # logged out on successful change of password
         oldpass_box = self.browser.find_element_by_id("id_oldpassword")

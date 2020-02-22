@@ -16,9 +16,8 @@ class ChangePasswordTestCase(UnitTest):
         super().setUp(preauth=True)
 
     def test_logout_on_password_change(self):
-        response = self.client.get(reverse("research change password"))
+        response = self.client.get(reverse("research settings"))
         self.assertTemplateUsed(response, "base.html")
-        self.assertTemplateUsed(response, "change_password.html")
         # try to change password with correct credentials
         newpassword = random_password(self.rd)
         data = {
@@ -27,7 +26,7 @@ class ChangePasswordTestCase(UnitTest):
             "newpassword2": newpassword,
         }
 
-        self.client.post(reverse("research change password"), data)
+        self.client.post(reverse("research settings"), data)
 
         self.assertFalse(get_user(self.client).is_authenticated)
 
@@ -41,6 +40,6 @@ class ChangePasswordTestCase(UnitTest):
             "newpassword2": newpassword,
         }
 
-        self.client.post(reverse("research change password"), data)
+        self.client.post(reverse("research settings"), data)
 
         self.assertTrue(get_user(self.client).is_authenticated)

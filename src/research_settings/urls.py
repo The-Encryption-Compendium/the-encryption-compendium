@@ -4,5 +4,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path("", research_settings, name="research settings"),
-    path("change_password/", change_password, name="research change password"),
+    # path("change_password/", change_password, name="research change password"),
 ]

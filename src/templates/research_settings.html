@@ -9,17 +9,15 @@
 <div class="uk-container uk-grid">
 
   <ul class="uk-tab uk-tab-left uk-width-medium-1-2" data-uk-tab="{connect: '#settings_switcher'}">
-      <li class="" aria-expanded="false"><a href="#">Password</a></li>
+      <li class="" aria-expanded="false"><a id="change-password-link" href="#">Password</a></li>
       <li class="" aria-expanded="false"><a href="#">Item</a></li>
   </ul>
 
-  <ul id="settings_switcher" class="uk-switcher uk-margin">
+  <ul id="settings_switcher" class="uk-switcher uk-margin-left">
     <li>
-      <a id="change-password-link" href="{% url 'research change password' %}" class="list-group-item list-group-item-action">
-        Change password
-      </a>
+      {% include 'includes/password_change_form.html' with form=passchange_form %}
     </li>
-    <li>Hello, world!</li>
+    <li></li>
   </ul>
 
 </div>
