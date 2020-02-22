@@ -87,6 +87,10 @@ class AddNewUserForm(forms.ModelForm):
         model = SignupToken
         fields = ("email",)
         labels = {"email": "New user email"}
+        help_texts = {"email": "The new user's email address"}
+        widgets = {
+            "email": forms.TextInput(attrs={"placeholder": "Email address"}),
+        }
 
     def clean(self):
         cleaned_data = super().clean()
