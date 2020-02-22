@@ -16,7 +16,7 @@ Navigation bar across the top of the site for the researcher view.
         <a id="user-profile-dropdown-button" href="#">
           {{ user.username }} <i class="uk-icon-caret-down"></i>
         </a>
-        <div class="uk-dropdown uk-dropdown-navbar uk-dropdown-top">
+        <div id="user-settings-dropdown-menu" class="uk-dropdown uk-dropdown-navbar uk-dropdown-top">
           <ul class="uk-nav uk-nav-dropdown">
             <li>
               <a href="{% url 'research dashboard' %}">Home</a>
