@@ -26,13 +26,13 @@ class ResearchLoginForm(forms.Form):
 
     username = forms.CharField(
         widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": "Username"}
+            attrs={"class": "uk-width-1-1", "placeholder": "Username"}
         ),
         help_text="Enter the username you registered with",
     )
     password = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={"class": "form-control", "placeholder": "Password"}
+            attrs={"class": "uk-width-1-1", "placeholder": "Password"}
         ),
         help_text="Enter your password",
     )
@@ -105,7 +105,7 @@ class AddNewUserForm(forms.ModelForm):
 class SignupForm(forms.ModelForm):
     password_2 = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={"class": "form-control", "placeholder": "Enter your password again"},
+            attrs={"class": "uk-width-1-1", "placeholder": "Enter your password again"},
         ),
         help_text="Enter your password again",
         label="",
@@ -123,15 +123,15 @@ class SignupForm(forms.ModelForm):
         widgets = {
             "email": forms.TextInput(
                 attrs={
-                    "class": "form-control",
+                    "class": "uk-width-1-1",
                     "placeholder": "Enter your email address",
                 },
             ),
             "username": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": "Pick a username"},
+                attrs={"class": "uk-width-1-1", "placeholder": "Pick a username"},
             ),
             "password": forms.PasswordInput(
-                attrs={"class": "form-control", "placeholder": "Choose your password"},
+                attrs={"class": "uk-width-1-1", "placeholder": "Choose your password"},
             ),
         }
 

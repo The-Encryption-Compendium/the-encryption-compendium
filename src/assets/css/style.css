@@ -1,7 +1,7 @@
 /* Custom CSS for the site */
 
 html {
-  font-family: sans-serif;
+  font-family: "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .auth-form {
