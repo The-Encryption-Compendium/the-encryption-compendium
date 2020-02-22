@@ -3,48 +3,53 @@
 {% block title %}Login | {{ block.super }}{% endblock %}
 
 {% block body %}
-<div class="container justify-content-md-center my-4">
-  <form method="POST">
-    <div class="container auth-form">
-      {% csrf_token %}
+<div class="uk-flex uk-margin-top uk-contrast">
+  <div class="uk-block uk-block-primary uk-border-rounded uk-container-center">
+    <form method="POST" class="uk-form uk-container">
+      <div>
+        {% csrf_token %}
 
-      <h2 class="text-center display-5 mb-4">
-        Login
-      </h2>
+        <h1 class="uk-text-center">
+          Login
+        </h1>
 
-      {% if form.non_field_errors %}
-      <span class="d-flex justify-content-center">
-        <div class="form-error alert alert-danger mx-auto" role="alert">
-          {% if form.non_field_errors|length == 1 %}
+        {% if form.non_field_errors %}
+        <span class="uk-margin">
+          <div class="form-error" role="alert">
+            {% if form.non_field_errors|length == 1 %}
 
-          <div class="text-center">
-            {% for error in form.non_field_errors %}
-            {{ error }}
-            {% endfor %}
+            <div class="text-center">
+              {% for error in form.non_field_errors %}
+              {{ error }}
+              {% endfor %}
+            </div>
+
+            {% else %}
+
+            Unable to log in. The following errors were encountered:
+            {{ form.non_field_errors }}
+
+            {% endif %}
           </div>
+        </span>
+        {% endif %}
 
-          {% else %}
+        <fieldset>
+          {% for field in form %}
+          <div class="uk-form-row uk-container-center">
+            {{ field }}
+            {% include "includes/field_errors.html" with errors=field.errors only %}
+          </div>
+          {% endfor %}
+        </fieldset>
 
-          Unable to log in. The following errors were encountered:
-          {{ form.non_field_errors }}
-
-          {% endif %}
+        <div class="uk-container uk-flex uk-margin-top">
+          <button id="login-button" class="uk-button uk-container-center" type="submit">
+            Log in
+          </button>
         </div>
-      </span>
-      {% endif %}
-
-      {% for field in form %}
-      <div class="form-group">
-        {{ field }}
-        {% include "includes/field_errors.html" with errors=field.errors only %}
       </div>
-      {% endfor %}
-      <div class="text-center">
-        <button id="login-button" class="btn btn-primary" type="submit">
-          Log in
-        </button>
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>
 {% endblock %}
