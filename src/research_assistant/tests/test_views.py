@@ -329,12 +329,10 @@ class NewTagTestCase(UnitTest):
 class ChangePasswordViewTests(UnitTest):
     def setUp(self):
         super().setUp(preauth=True)
-        self.url = reverse("research change password")
+        self.url = reverse("research settings")
         self.response = self.client.get(self.url)
 
     def test_password_change_should_logout(self):
-        self.assertTemplateUsed("change_password.html")
-
         new_password = random_password(self.rd)
 
         # change user's password

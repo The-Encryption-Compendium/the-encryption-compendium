@@ -34,6 +34,9 @@ Navigation bar across the top of the site for the researcher view.
               <a href="{% url 'research settings' %}" id="user-settings">Settings</a>
             </li>
             <li>
+              <a class="dropdown-item" id="my-entries" href="{% url 'research my entries' %}">My entries</a>
+            </li>
+            <li>
               <a href="{% url 'research logout' %}" id="logout-button">Logout</a>
             </li>
           </ul>

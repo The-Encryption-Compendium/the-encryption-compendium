@@ -13,6 +13,7 @@ from encryption_compendium.test_utils import (
 )
 from research_assistant.models import SignupToken, User
 from selenium.webdriver.common.keys import Keys
+from unittest import skip
 
 """
 ---------------------------------------------------
@@ -265,6 +266,7 @@ class ResearchDashboardFunctionalTestCase(FunctionalTest):
         self.browser.find_element_by_id("add-new-entry").click()
         self.assertEqual(self.browser.title, "New entry | The Encryption Compendium")
 
+    @skip("TODO")
     def test_new_article_form(self):
         # Meepy fills in the form for new article
         self.browser.get(self.live_server_url + reverse("research new article"))
