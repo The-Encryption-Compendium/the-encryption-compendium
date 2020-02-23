@@ -196,6 +196,7 @@ class NewTagFormTestCase(UnitTest):
         self.assertFalse(form.is_valid())
 
 
+@tag("auth")
 class ChangePasswordForm(UnitTest):
     def setUp(self):
         super().setUp(preauth=True)
