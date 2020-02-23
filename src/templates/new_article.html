@@ -1,7 +1,13 @@
 {% extends "dashboard_base.html" %}
 
 {% block title %}New entry | {{ block.super }}{% endblock %}
-{% block page_header %}New compendium entry{% endblock %}
+{% block page_header %}
+{% if edit is True %}
+  Edit compendium entry
+{% else %}
+  New compendium entry
+{% endif %}
+{% endblock %}
 
 {% block contents %}
 {{ block.super }}
@@ -16,7 +22,11 @@
   </fieldset>
 
   <button id="entry-submit-button" class="uk-button" type="submit">
+    {% if edit is True %}
+    Edit entry
+    {% else %}
     Add entry
+    {% endif %}
   </button>
 </form>
 {% endblock %}
