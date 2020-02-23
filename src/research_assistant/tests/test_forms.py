@@ -7,7 +7,9 @@ from research_assistant.forms import (
     NewTagForm,
     SignupForm,
 )
+from research_settings.forms import PasswordChangeForm
 from research_assistant.models import CompendiumEntryTag, SignupToken, User
+import random, string
 
 """
 ---------------------------------------------------
@@ -191,4 +193,43 @@ class NewTagFormTestCase(UnitTest):
         # Attempt to add a new tag with the same name (but different
         # capitalization).
         form = NewTagForm(data={"tagname": "Encryption"})
+        self.assertFalse(form.is_valid())
+
+
+class ChangePasswordForm(UnitTest):
+    def setUp(self):
+        super().setUp(preauth=True)
+
+    def test_password_change(self):
+        # try to change password with correct credentials and valid new password
+        newpass = random_password(self.rd)
+        data = {
+            "oldpassword": self.password,
+            "newpassword1": newpass,
+            "newpassword2": newpass,
+        }
+        form = PasswordChangeForm(data=data)
+        self.assertTrue(form.is_valid())
+
+    def test_changing_to_weak_password(self):
+        # try to change to weak password
+        weak_pass = "".join(random.choice(string.ascii_lowercase) for i in range(4))
+        data = {
+            "oldpassword": self.password,
+            "newpassword1": weak_pass,
+            "newpassword2": weak_pass,
+        }
+        form = PasswordChangeForm(data=data)
+        self.assertFalse(form.is_valid())
+
+    def test_enter_diff_password_in_confirm_field(self):
+        # try changing password to weak password
+        newpass1 = random_password(self.rd)
+        newpass2 = random_password(self.rd)
+        data = {
+            "oldpassword": self.password,
+            "newpassword1": newpass1,
+            "newpassword2": newpass2,
+        }
+        form = PasswordChangeForm(data=data)
         self.assertFalse(form.is_valid())
