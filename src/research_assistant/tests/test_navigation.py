@@ -254,9 +254,15 @@ class ResearchDashboardFunctionalTestCase(FunctionalTest):
         self.browser.get(self.live_server_url + reverse("research dashboard"))
         self.assertEqual(self.browser.title, "Dashboard | The Encryption Compendium")
 
-        # She notices a "Add new article" link and clicks it
-        self.browser.find_element_by_link_text("Add new compendium entry").click()
+        # She clicks on the dropdown
+        self.browser.find_element_by_id("user-profile-dropdown-button").click()
+        # then on My-entries link
+        self.browser.find_element_by_id("my-entries").click()
 
+        self.assertEqual(self.browser.title, "My entries | The Encryption Compendium")
+
+        # Clicks Add new entry link
+        self.browser.find_element_by_id("add-new-entry").click()
         self.assertEqual(self.browser.title, "New entry | The Encryption Compendium")
 
     def test_new_article_form(self):
