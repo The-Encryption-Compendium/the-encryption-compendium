@@ -324,3 +324,40 @@ class NewTagTestCase(UnitTest):
     def test_add_invalid_tag(self):
         # Try to add an invalid tag to the database
         self.fail("TODO")
+
+
+class ChangePasswordViewTests(UnitTest):
+    def setUp(self):
+        super().setUp(preauth=True)
+        self.url = reverse("research change password")
+        self.response = self.client.get(self.url)
+
+    def test_password_change_should_logout(self):
+        self.assertTemplateUsed("change_password.html")
+
+        new_password = random_password(self.rd)
+
+        # change user's password
+        response = self.client.post(
+            self.url,
+            {
+                "oldpassword": self.password,
+                "newpassword1": new_password,
+                "newpassword2": new_password,
+            },
+        )
+        self.assertFalse(get_user(self.client).is_authenticated)
+
+    def test_trying_wrong_password(self):
+        new_password = random_password(self.rd)
+
+        # change user's password
+        response = self.client.post(
+            self.url,
+            {
+                "oldpassword": random_password(self.rd),
+                "newpassword1": new_password,
+                "newpassword2": new_password,
+            },
+        )
+        self.assertTrue(get_user(self.client).is_authenticated)

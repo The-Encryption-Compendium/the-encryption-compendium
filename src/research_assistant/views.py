@@ -12,6 +12,7 @@ from research_assistant.forms import (
     ResearchLoginForm,
     SignupForm,
     TokenDeleteForm,
+    EntryDeleteForm,
 )
 from research_assistant.models import CompendiumEntry, CompendiumEntryTag, SignupToken
 
@@ -179,3 +180,61 @@ def research_add_tag(request):
         "new_tag.html",
         context={"form": form, "existing_tags": tags, "success": success},
     )
+
+
+@login_required
+@require_http_methods(["GET"])
+def research_my_entries(request):
+    return render(request, "my_entries_options.html")
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def research_list_my_entries(request):
+
+    form = EntryDeleteForm(request.POST if request.POST else None)
+
+    if request.POST and form.is_valid():
+        entry_id = form.cleaned_data["entry_id"]
+        # allowing only authorized user to delete
+        if CompendiumEntry.objects.get(id=entry_id).owner == request.user:
+            CompendiumEntry.objects.get(id=entry_id).delete()
+
+    context = {"entries": []}
+    my_entries = CompendiumEntry.objects.filter(owner=request.user.id)
+
+    for entry in my_entries:
+        entry_dict = {
+            "id": entry.id,
+            "url": entry.url,
+            "title": entry.title,
+            "owner": entry.owner,
+        }
+        tags_query_set = entry.tags.all()
+        tags = []
+
+        for tag in tags_query_set:
+            tags.append(tag.tagname)
+        entry_dict["tags"] = ", ".join(tags)
+        context["entries"].append(entry_dict)
+
+    return render(request, "list_my_entries.html", context=context)
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def research_edit_entries(request, **kwargs):
+    get_id = kwargs.get("id", None)
+    # allow only authorized user to edit
+    if get_id and CompendiumEntry.objects.get(id=get_id).owner == request.user:
+        entry = CompendiumEntry.objects.get(id=get_id)
+        form = CompendiumEntryForm(instance=entry)
+        if request.POST:
+            form = CompendiumEntryForm(request.POST, instance=entry)
+            if form.is_valid():
+                article = form.save()
+                article.save()
+                return redirect("research dashboard")
+        return render(request, "new_article.html", context={"form": form, "edit": True})
+    else:
+        return redirect("list my entries")

@@ -1,0 +1,67 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}My Entries | {{ block.super }}{% endblock %}
+
+{% block contents %}
+
+{{ block.super }}
+{% load static %}
+
+  <div class="container px-md-10 py-3">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Title</th>
+          <th scope="col">URL</th>
+          <th scope="col">Tags</th>
+          <th scope="col">Owner</th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+          {% for entry in entries %}
+          <tr>
+              <th scope="row">{{ entry.id }}</th>
+              <td>{{ entry.title }}</td>
+              <td>
+                {% if entry.url %}
+                <a href="{{ entry.url }}">
+                  {{ entry.url }}
+                </a>
+                {% endif %}
+              </td>
+              <td>{{ entry.tags }}</td>
+              <td>{{ entry.owner }}</td>
+              <td><a href="{% url 'edit my entries' id=entry.id %}">Edit</a></td>
+              <td>
+                <form method="POST">
+                  {% csrf_token %}
+                  <button id="delete_entry_button" onclick="return confSubmit(this.form);" class="btn btn-primary confirm-delete" type="submit" name="entry_id" value="{{ entry.id }}"">
+                    Delete
+                  </button>
+                </form>
+              </td>
+          </tr>
+          {%endfor%}
+      </tbody>
+    </table>
+  </div>
+</div>
+<script type="text/javascript">
+
+  function confSubmit(form) {
+    if (confirm("Are you sure you want to delete?")) {
+      form.submit();
+      return true;
+    }
+  
+    else {
+      return false;
+    }
+  }
+  </script>
+
+{% endblock %}
+
