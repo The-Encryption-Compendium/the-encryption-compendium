@@ -20,9 +20,15 @@
       <div class="w-100"></div>
       {% endfor %}
     </div>
+    {% if edit is True %}
+    <button id="entry-edit-button" class="btn btn-primary" type="submit">
+      Edit entry
+    </button>
+    {% else %}
     <button id="entry-submit-button" class="btn btn-primary" type="submit">
       Add entry
     </button>
+    {% endif %}
   </div>
 </form>
 {% endblock %}

@@ -34,7 +34,7 @@
               </td>
               <td>{{ entry.tags }}</td>
               <td>{{ entry.owner }}</td>
-              <td><a href="#">Edit</a></td>
+              <td><a href="{% url 'edit my entries' id=entry.id %}">Edit</a></td>
               <td>
                 <form method="POST">
                   {% csrf_token %}
