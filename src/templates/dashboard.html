@@ -9,19 +9,7 @@
 {% load static %}
 <div class="container mx-md-n5">
   <div class="row">
-    {# Button to add new compendium entries #}
-    <div class="col px-md-5">
-      <a id="new_article_link" href="{% url 'research new article' %}">
-        <button class="btn btn-primary">
-          <div class="my-1">
-            <img class="action-icon mr-1" src="{% static 'svg/add.svg' %}">
-            Add new compendium entry
-          </div>
-        </button>
-      </a>
-    </div>
-
-
+    
     {# Button to add new tags #}
     <div class="col px-md-5">
       <a id="new_tag_link" href="{% url 'research add tag' %}">
