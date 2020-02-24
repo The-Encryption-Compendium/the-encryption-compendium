@@ -16,9 +16,26 @@
 
   <fieldset class="uk-margin-bottom">
     {% for field in form %}
-    <h3 class="uk-h3">{{ field.label }}</h3>
+    {% if field.name != "tags" %}
+    <h2 class="uk-h2 uk-text-bold">{{ field.label }}</h2>
+    {% if field.help_text %}
+    <p>{{ field.help_text }}</p>
+    {% endif %}
     {{ field }}
+    {% endif %}
     {% endfor %}
+
+    {# Display tags at the bottom of the form #}
+    <h2 class="uk-h2 uk-text-bold">{{ form.tags.label }}</h2>
+    <ul class="uk-grid uk-grid-small uk-grid-width-1-5" data-uk-sortable="">
+      {% for checkbox in form.tags %}
+      <li class="uk-grid-margin">
+        <label for="id_tags_{{ forloop.counter0 }}">
+          <span>{{ checkbox.tag }}</span> {{ checkbox.choice_label }}
+        </label>
+      </li>
+      {% endfor %}
+    </ul>
   </fieldset>
 
   <button id="entry-submit-button" class="uk-button" type="submit">

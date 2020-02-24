@@ -74,6 +74,9 @@ class CompendiumEntryTag(models.Model):
         max_length=MAX_TAG_LENGTH, blank=False, null=False, unique=True
     )
 
+    def __str__(self):
+        return str(self.tagname)
+
 
 """
 ---------------------------------------------------
@@ -84,7 +87,7 @@ the database.
 
 
 class CompendiumEntry(models.Model):
-    title = models.CharField(max_length=MAX_TITLE_LENGTH, blank=False)
+    title = models.CharField(max_length=MAX_TITLE_LENGTH, blank=False, null=False)
     abstract = models.CharField(max_length=MAX_ABSTRACT_LENGTH, blank=True, null=True)
     url = models.URLField(max_length=MAX_URL_LENGTH, blank=True, null=True)
 
