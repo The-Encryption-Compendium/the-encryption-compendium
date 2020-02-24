@@ -176,6 +176,14 @@ Form for adding new entries to the compendium
 
 
 class CompendiumEntryForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Display the tags sorted by their tag names
+        self.fields["tags"].widget.choices.queryset = self.fields[
+            "tags"
+        ].widget.choices.queryset.order_by("tagname")
+
     class Meta:
         model = CompendiumEntry
         fields = (
@@ -192,7 +200,7 @@ class CompendiumEntryForm(forms.ModelForm):
                     "data-uk-htmleditor": "{markdown:true}",
                 }
             ),
-            "tags": forms.CheckboxSelectMultiple(),
+            "tags": forms.CheckboxSelectMultiple(template_name="widgets/test.html",),
         }
 
         labels = {"url": "URL"}
