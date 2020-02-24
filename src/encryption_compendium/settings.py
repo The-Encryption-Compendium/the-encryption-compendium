@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "django.forms",
     "research_assistant",
     "research_settings",
+    "search",
 ]
 
 MIDDLEWARE = [
