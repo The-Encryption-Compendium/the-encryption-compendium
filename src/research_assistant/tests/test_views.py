@@ -9,7 +9,12 @@ from encryption_compendium.test_utils import (
     random_password,
     UnitTest,
 )
-from research_assistant.models import CompendiumEntryTag, SignupToken, User
+from research_assistant.models import (
+    CompendiumEntry,
+    CompendiumEntryTag,
+    SignupToken,
+    User,
+)
 from unittest import skip
 
 """
@@ -269,12 +274,109 @@ class DashboardTestCase(UnitTest):
 
 """
 ---------------------------------------------------
-Tests for view to add new tags
+Tests for adding new tags and compendium entries
 ---------------------------------------------------
 """
 
 
 @tag("compendium-entries")
+class AddNewCompendiumEntryTestCase(UnitTest):
+    def setUp(self):
+        super().setUp(preauth=True)
+        self.new_entry_page = reverse("research new article")
+
+        # Add three tags for testing purposes
+        for tagname in ("test_tag_A", "test_tag_B", "test_tag_C"):
+            if not CompendiumEntryTag.objects.filter(tagname=tagname).exists():
+                CompendiumEntryTag.objects.create(tagname=tagname)
+
+    def test_page_templates(self):
+        # Ensure that the page uses the correct templates in its response
+        response = self.client.get(self.new_entry_page)
+        self.assertTemplateUsed("dashboard_base.html")
+        self.assertTemplateUsed("new_article.html")
+
+    @tag("tags")
+    def test_add_new_compendium_entry(self):
+        self.assertEqual(len(CompendiumEntry.objects.all()), 0)
+
+        # Retrieve the tag ID for "test_tag_B"
+        tag_id = CompendiumEntryTag.objects.get(tagname="test_tag_B").id
+
+        # Send POST data to the URL to create a new entry and ensure that
+        # the entry was created correctly.
+        data = {
+            "title": "New compendium entry",
+            "abstract": "Abstract for new entry",
+            "url": "https://example.com",
+            "tags": [tag_id],
+        }
+        response = self.client.post(self.new_entry_page, data)
+        self.assertTrue(len(CompendiumEntry.objects.all()), 1)
+
+        entry = CompendiumEntry.objects.get(title="New compendium entry")
+        self.assertEqual(entry.owner, self.user)
+        self.assertEqual(entry.title, "New compendium entry")
+        self.assertEqual(entry.abstract, "Abstract for new entry")
+        self.assertEqual(entry.url, "https://example.com")
+        self.assertEqual(len(entry.tags.all()), 1)
+        self.assertEqual(entry.tags.get().tagname, "test_tag_B")
+
+    @tag("tags")
+    def test_add_compendium_entry_with_multiple_tags(self):
+        """Create a CompendiumEntry with multiple tags"""
+        self.assertEqual(len(CompendiumEntry.objects.all()), 0)
+
+        # Retrieve tag IDs for "test_tag_B" and "test_tag_C"
+        id_A = CompendiumEntryTag.objects.get(tagname="test_tag_A").id
+        id_C = CompendiumEntryTag.objects.get(tagname="test_tag_C").id
+
+        # Send POST data with multiple tag IDs
+        data = {
+            "title": "New compendium entry",
+            "tags": [id_A, id_C],
+        }
+        self.client.post(self.new_entry_page, data)
+        self.assertEqual(len(CompendiumEntry.objects.all()), 1)
+
+        entry = CompendiumEntry.objects.get(title="New compendium entry")
+        self.assertEqual(len(entry.tags.all()), 2)
+        self.assertTrue(entry.tags.filter(tagname="test_tag_A").exists())
+        self.assertFalse(entry.tags.filter(tagname="test_tag_B").exists())
+        self.assertTrue(entry.tags.filter(tagname="test_tag_C").exists())
+
+    def test_attempt_to_create_entry_with_empty_title(self):
+        """New entries must have a title"""
+        self.assertEqual(len(CompendiumEntry.objects.all()), 0)
+        tag_id = CompendiumEntryTag.objects.get(tagname="test_tag_A").id
+
+        ### Try to create an entry without a title
+        data = {
+            "tags": [tag_id],
+        }
+        response = self.client.post(self.new_entry_page, data)
+        self.assertEqual(len(CompendiumEntry.objects.all()), 0)
+
+        ### Try to create an entry with an empty title
+        data = {
+            "title": "",
+            "tags": [tag_id],
+        }
+        response = self.client.post(self.new_entry_page, data)
+        self.assertEqual(len(CompendiumEntry.objects.all()), 0)
+
+    def test_attempt_to_create_entry_without_tags(self):
+        """New entries must have _at least_ one tag"""
+        self.assertEqual(len(CompendiumEntry.objects.all()), 0)
+
+        data = {
+            "title": "New compendium entry",
+        }
+        self.client.post(self.new_entry_page, data)
+        self.assertEqual(len(CompendiumEntry.objects.all()), 0)
+
+
+@tag("compendium-entries", "tags")
 class NewTagTestCase(UnitTest):
     def setUp(self):
         super().setUp(preauth=True)
@@ -324,6 +426,13 @@ class NewTagTestCase(UnitTest):
     def test_add_invalid_tag(self):
         # Try to add an invalid tag to the database
         self.fail("TODO")
+
+
+"""
+---------------------------------------------------
+Tests for modifying user settings
+---------------------------------------------------
+"""
 
 
 class ChangePasswordViewTests(UnitTest):
