@@ -12,7 +12,7 @@ from research_assistant.models import (
     MAX_EMAIL_ADDRESS_LENGTH,
 )
 
-from research_assistant.widgets import TagCheckboxSelectMultiple
+from research_assistant.widgets import *
 
 """
 ---------------------------------------------------
@@ -202,6 +202,7 @@ class CompendiumEntryForm(forms.ModelForm):
                     "data-uk-htmleditor": "{markdown:true}",
                 }
             ),
+            "url": URLTextInput(),
             "tags": TagCheckboxSelectMultiple(
                 attrs={"ul_class": "uk-grid uk-grid-small uk-grid-width-medium-1-3"},
             ),
