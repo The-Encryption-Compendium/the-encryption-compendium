@@ -192,9 +192,25 @@ class CompendiumEntryForm(forms.ModelForm):
                     "data-uk-htmleditor": "{markdown:true}",
                 }
             ),
+            "tags": forms.CheckboxSelectMultiple(),
         }
 
         labels = {"url": "URL"}
+
+        help_texts = {
+            "title": "Enter the title of the new entry.",
+            "url": "A link to the resource.",
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        tags = cleaned_data.get("tags")
+        if not tags or len(tags) == 0:
+            raise forms.ValidationError(
+                _("At least one tag must be specified."), code="invalid_tags",
+            )
+
+        return cleaned_data
 
 
 """
