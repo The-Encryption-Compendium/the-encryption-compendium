@@ -18,6 +18,10 @@ html {
   height: 2rem;
 }
 
+.tagname {
+  font-family: monospace, courier, sans-serif;
+}
+
 /*****************************
  * CSS for dashboard sidebar
  *****************************/

@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.forms",
     "research_assistant",
     "research_settings",
 ]
@@ -103,6 +104,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "encryption_compendium.wsgi.application"
 
+# Allows custom widget templates
+FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases

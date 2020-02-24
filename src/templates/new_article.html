@@ -14,31 +14,19 @@
 <form class="uk-panel uk-panel-box uk-form" method="POST">
   {% csrf_token %}
 
-  <fieldset class="uk-margin-bottom">
-    {% for field in form %}
-    {% if field.name != "tags" %}
-    <h2 class="uk-h2 uk-text-bold">{{ field.label }}</h2>
-    {% if field.help_text %}
-    <p>{{ field.help_text }}</p>
-    {% endif %}
-    {{ field }}
-    {% endif %}
-    {% endfor %}
-
-    {# Display tags at the bottom of the form #}
-    <h2 class="uk-h2 uk-text-bold">{{ form.tags.label }}</h2>
-    <ul class="uk-grid uk-grid-small uk-grid-width-1-5" data-uk-sortable="">
-      {% for checkbox in form.tags %}
-      <li class="uk-grid-margin">
-        <label for="id_tags_{{ forloop.counter0 }}">
-          <span>{{ checkbox.tag }}</span> {{ checkbox.choice_label }}
-        </label>
-      </li>
+  <div class="uk-margin-bottom">
+    <fieldset class="uk-margin-bottom">
+      {% for field in form %}
+      <h2 class="uk-h2 uk-text-bold">{{ field.label }}</h2>
+      {% if field.help_text %}
+      <p>{{ field.help_text }}</p>
+      {% endif %}
+      {{ field }}
       {% endfor %}
-    </ul>
-  </fieldset>
+    </fieldset>
+  </div>
 
-  <button id="entry-submit-button" class="uk-button" type="submit">
+  <button id="entry-submit-button" class="uk-button uk-margin-top" type="submit">
     {% if edit is True %}
     Edit entry
     {% else %}
