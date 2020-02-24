@@ -1,8 +1,0 @@
-{% comment %}
-A widget for entering URLs, to be used with django.forms.TextInput.
-{% endcomment %}
-
-<div class="uk-form-icon">
-  <i class="uk-icon-link"></i>
-  <input type="text" name="{{ widget.name }}" {% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %} {% include "django/forms/widgets/attrs.html" %}>
-</div>

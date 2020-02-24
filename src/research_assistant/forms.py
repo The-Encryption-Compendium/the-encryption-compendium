@@ -91,7 +91,7 @@ class AddNewUserForm(forms.ModelForm):
         labels = {"email": "New user email"}
         help_texts = {"email": "The new user's email address"}
         widgets = {
-            "email": forms.TextInput(attrs={"placeholder": "Email address"}),
+            "email": EmailTextInput(),
         }
 
     def clean(self):
@@ -127,12 +127,7 @@ class SignupForm(forms.ModelForm):
         }
 
         widgets = {
-            "email": forms.TextInput(
-                attrs={
-                    "class": "uk-width-1-1",
-                    "placeholder": "Enter your email address",
-                },
-            ),
+            "email": EmailTextInput(attrs={"class": "uk-width-1-1"},),
             "username": forms.TextInput(
                 attrs={"class": "uk-width-1-1", "placeholder": "Pick a username"},
             ),

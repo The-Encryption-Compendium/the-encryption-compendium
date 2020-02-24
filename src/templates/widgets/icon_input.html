@@ -1,0 +1,14 @@
+{% comment %}
+Template for a custom TextInput widget with an icon prepended to the
+input field.
+{% endcomment %}
+
+{% if widget.icon_name %}
+<div class="uk-form-icon">
+  <i class="uk-icon-{{ widget.icon_name }}"></i>
+  <input type="text" name="{{ widget.name }}" {% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %} {% include "django/forms/widgets/attrs.html" %}>
+</div>
+{% else %}
+{# Fall back to the default Django TextInput template #}
+{% include "django/forms/widgets/text.html" %}
+{% endif %}
