@@ -102,10 +102,17 @@ Entry upload form tests
 """
 
 
-@tag("compendium-entries")
+@tag("compendium-entries", "tags")
 class CompendiumEntryFormTestCase(UnitTest):
     def setUp(self):
         super().setUp()
+
+        # Create some example tags for testing
+        self.tag_ids = []
+        for tagname in ("test_tag_A", "test_tag_B", "test_tag_C"):
+            if not CompendiumEntryTag.objects.filter(tagname=tagname).exists():
+                new_tag = CompendiumEntryTag.objects.create(tagname=tagname)
+                self.tag_ids.append(new_tag.id)
 
         self.title = random_password(self.rd)
         self.abstract = random_password(self.rd)
@@ -114,6 +121,7 @@ class CompendiumEntryFormTestCase(UnitTest):
             "title": self.title,
             "abstract": self.abstract,
             "url": self.url,
+            "tags": [self.tag_ids[0]],
         }
 
     def test_submit_new_entry(self):
@@ -121,22 +129,45 @@ class CompendiumEntryFormTestCase(UnitTest):
         result = form.is_valid()
         self.assertTrue(form.is_valid())
 
-    def test_submit_entry_with_invalid_fields(self):
-        ### Try using invalid values for some of the fields in the form
-        # Use an empty title
+    def test_submit_entry_with_invalid_title(self):
+        """
+        Ensure that CompendiumEntryForm does not validate data with invalid
+        titles.
+        """
+        # Try to create an entry without a title
+        data = self.data
+        data.pop("title")
+        self.assertFalse(CompendiumEntryForm(data=data).is_valid())
+
+        # Try to create an entry with a blank title
         data = self.data
         data["title"] = ""
         self.assertFalse(CompendiumEntryForm(data=data).is_valid())
 
-        # Use a random string in the URL field (rather than a URL)
+    def test_submit_entry_with_invalid_url(self):
+        """
+        The CompendiumEntryForm should invalidate inputs that have an
+        invalid URL field.
+        """
         data = self.data
-        data["url"] = random_password(self.rd)
+        data["url"] = "not a valid URL"
         self.assertFalse(CompendiumEntryForm(data=data).is_valid())
 
-    def test_submit_entry_with_tags(self):
-        ### Submit an entry to the form that uses multiple tags
-        # TODO
-        pass
+    def test_submit_entry_invalid_tags(self):
+        """
+        The CompendiumEntryForm should enforce that inputs have at
+        least one tag, and that tags already exist in the database.
+        """
+        ### Try to submit data without any tags
+        data = self.data
+        data.pop("tags")
+        self.assertFalse(CompendiumEntryForm(data=data).is_valid())
+
+        ### Try to submit data with tags that don't exist
+        invalid_tag_id = max(self.tag_ids) + 1
+        data = self.data
+        data["tags"] = [invalid_tag_id]
+        self.assertFalse(CompendiumEntryForm(data=data).is_valid())
 
 
 """
