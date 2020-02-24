@@ -212,6 +212,12 @@ class CompendiumEntryForm(forms.ModelForm):
         help_texts = {
             "title": "Enter the title of the new entry.",
             "url": "A link to the resource.",
+            "tags": (
+                """
+                Choose some tags to label the new compendium entry. Tags can be used
+                to help users filter through entries more easily.
+                """
+            ),
         }
 
     def clean(self):

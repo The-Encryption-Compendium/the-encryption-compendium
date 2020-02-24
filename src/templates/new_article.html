@@ -19,7 +19,7 @@
       {% for field in form %}
       <h2 class="uk-h2 uk-text-bold">{{ field.label }}</h2>
       {% if field.help_text %}
-      <p>{{ field.help_text }}</p>
+      <p class="uk-text-break">{{ field.help_text }}</p>
       {% endif %}
       {{ field }}
       {% endfor %}
