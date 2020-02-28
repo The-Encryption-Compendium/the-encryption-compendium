@@ -271,6 +271,30 @@ class DashboardTestCase(UnitTest):
 
         expected_url = f"{login_url}?next={dashboard_url}"
 
+    def test_all_compendium_entries_visible_on_dashboard(self):
+        # login as a user
+        self.client.login(username=self.username, password=self.password)
+        # create some compendium entries with tags as user
+        tags = ("test_tag_A", "test_tag_B", "test_tag_C")
+        for tagname in tags:
+            if not CompendiumEntryTag.objects.filter(tagname=tagname).exists():
+                CompendiumEntryTag.objects.create(tagname=tagname)
+                tag_id = CompendiumEntryTag.objects.get(tagname=tagname).id
+                data = {
+                    "title": tagname,
+                    "url": "https://www.example.com",
+                    "tags": [tag_id],
+                }
+                self.new_entry_page = reverse("research new article")
+                response = self.client.post(self.new_entry_page, data)
+        self.assertEqual(len(CompendiumEntry.objects.all()), 3)
+        for i, entry in enumerate(CompendiumEntry.objects.all()):
+            self.assertEqual(entry.title, tags[i])
+            self.assertEqual(len(entry.tags.all()), 1)
+            self.assertEqual(entry.tags.get().tagname, tags[i])
+            self.assertEqual(entry.url, "https://www.example.com")
+            self.assertEqual(entry.owner, self.user)
+
 
 """
 ---------------------------------------------------
