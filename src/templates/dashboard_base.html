@@ -1,12 +1,8 @@
 {% extends "base.html" %}
 
 {% block body %}
-
-{% include "includes/navbar.html" %}
-<div class="uk-container">
-  {% block contents %}
-  <h1 class="uk-h1">{% block page_header %}{% endblock %}</h1>
-  <hr>
-  {% endblock %}
-</div>
+{% block contents %}
+<h1 class="uk-h1">{% block page_header %}{% endblock %}</h1>
+<hr>
+{% endblock %}
 {% endblock %}

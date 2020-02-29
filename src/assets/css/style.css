@@ -23,22 +23,7 @@ html {
 }
 
 /*****************************
- * CSS for dashboard sidebar
- *****************************/
-.sidebar-wrapper {
-  background-color: #888888;
-  min-height: 100vh;
-  max-width: 30vw;
-}
-
-#sidebar-wrapper .sidebar-heading {
-  font-size: 1.5rem;
-}
-
-/*****************************
  * CSS for navigation bars
  *****************************/
-.nav-button {
-  border-color: black;
-  border-width: 0.5px;
+.site-navbar {
 }

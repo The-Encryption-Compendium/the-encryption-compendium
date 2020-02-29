@@ -2,22 +2,30 @@
 Navigation bar across the top of the site for the researcher view.
 {% endcomment %}
 
-<nav class="uk-navbar uk-navbar-attached" id="navbar">
-  {# Left part of navbar #}
+<nav class="site-navbar uk-navbar uk-navbar-attached" id="navbar">
+  {# Link back to landing page #}
   <a class="uk-navbar-brand" href="{% url 'research dashboard' %}">
     The Encryption Compendium
   </a>
 
+  {% comment %}
+  {# Search bar #}
   <div class="uk-navbar-content uk-hidden-small">
     <form class="uk-form uk-margin-remove uk-display-inline-block">
-      <input type="text" placeholder="Search...">
+      <div class="uk-form-icon">
+        <i class="uk-icon-search"></i>
+        <input type="text" placeholder="Search...">
+      </div>
       <button class="uk-button uk-button-primary uk-margin-left">Submit</button>
     </form>
   </div>
+  {% endcomment %}
 
-  {# Right part of navbar #}
   <div class="uk-navbar-flip">
     <ul class="uk-navbar-nav">
+
+      {# Navbar widget if the user is logged in #}
+      {% if request.user.is_authenticated %}
       <li class="uk-parent" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
         <a id="user-profile-dropdown-button" href="#">
           {{ user.username }} <i class="uk-icon-caret-down"></i>
@@ -42,6 +50,15 @@ Navigation bar across the top of the site for the researcher view.
           </ul>
         </div>
       </li>
+
+      {# Navbar widget if the user is not logged in #}
+      {% else %}
+      <li>
+        <a id="user-login-button" href="{% url 'research login' %}">
+          Login
+        </a>
+      </li>
+      {% endif %}
     </ul>
   </div>
 </nav>
