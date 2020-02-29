@@ -554,3 +554,35 @@ class EditAndDeleteTests(UnitTest):
         self.assertEqual(
             CompendiumEntry.objects.filter(owner=self.user).first().id, entry_id
         )
+
+    def test_edit_own_form(self):
+        # currently logged in as user2
+        # test edit entry that belongs to the user2
+        entry_id = CompendiumEntry.objects.filter(owner=self.user2).first().id
+        data = {
+            "title": "change article",
+            "url": "https://www.example.com",
+            "tags": [self.tag_id],
+        }
+        response = self.client.post(
+            reverse("edit my entries") + "/" + str(entry_id), data
+        )
+        self.assertEqual(
+            CompendiumEntry.objects.filter(id=entry_id).first().title, "change article"
+        )
+
+    def test_edit_others(self):
+        # currently logged in as user2
+        # test edit entry that belongs to the user1
+        entry_id = CompendiumEntry.objects.filter(owner=self.user).first().id
+        data = {
+            "title": "change article",
+            "url": "https://www.example.com",
+            "tags": [self.tag_id],
+        }
+        response = self.client.post(
+            reverse("edit my entries") + "/" + str(entry_id), data
+        )
+        self.assertNotEqual(
+            CompendiumEntry.objects.filter(id=entry_id).first().title, "change article"
+        )
