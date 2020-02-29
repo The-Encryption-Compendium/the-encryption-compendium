@@ -287,13 +287,13 @@ class DashboardTestCase(UnitTest):
                 }
                 self.new_entry_page = reverse("research new article")
                 response = self.client.post(self.new_entry_page, data)
-        self.assertEqual(len(CompendiumEntry.objects.all()), 3)
-        for i, entry in enumerate(CompendiumEntry.objects.all()):
-            self.assertEqual(entry.title, tags[i])
-            self.assertEqual(len(entry.tags.all()), 1)
-            self.assertEqual(entry.tags.get().tagname, tags[i])
-            self.assertEqual(entry.url, "https://www.example.com")
-            self.assertEqual(entry.owner, self.user)
+        response = self.client.get(reverse("research dashboard"))
+        entries = response.context["entries"]
+        for i, entry in enumerate(entries):
+            self.assertEqual(entry["title"], tags[i])
+            self.assertEqual(entry["tags"], tags[i])
+            self.assertEqual(entry["url"], "https://www.example.com")
+            self.assertEqual(entry["owner"], self.user)
 
 
 """
@@ -492,3 +492,65 @@ class ChangePasswordViewTests(UnitTest):
             },
         )
         self.assertTrue(get_user(self.client).is_authenticated)
+
+
+@tag("Edit", "Delete")
+class EditAndDeleteTests(UnitTest):
+    def setUp(self):
+        super().setUp(preauth=True)
+        # create some compendium entries as user
+        CompendiumEntryTag.objects.create(tagname="test_tag")
+        self.tag_id = CompendiumEntryTag.objects.get(tagname="test_tag").id
+        self.create_compendium_entries(3)
+        # logout user1
+        self.client.get(reverse("research logout"))
+        # create another user
+        email2 = random_email(self.rd)
+        username2 = random_username(self.rd)
+        password2 = random_password(self.rd)
+        self.user2 = User.objects.create_user(
+            email=email2, username=username2, password=password2
+        )
+        self.client.force_login(self.user2)
+        # create some entries as new user
+        self.create_compendium_entries(3)
+
+    def create_compendium_entries(self, num_of_entries):
+        for _ in range(num_of_entries):
+            data = {
+                "title": "test article",
+                "url": "https://www.example.com",
+                "tags": [self.tag_id],
+            }
+            self.new_entry_page = reverse("research new article")
+            response = self.client.post(self.new_entry_page, data)
+
+    def test_compendium_entries_list_for_edit(self):
+        # get list-my-entries page
+        response = self.client.get(reverse("list my entries"))
+        entries = response.context["entries"]
+        for entry in entries:
+            # verify all entries added by the user are visible on this page
+            self.assertEqual(entry["title"], "test article")
+            self.assertEqual(entry["url"], "https://www.example.com")
+            self.assertEqual(entry["tags"], "test_tag")
+
+    def test_delete_own_entry(self):
+        # currently logged in as user2
+        # test deleting entry that belongs to the user2
+        entry_id = CompendiumEntry.objects.filter(owner=self.user2).first().id
+        data = {"entry_id": entry_id}
+        response = self.client.post(reverse("list my entries"), data)
+        self.assertNotEqual(
+            CompendiumEntry.objects.filter(owner=self.user).first().id, entry_id
+        )
+
+    def test_delete_others_entry(self):
+        # currently logged in as user2
+        # test deleting entry with owner user1
+        entry_id = CompendiumEntry.objects.filter(owner=self.user).first().id
+        data = {"entry_id": entry_id}
+        response = self.client.post(reverse("list my entries"), data)
+        self.assertEqual(
+            CompendiumEntry.objects.filter(owner=self.user).first().id, entry_id
+        )

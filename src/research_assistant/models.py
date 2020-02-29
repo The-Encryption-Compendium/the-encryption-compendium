@@ -31,6 +31,10 @@ MAX_URL_LENGTH = 100
 """CompendiumEntryTag model"""
 MAX_TAG_LENGTH = 30
 
+"""Authors model"""
+MAX_AUTHOR_NAME_LENGTH = 20
+
+
 """
 ---------------------------------------------------
 Custom user model
@@ -76,6 +80,22 @@ class CompendiumEntryTag(models.Model):
 
     def __str__(self):
         return str(self.tagname)
+
+
+"""
+-----------------------------------------------------
+Model to represent Authors of the article
+-----------------------------------------------------
+"""
+
+
+class Author(models.Model):
+    authorname = models.CharField(
+        max_length=MAX_AUTHOR_NAME_LENGTH, blank=False, null=False, unique=True
+    )
+
+    def __str__(self):
+        return str(self.authorname)
 
 
 """
