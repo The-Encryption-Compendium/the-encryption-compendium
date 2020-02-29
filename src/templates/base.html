@@ -28,7 +28,11 @@
   </head>
 
   <body>
-    {% block body %}{% endblock %}
+    {% include "includes/navbar.html" %}
+    <div class="uk-container">
+      {% block body %}
+      {% endblock %}
+    </div>
   </body>
 
   {% comment %}

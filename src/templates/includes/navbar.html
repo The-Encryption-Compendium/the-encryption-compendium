@@ -18,6 +18,9 @@ Navigation bar across the top of the site for the researcher view.
   {# Right part of navbar #}
   <div class="uk-navbar-flip">
     <ul class="uk-navbar-nav">
+
+      {# Navbar widget if the user is logged in #}
+      {% if request.user.is_authenticated %}
       <li class="uk-parent" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
         <a id="user-profile-dropdown-button" href="#">
           {{ user.username }} <i class="uk-icon-caret-down"></i>
@@ -42,6 +45,15 @@ Navigation bar across the top of the site for the researcher view.
           </ul>
         </div>
       </li>
+
+      {# Navbar widget if the user is not logged in #}
+      {% else %}
+      <li>
+        <a id="user-login-button" href="{% url 'research login' %}">
+          Login
+        </a>
+      </li>
+      {% endif %}
     </ul>
   </div>
 </nav>
