@@ -14,7 +14,12 @@ from research_assistant.forms import (
     TokenDeleteForm,
     EntryDeleteForm,
 )
-from research_assistant.models import CompendiumEntry, CompendiumEntryTag, SignupToken
+from research_assistant.models import (
+    CompendiumEntry,
+    CompendiumEntryTag,
+    SignupToken,
+    Author,
+)
 
 # Create your views here.
 
@@ -156,11 +161,26 @@ def research_dashboard(request):
 @require_http_methods(["GET", "POST"])
 def research_new_article(request):
     form = CompendiumEntryForm(request.POST if request.POST else None)
+    author_list = request.POST.getlist("authors")
+    authors = []
+    if request.POST:
+        for i in range(len(author_list)):
+            if not Author.objects.filter(authorname=author_list[i]).exists():
+                Author.objects.create(authorname=author_list[i])
+            authors.append(Author.objects.filter(authorname=author_list[i]).first())
     if request.POST and form.is_valid():
+        print("here")
+        # authors = []
+        # for author_name in [name.strip() for name in form.cleaned_data.get("authors").split(',')]:
+        #     if not Author.objects.filter(authorname=author_name).exists():
+        #         Author.objects.create(authorname=author_name)
+        #     authors.append(Author.objects.filter(authorname=author_name).first())
         article = form.save()
         article.owner = request.user
         article.save()
         return redirect("research dashboard")
+    else:
+        print("here1")
     return render(request, "new_article.html", context={"form": form})
 
 

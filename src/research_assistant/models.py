@@ -115,6 +115,7 @@ class CompendiumEntry(models.Model):
 
     date_added = models.DateTimeField(default=timezone.now)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    authors = models.ManyToManyField(Author, blank=True)
 
 
 """

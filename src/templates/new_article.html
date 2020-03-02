@@ -23,8 +23,29 @@
       {% endif %}
       {{ field }}
       {% endfor %}
+      <input type="text" id="number-of-authors" name="number-of-authors" value="">Number of authors: (max. 10)<br />
+      <a href="#" id="filldetails" onclick="addFields()">Fill Details</a>
+      <div id="container"/>
     </fieldset>
   </div>
+
+  <script>
+    function addFields(){
+            var number = document.getElementById("number-of-authors").value;
+            var container = document.getElementById("container");
+            while (container.hasChildNodes()) {
+                container.removeChild(container.lastChild);
+            }
+            for (i=0;i<number;i++){
+                container.appendChild(document.createTextNode("Author " + (i+1)));
+                var input = document.createElement("input");
+                input.type = "text";
+                input.name = "authors";
+                container.appendChild(input);
+                container.appendChild(document.createElement("br"));
+            }
+        }
+  </script>
 
   <button id="entry-submit-button" class="uk-button uk-margin-top" type="submit">
     {% if edit is True %}
