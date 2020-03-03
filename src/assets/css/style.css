@@ -4,6 +4,16 @@ html {
   font-family: "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+body {
+  height: 100%;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
 .auth-form {
   max-width: 500px;
 }
@@ -22,8 +32,5 @@ html {
   font-family: monospace, courier, sans-serif;
 }
 
-/*****************************
- * CSS for navigation bars
- *****************************/
 .site-navbar {
 }
