@@ -9,6 +9,8 @@ from research_assistant.models import (
     SignupToken,
     User,
 )
+from random import randrange
+from datetime import date
 
 """
 ---------------------------------------------------
@@ -162,18 +164,29 @@ class CompendiumEntryModelTestCase(UnitTest):
         self.title = self.username
         self.abstract = "This is the abstract of our resource"
         self.url = "https://example.com"
+        self.year = randrange(1900, date.today().year)
+        self.month = randrange(1, 12)
+        self.day = randrange(1, 31)
 
     def test_create_resource(self):
         entry = CompendiumEntry.objects.create(
-            title=self.title, abstract=self.abstract, url=self.url
+            title=self.title,
+            abstract=self.abstract,
+            url=self.url,
+            year=self.year,
+            month=self.month,
+            day=self.day,
         )
         self.assertEqual(entry.title, self.title)
         self.assertEqual(entry.abstract, self.abstract)
         self.assertEqual(entry.url, self.url)
         self.assertEqual(entry.owner_id, None)
+        self.assertEqual(entry.year, self.year)
+        self.assertEqual(entry.month, self.month)
+        self.assertEqual(entry.day, self.day)
         self.assertTrue((timezone.now() - entry.date_added).seconds < 10)
 
-        # URL and abstract fields can be blank
+        # URL, abstract, year, month, and day fields can be blank
         entry = CompendiumEntry.objects.create(title=self.title)
         self.assertEqual(entry.abstract, None)
         self.assertEqual(entry.url, None)
