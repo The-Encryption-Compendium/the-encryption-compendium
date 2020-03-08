@@ -5,8 +5,10 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.urls import reverse
+from datetime import date
 
 from research_assistant.managers import UserManager
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from uuid import uuid4
 
@@ -115,6 +117,18 @@ class CompendiumEntry(models.Model):
 
     date_added = models.DateTimeField(default=timezone.now)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    """ Three int fields to add published date """
+    year = models.PositiveSmallIntegerField(
+        validators=[MaxValueValidator(date.today().year), MinValueValidator(1900)],
+        blank=True,
+        null=True,
+    )
+    month = models.PositiveSmallIntegerField(
+        validators=[MaxValueValidator(12), MinValueValidator(1)], blank=True, null=True
+    )
+    day = models.PositiveSmallIntegerField(
+        validators=[MaxValueValidator(31), MinValueValidator(1)], blank=True, null=True
+    )
 
 
 """

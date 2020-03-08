@@ -188,6 +188,9 @@ class CompendiumEntryForm(forms.ModelForm):
             "abstract",
             "url",
             "tags",
+            "year",
+            "month",
+            "day",
         )
 
         widgets = {
