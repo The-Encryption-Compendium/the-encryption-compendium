@@ -2,7 +2,7 @@ from django import db
 from django.contrib.auth import get_user
 from django.test import tag
 from django.utils import timezone
-from encryption_compendium.test_utils import UnitTest, random_password
+from encryption_compendium.test_utils import UnitTest, random_password, random_username
 from research_assistant.models import (
     CompendiumEntry,
     CompendiumEntryTag,
@@ -167,6 +167,7 @@ class CompendiumEntryModelTestCase(UnitTest):
         self.year = randrange(1900, date.today().year)
         self.month = randrange(1, 12)
         self.day = randrange(1, 31)
+        self.publisher = random_username(self.rd)
 
     def test_create_resource(self):
         entry = CompendiumEntry.objects.create(

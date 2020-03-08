@@ -16,6 +16,7 @@ from research_assistant.models import (
     User,
 )
 from unittest import skip
+import datetime, random
 
 """
 ---------------------------------------------------
@@ -327,6 +328,14 @@ class AddNewCompendiumEntryTestCase(UnitTest):
         # Retrieve the tag ID for "test_tag_B"
         tag_id = CompendiumEntryTag.objects.get(tagname="test_tag_B").id
 
+        # publisher information
+        publisher = random_username(self.rd)
+
+        # published date
+        year = random.randrange(1900, datetime.date.today().year)
+        month = random.randrange(1, 12)
+        day = random.randrange(1, 31)
+
         # Send POST data to the URL to create a new entry and ensure that
         # the entry was created correctly.
         data = {
@@ -334,6 +343,10 @@ class AddNewCompendiumEntryTestCase(UnitTest):
             "abstract": "Abstract for new entry",
             "url": "https://example.com",
             "tags": [tag_id],
+            "publisher_text": publisher,
+            "year": year,
+            "month": month,
+            "day": day,
         }
         response = self.client.post(self.new_entry_page, data)
         self.assertTrue(len(CompendiumEntry.objects.all()), 1)
@@ -345,6 +358,10 @@ class AddNewCompendiumEntryTestCase(UnitTest):
         self.assertEqual(entry.url, "https://example.com")
         self.assertEqual(len(entry.tags.all()), 1)
         self.assertEqual(entry.tags.get().tagname, "test_tag_B")
+        self.assertEqual(entry.publisher.publishername, publisher)
+        self.assertEqual(entry.year, year)
+        self.assertEqual(entry.month, month)
+        self.assertEqual(entry.day, day)
 
     @tag("tags")
     def test_add_compendium_entry_with_multiple_tags(self):

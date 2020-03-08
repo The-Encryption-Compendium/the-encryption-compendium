@@ -1,5 +1,10 @@
 from django.test import tag
-from encryption_compendium.test_utils import random_email, random_password, UnitTest
+from encryption_compendium.test_utils import (
+    random_email,
+    random_password,
+    UnitTest,
+    random_username,
+)
 from research_assistant.forms import (
     AddNewUserForm,
     ResearchLoginForm,
@@ -9,7 +14,7 @@ from research_assistant.forms import (
 )
 from research_settings.forms import PasswordChangeForm
 from research_assistant.models import CompendiumEntryTag, SignupToken, User
-import random, string
+import random, string, datetime
 
 """
 ---------------------------------------------------
@@ -168,6 +173,26 @@ class CompendiumEntryFormTestCase(UnitTest):
         data = self.data
         data["tags"] = [invalid_tag_id]
         self.assertFalse(CompendiumEntryForm(data=data).is_valid())
+
+    def test_entry_with_publisher_field(self):
+        # Test publisher field with valid input
+        data = self.data
+        data["publisher_text"] = random_username(self.rd)
+        self.assertTrue(CompendiumEntryForm(data=data).is_valid())
+
+    def test_entry_with_date_field(self):
+        # test with complete date
+        data = self.data
+        data["year"] = random.randrange(1900, datetime.date.today().year)
+        data["month"] = random.randrange(1, 12)
+        data["day"] = random.randrange(1, 31)
+        self.assertTrue(CompendiumEntryForm(data=data).is_valid())
+
+        # test with incomplete date
+        data = self.data
+        data["year"] = random.randrange(1900, datetime.date.today().year)
+        data["month"] = random.randrange(1, 12)
+        self.assertTrue(CompendiumEntryForm(data=data).is_valid())
 
 
 """
