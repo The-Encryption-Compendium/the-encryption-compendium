@@ -141,6 +141,9 @@ class CompendiumEntry(models.Model):
     publisher = models.ForeignKey(
         Publisher, on_delete=models.SET_NULL, blank=True, null=True
     )
+
+    authors = models.ManyToManyField(Author, blank=True)
+
     """ Three int fields to add published date """
     year = models.PositiveSmallIntegerField(
         validators=[MaxValueValidator(date.today().year), MinValueValidator(1900)],

@@ -19,6 +19,7 @@ from research_assistant.models import (
     CompendiumEntryTag,
     SignupToken,
     Publisher,
+    Author,
 )
 
 # Create your views here.
@@ -154,10 +155,13 @@ def research_dashboard(request):
             tags.append(tag.tagname)
         entry_dict["tags"] = ", ".join(tags)
         entry_dict["publisher_name"] = (
-            entry.publisher.publishername
-            if entry.publisher.publishername
-            else "Not Known"
+            entry.publisher.publishername if entry.publisher else "Not Known"
         )
+        authors_query_set = entry.authors.all()
+        authors = []
+        for author in authors_query_set:
+            authors.append(author.authorname)
+        entry_dict["authors"] = ", ".join(authors)
         context["entries"].append(entry_dict)
     return render(request, "dashboard.html", context=context)
 
@@ -168,12 +172,21 @@ def research_new_article(request):
     form = CompendiumEntryForm(request.POST if request.POST else None)
     if request.POST and form.is_valid():
         article = form.save()
+
         if not Publisher.objects.filter(publishername=article.publisher_text).exists():
             Publisher.objects.create(publishername=article.publisher_text)
         publisher = Publisher.objects.filter(
             publishername=article.publisher_text
         ).first()
         article.publisher = publisher
+
+        authors_list = []
+        for author in request.POST.getlist("authors_text"):
+            if not Author.objects.filter(authorname=author).exists():
+                Author.objects.create(authorname=author)
+            authors_list.append(Author.objects.filter(authorname=author).first())
+        article.authors.set(authors_list)
+
         article.owner = request.user
         article.save()
         return redirect("research dashboard")
