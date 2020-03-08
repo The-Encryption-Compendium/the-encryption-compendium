@@ -36,6 +36,8 @@ MAX_TAG_LENGTH = 30
 """Authors model"""
 MAX_AUTHOR_NAME_LENGTH = 20
 
+"""Publisher model"""
+MAX_PUBLISHER_NAME_LENGTH = 20
 
 """
 ---------------------------------------------------
@@ -101,6 +103,22 @@ class Author(models.Model):
 
 
 """
+-----------------------------------------------------
+Model to represent Publisher of the article
+-----------------------------------------------------
+"""
+
+
+class Publisher(models.Model):
+    publishername = models.CharField(
+        max_length=MAX_PUBLISHER_NAME_LENGTH, blank=True, null=True
+    )
+
+    def __str__(self):
+        return str(self.publishername)
+
+
+"""
 ---------------------------------------------------
 Model to represent articles/research/etc that's been added to
 the database.
@@ -117,6 +135,12 @@ class CompendiumEntry(models.Model):
 
     date_added = models.DateTimeField(default=timezone.now)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    publisher_text = models.CharField(
+        max_length=MAX_PUBLISHER_NAME_LENGTH, blank=True, null=True
+    )
+    publisher = models.ForeignKey(
+        Publisher, on_delete=models.SET_NULL, blank=True, null=True
+    )
     """ Three int fields to add published date """
     year = models.PositiveSmallIntegerField(
         validators=[MaxValueValidator(date.today().year), MinValueValidator(1900)],

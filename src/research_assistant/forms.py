@@ -188,6 +188,7 @@ class CompendiumEntryForm(forms.ModelForm):
             "abstract",
             "url",
             "tags",
+            "publisher_text",
             "year",
             "month",
             "day",
@@ -205,9 +206,10 @@ class CompendiumEntryForm(forms.ModelForm):
             "tags": TagCheckboxSelectMultiple(
                 attrs={"ul_class": "uk-grid uk-grid-small uk-grid-width-medium-1-3"},
             ),
+            "publisher_text": forms.TextInput(attrs={"class": "uk-form-width-large"}),
         }
 
-        labels = {"url": "URL"}
+        labels = {"url": "URL", "publisher_text": "Publisher"}
 
         help_texts = {
             "title": "Enter the title of the new entry.",

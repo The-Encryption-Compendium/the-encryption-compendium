@@ -14,7 +14,12 @@ from research_assistant.forms import (
     TokenDeleteForm,
     EntryDeleteForm,
 )
-from research_assistant.models import CompendiumEntry, CompendiumEntryTag, SignupToken
+from research_assistant.models import (
+    CompendiumEntry,
+    CompendiumEntryTag,
+    SignupToken,
+    Publisher,
+)
 
 # Create your views here.
 
@@ -148,6 +153,11 @@ def research_dashboard(request):
         for tag in tags_query_set:
             tags.append(tag.tagname)
         entry_dict["tags"] = ", ".join(tags)
+        entry_dict["publisher_name"] = (
+            entry.publisher.publishername
+            if entry.publisher.publishername
+            else "Not Known"
+        )
         context["entries"].append(entry_dict)
     return render(request, "dashboard.html", context=context)
 
@@ -158,6 +168,12 @@ def research_new_article(request):
     form = CompendiumEntryForm(request.POST if request.POST else None)
     if request.POST and form.is_valid():
         article = form.save()
+        if not Publisher.objects.filter(publishername=article.publisher_text).exists():
+            Publisher.objects.create(publishername=article.publisher_text)
+        publisher = Publisher.objects.filter(
+            publishername=article.publisher_text
+        ).first()
+        article.publisher = publisher
         article.owner = request.user
         article.save()
         return redirect("research dashboard")
@@ -233,6 +249,14 @@ def research_edit_entries(request, **kwargs):
             form = CompendiumEntryForm(request.POST, instance=entry)
             if form.is_valid():
                 article = form.save()
+                if not Publisher.objects.filter(
+                    publishername=article.publisher_text
+                ).exists():
+                    Publisher.objects.create(publishername=article.publisher_text)
+                publisher = Publisher.objects.filter(
+                    publishername=article.publisher_text
+                ).first()
+                article.publisher = publisher
                 article.save()
                 return redirect("research dashboard")
         return render(request, "new_article.html", context={"form": form, "edit": True})
