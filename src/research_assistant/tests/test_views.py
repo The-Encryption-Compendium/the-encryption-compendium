@@ -14,6 +14,7 @@ from research_assistant.models import (
     CompendiumEntryTag,
     SignupToken,
     User,
+    Author,
 )
 from unittest import skip
 import datetime, random
@@ -517,7 +518,10 @@ class EditAndDeleteTests(UnitTest):
         super().setUp(preauth=True)
         # create some compendium entries as user
         CompendiumEntryTag.objects.create(tagname="test_tag")
+        Author.objects.create(authorname="test_author")
         self.tag_id = CompendiumEntryTag.objects.get(tagname="test_tag").id
+        self.publisher = random_username(self.rd)
+        self.author_id = Author.objects.get(authorname="test_author").id
         self.create_compendium_entries(3)
         # logout user1
         self.client.get(reverse("research logout"))
@@ -538,6 +542,8 @@ class EditAndDeleteTests(UnitTest):
                 "title": "test article",
                 "url": "https://www.example.com",
                 "tags": [self.tag_id],
+                "authors": [self.author_id],
+                "publisher": self.publisher,
             }
             self.new_entry_page = reverse("research new article")
             response = self.client.post(self.new_entry_page, data)
@@ -580,6 +586,8 @@ class EditAndDeleteTests(UnitTest):
             "title": "change article",
             "url": "https://www.example.com",
             "tags": [self.tag_id],
+            "authors": [self.author_id],
+            "publisher": random_username(self.rd),
         }
         response = self.client.post(
             reverse("edit my entries") + "/" + str(entry_id), data
