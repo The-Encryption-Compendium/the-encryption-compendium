@@ -194,6 +194,12 @@ class SignupNewUserTest(UnitTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
+    def test_cannot_sign_up_without_any_token(self):
+        # if there is no token passed as the parameter, we should get a 403 Forbidden response
+        url = reverse("sign up")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+
 
 """
 ---------------------------------------------------
