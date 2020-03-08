@@ -1,17 +1,22 @@
 /* Custom CSS for the site */
 
-html {
+html, body {
   font-family: "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  height: 100%;
+  margin: 0;
 }
 
 body {
-  height: 100%;
+  display:flex;
+  flex-direction:column;
 }
 
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
+footer {
+  margin-top:auto;
+}
+
+.content {
+  min-width: 80%;
 }
 
 .auth-form {
