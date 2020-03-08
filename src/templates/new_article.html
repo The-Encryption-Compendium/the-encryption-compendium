@@ -29,7 +29,7 @@
   {% endif %}
 <form class="uk-panel uk-panel-box uk-form" method="POST">
   {% csrf_token %}
-  
+
   <div class="uk-margin-bottom">
     <fieldset class="uk-margin-bottom">
       {% for field in form %}
@@ -84,7 +84,7 @@
     function addFields(edit=false){
             var number = document.getElementById("number-of-authors").value;
             if (edit){
-                    var authors_array = {{ authors|safe }}; 
+                    var authors_array = {{ authors|safe }};
             }
             if (number <= 20) {
               var container = document.getElementById("container");
@@ -131,6 +131,6 @@
 <script src="{% static 'codemirror/addon/mode/overlay.js' %}"></script>
 <script src="{% static 'codemirror/mode/xml/xml.js' %}"></script>
 <script src="{% static 'codemirror/mode/gfm/gfm.js' %}"></script>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="{% static 'js/marked.min.js' %}"></script>
 <script src="{% static 'js/components/htmleditor.min.js' %}"></script>
 {% endblock %}
