@@ -1,0 +1,22 @@
+{% comment %}
+A form for uploading compendium entries as BibTeX
+{% endcomment %}
+
+<form class="uk-panel uk-panel-box uk-margin-top uk-form" method="POST">
+  {% csrf_token %}
+
+  <div class="uk-margin-bottom">
+    <fieldset class="uk-margin-bottom">
+      {% for field in form %}
+        <h2 class="uk-h2 uk-text-bold">{{ field.label }}</h2>
+
+        {% if field.help_text %}
+          <p class="uk-text-break">{{ field.help_text }}</p>
+        {% endif %}
+
+        {{ field }}
+
+      {% endfor %}
+    </fieldset>
+  </div>
+</form>

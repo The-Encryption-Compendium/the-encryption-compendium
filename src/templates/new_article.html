@@ -2,7 +2,7 @@
 
 {% block title %}New entry | {{ block.super }}{% endblock %}
 {% block page_header %}
-{% if edit is True %}
+{% if edit %}
   Edit compendium entry
 {% else %}
   New compendium entry
@@ -11,109 +11,34 @@
 
 {% block contents %}
 {{ block.super }}
-{% if form.errors %}
-    <span class="d-flex justify-content-center">
-      <div class="uk-alert uk-alert-danger" role="alert">
-        <div class="text-center">
-          {% for error in form.errors %}
-            {% if error == "year" or error == "month" or error == "day" %}
-              Incorrect value in the {{ error|title }} field.
-              {% if error == "year" %}
-                Allowed range: 1900 to current year
-              {% endif %}
-            {% endif %}
-          {% endfor %}
-        </div>
-      </div>
-    </span>
-  {% endif %}
-<form class="uk-panel uk-panel-box uk-form" method="POST">
-  {% csrf_token %}
 
-  <div class="uk-margin-bottom">
-    <fieldset class="uk-margin-bottom">
-      {% for field in form %}
-        {% if field.label == "Year" %}
-          <h2 class="uk-h2 uk-text-bold">Published date</h2>
-          <p class="uk-text-break">If any of the year/month/day field is unknown, leave blank</p>
-          <div class="uk-grid">
-            <div class="uk-width-1-3">
-        {% endif %}
-        {% if field.label == "Month" or field.label == "Day" %}
-            <div class="uk-width-1-3">
-        {% endif %}
-        {% if field.label == "Month" or field.label == "Day" or field.label == "Year" %}
-          <h3 class="uk-h3">{{ field.label }}</h3>
-        {% else %}
-          <h2 class="uk-h2 uk-text-bold">{{ field.label }}</h2>
-        {% endif %}
-        {% if field.help_text %}
-        <p class="uk-text-break">{{ field.help_text }}</p>
-        {% endif %}
-          {{ field }}
-        {% if field.label == "Year" %}
-            </div>
-        {% endif %}
-        {% if field.label == "Month" %}
-            </div>
-        {% endif %}
-        {% if field.label == "Day" %}
-            </div>
-          </div>
-        {% endif %}
-      {% endfor %}
-      {% if edit is True %}
-        <section class="uk-margin-top" id="author-input">
-          <h2 class="uk-h2 uk-text-bold">Authors</h2>
-          <input type="text" id="number-of-authors" name="number-of-authors" value="{{ num_of_authors }}">   Number of authors: (max. 20)<br />
-          <a href="#author-input" id="filldetails" onclick="addFields(true)">Edit Authors</a>
-          <div id="container"/>
-        </section>
-      {% else %}
-        <section class="uk-margin-top" id="author-input">
-          <h2 class="uk-h2 uk-text-bold">Authors</h2>
-          <input type="text" id="number-of-authors" name="number-of-authors" value="">   Number of authors: (max. 20)<br />
-          <a href="#author-input" id="filldetails" onclick="addFields()">Fill Details</a>
-          <div id="container"/>
-        </section>
-      {% endif %}
-    </fieldset>
-  </div>
+{% comment %}
+If we're just editing an entry, we should display only the form for editing the
+entry. Otherwise, we should display two forms: one for creating an entry through
+the edit form, and another that allows you to display the form.
+{% endcomment %}
 
-  <script>
-    function addFields(edit=false){
-            var number = document.getElementById("number-of-authors").value;
-            if (edit){
-                    var authors_array = {{ authors|safe }};
-            }
-            if (number <= 20) {
-              var container = document.getElementById("container");
-              while (container.hasChildNodes()) {
-                  container.removeChild(container.lastChild);
-              }
-              for (i=0;i<number;i++){
-                  container.appendChild(document.createTextNode("Author " + (i+1)));
-                  var input = document.createElement("input");
-                  input.type = "text";
-                  input.name = "authors_text";
-                  if (edit){
-                    input.value = authors_array[i];
-                  }
-                  container.appendChild(input);
-                  container.appendChild(document.createElement("br"));
-              }
-            }
-        }
-  </script>
+{% if edit %}
+{% include "form_templates/compendium_entry_edit_form.html" with form=form edit=edit only %}
+{% else %}
+<ul class="uk-tab" data-uk-tab="{connect:'#upload_form'}">
+  <li class="uk-active">
+    <a href="#">Enter manually</a>
+  </li>
+  <li>
+    <a href="#">Upload BibTeX</a>
+  </li>
+</ul>
 
-  <button id="entry-submit-button" class="uk-button uk-margin-top" type="submit">
-    {% if edit is True %}
-    Edit entry
-    {% else %}
-    Add entry
-    {% endif %}
-  </button>
-</form>
+<ul id="upload_form" class="uk-list uk-switcher">
+  <li>
+    {% include "form_templates/compendium_entry_edit_form.html" with form=form edit=edit only %}
+  </li>
+  <li>
+    {% include "form_templates/bibtex_upload_form.html" with form=form %}
+  </li>
+</ul>
+{% endif %}
 {% endblock %}
 
 {% block css %}
