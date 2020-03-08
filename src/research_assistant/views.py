@@ -5,6 +5,7 @@ from django.core.mail import send_mail
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
+import json
 from research_assistant.forms import (
     AddNewUserForm,
     CompendiumEntryForm,
@@ -257,11 +258,17 @@ def research_edit_entries(request, **kwargs):
     # allow only authorized user to edit
     if get_id and CompendiumEntry.objects.get(id=get_id).owner == request.user:
         entry = CompendiumEntry.objects.get(id=get_id)
+
+        authors = []
+        for author in entry.authors.all():
+            authors.append(author.authorname)
+
         form = CompendiumEntryForm(instance=entry)
         if request.POST:
             form = CompendiumEntryForm(request.POST, instance=entry)
             if form.is_valid():
                 article = form.save()
+
                 if not Publisher.objects.filter(
                     publishername=article.publisher_text
                 ).exists():
@@ -270,8 +277,27 @@ def research_edit_entries(request, **kwargs):
                     publishername=article.publisher_text
                 ).first()
                 article.publisher = publisher
+
+                authors_list = []
+                for author in request.POST.getlist("authors_text"):
+                    if not Author.objects.filter(authorname=author).exists():
+                        Author.objects.create(authorname=author)
+                    authors_list.append(
+                        Author.objects.filter(authorname=author).first()
+                    )
+                article.authors.set(authors_list)
+
                 article.save()
                 return redirect("research dashboard")
-        return render(request, "new_article.html", context={"form": form, "edit": True})
+        return render(
+            request,
+            "new_article.html",
+            context={
+                "form": form,
+                "edit": True,
+                "authors": json.dumps(authors),
+                "num_of_authors": len(authors),
+            },
+        )
     else:
         return redirect("list my entries")
