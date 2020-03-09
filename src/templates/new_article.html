@@ -80,11 +80,12 @@
     </fieldset>
   </div>
 
-  <script>
+  <script type="text/javascript">
     function addFields(edit=false){
             var number = document.getElementById("number-of-authors").value;
+            console.log("{{ authors }}".replace(/&quot;/g,'"'));
             if (edit){
-                    var authors_array = {{ authors|safe }}; 
+                    var authors_array = JSON.parse("{{ authors }}".replace(/&quot;/g,'"'));
             }
             if (number <= 20) {
               var container = document.getElementById("container");
