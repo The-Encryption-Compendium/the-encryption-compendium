@@ -2,30 +2,28 @@
 A form for uploading compendium entries as BibTeX
 {% endcomment %}
 
-<form class="uk-panel uk-panel-box uk-margin-top uk-form" method="POST">
-  {% csrf_token %}
-
-  <div class="uk-margin-bottom">
-    <fieldset>
-      <div class="uk-grid uk-grid-divider">
-          {# File upload #}
-          <div class="uk-width-1-2">
-            <h2 class="uk-h2">
-              Upload a <span class="monospace">.bib</span> file
-            </h2>
-            {{ form.bibtex_file }}
-          </div>
-
-          {# Direct entry #}
-          <div class="uk-width-1-2">
-            <h2 class="uk-h2">
-              Enter BibTeX manually
-            </h2>
-            <div class="uk-width-1-1 uk-margin-top">
-              {{ form.bibtex_entry }}
-            </div>
-          </div>
+<fieldset>
+  <div class="uk-grid uk-grid-divider">
+      {# File upload #}
+      <div class="uk-width-1-2">
+        <h2 class="uk-h2">
+          Upload a <span class="monospace">.bib</span> file
+        </h2>
+        {{ form.bibtex_file }}
       </div>
-    </fieldset>
+
+      {# Direct entry #}
+      <div class="uk-width-1-2">
+        <h2 class="uk-h2">
+          Enter BibTeX manually
+        </h2>
+        <div class="uk-width-1-1 uk-margin-top">
+          {{ form.bibtex_entry }}
+        </div>
+      </div>
   </div>
-</form>
+</fieldset>
+
+<button type="submit" class="uk-button" name="bibtex-upload">
+  Submit
+</button>

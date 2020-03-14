@@ -19,25 +19,34 @@ the edit form, and another that allows you to display the form.
 {% endcomment %}
 
 {% if edit %}
-{% include "form_templates/compendium_entry_edit_form.html" with form=new_entry_form edit=edit only %}
-{% else %}
-<ul class="uk-tab" data-uk-tab="{connect:'#upload_form'}">
-  <li class="uk-active">
-    <a href="#">Enter manually</a>
-  </li>
-  <li>
-    <a href="#">Upload BibTeX</a>
-  </li>
-</ul>
-
-<ul id="upload_form" class="uk-list uk-switcher">
-  <li>
+  <form class="uk-panel uk-panel-box uk-margin-top uk-form" method="POST">
+    {% csrf_token %}
     {% include "form_templates/compendium_entry_edit_form.html" with form=new_entry_form edit=edit only %}
-  </li>
-  <li>
-    {% include "form_templates/bibtex_upload_form.html" with form=bibtex_form only %}
-  </li>
-</ul>
+  </form>
+{% else %}
+  <ul class="uk-tab" data-uk-tab="{connect:'#upload_form'}">
+    <li class="uk-active">
+      <a href="#">Enter manually</a>
+    </li>
+    <li>
+      <a href="#">Upload BibTeX</a>
+    </li>
+  </ul>
+
+  <ul id="upload_form" class="uk-list uk-switcher">
+    <li>
+      <form class="uk-panel uk-panel-box uk-margin-top uk-form" method="POST">
+        {% csrf_token %}
+        {% include "form_templates/compendium_entry_edit_form.html" with form=new_entry_form edit=edit only %}
+      </form>
+    </li>
+    <li>
+      <form enctype="multipart/form-data" class="uk-panel uk-panel-box uk-margin-top uk-form" method="POST">
+        {% csrf_token %}
+        {% include "form_templates/bibtex_upload_form.html" with form=bibtex_form only %}
+      </form>
+    </li>
+  </ul>
 {% endif %}
 {% endblock %}
 

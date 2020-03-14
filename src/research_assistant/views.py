@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods
 import json
 from research_assistant.forms import (
     AddNewUserForm,
-    BibTeXUploadForm,
+    BibTexUploadForm,
     CompendiumEntryForm,
     NewTagForm,
     ResearchLoginForm,
@@ -172,29 +172,40 @@ def research_dashboard(request):
 @require_http_methods(["GET", "POST"])
 def research_new_article(request):
     new_entry_form = CompendiumEntryForm(request.POST if request.POST else None)
-    # bibtex_form = BibTeXUploadForm(request.POST if request.POST else None)
-    bibtex_form = BibTeXUploadForm()
+    bibtex_form = BibTexUploadForm(
+        request.POST if request.POST else None, request.FILES if request.FILES else None
+    )
 
-    if request.POST and new_entry_form.is_valid():
-        article = new_entry_form.save()
+    if request.POST:
+        # User edited entry manually
+        if "edit-entry" in request.POST and new_entry_form.is_valid():
+            article = new_entry_form.save()
 
-        if not Publisher.objects.filter(publishername=article.publisher_text).exists():
-            Publisher.objects.create(publishername=article.publisher_text)
-        publisher = Publisher.objects.filter(
-            publishername=article.publisher_text
-        ).first()
-        article.publisher = publisher
+            if not Publisher.objects.filter(
+                publishername=article.publisher_text
+            ).exists():
+                Publisher.objects.create(publishername=article.publisher_text)
+            publisher = Publisher.objects.filter(
+                publishername=article.publisher_text
+            ).first()
+            article.publisher = publisher
 
-        authors_list = []
-        for author in request.POST.getlist("authors_text"):
-            if not Author.objects.filter(authorname=author).exists():
-                Author.objects.create(authorname=author)
-            authors_list.append(Author.objects.filter(authorname=author).first())
-        article.authors.set(authors_list)
+            authors_list = []
+            for author in request.POST.getlist("authors_text"):
+                if not Author.objects.filter(authorname=author).exists():
+                    Author.objects.create(authorname=author)
+                authors_list.append(Author.objects.filter(authorname=author).first())
+            article.authors.set(authors_list)
 
-        article.owner = request.user
-        article.save()
-        return redirect("research dashboard")
+            article.owner = request.user
+            article.save()
+
+            return redirect("research dashboard")
+
+        # User uploaded BibTeX to automatically generate the entry
+        elif "bibtex-upload" in request.POST and bibtex_form.is_valid():
+            print(bibtex_form.cleaned_data)
+
     return render(
         request,
         "new_article.html",

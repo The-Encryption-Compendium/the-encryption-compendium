@@ -1,3 +1,6 @@
+import bibtexparser
+
+from bibtexparser.bparser import BibTexParser
 from django import forms
 from django.conf import settings
 from django.contrib.auth import authenticate, login
@@ -233,34 +236,42 @@ class CompendiumEntryForm(forms.ModelForm):
         return cleaned_data
 
 
-class BibTeXUploadForm(forms.Form):
+class BibTexUploadForm(forms.Form):
     """
-    Form to upload BibTeX to add a new entry to the site.
+    Form to upload BibTex to add a new entry to the site.
     """
 
     # Form field that can be used to upload a .bib file
-    bibtex_file = forms.FileField(
-        widget=forms.ClearableFileInput(attrs={"class": "uk-text-middle"},)
-    )
+    bibtex_file = forms.FileField(required=False, max_length=5e6,)  # 5 Mb
 
-    # Form field to directly paste in BibTeX
+    # Form field to directly paste in BibTex
     bibtex_entry = forms.CharField(
         widget=forms.Textarea(
             attrs={
                 "class": "monospace uk-width-1-1",
-                "placeholder": "Copy BibTeX here...",
+                "placeholder": "Copy BibTex here...",
             }
         ),
+        required=False,
     )
 
     def clean_bibtex_file(self):
-        pass
+        bibfile = self.cleaned_data.get("bibtex_file")
+        if bibfile is None:
+            return []
+        else:
+            parser = BibTexParser(common_strings=True)
+            bib_db = parser.parse_file(bibfile)
+            return bib_db.entries
 
     def clean_bibtex_entry(self):
-        pass
-
-    def clean(self):
-        pass
+        bibtex = self.cleaned_data.get("bibtex_entry")
+        if bibtex is None or bibtex == "":
+            return []
+        else:
+            parser = BibTexParser(common_strings=True)
+            bib_db = parser.parse(bibtex)
+            return bib_db.entries
 
 
 """

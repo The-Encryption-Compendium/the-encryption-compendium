@@ -1,9 +1,4 @@
-# Web development
+bibtexparser == 1.1.0
 django[argon2] == 3.0.3
 gunicorn == 20.0.4
-
-# Deployment automation
-python-dotenv
-
-#module for handling article tags
-django-taggit
+python-dotenv == 0.11.0

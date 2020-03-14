@@ -1,3 +1,9 @@
+import datetime
+import os
+import random
+import string
+
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import tag
 from encryption_compendium.test_utils import (
     random_email,
@@ -7,6 +13,7 @@ from encryption_compendium.test_utils import (
 )
 from research_assistant.forms import (
     AddNewUserForm,
+    BibTexUploadForm,
     ResearchLoginForm,
     CompendiumEntryForm,
     NewTagForm,
@@ -14,7 +21,6 @@ from research_assistant.forms import (
 )
 from research_settings.forms import PasswordChangeForm
 from research_assistant.models import CompendiumEntryTag, SignupToken, User
-import random, string, datetime
 
 """
 ---------------------------------------------------
@@ -193,6 +199,37 @@ class CompendiumEntryFormTestCase(UnitTest):
         data["year"] = random.randrange(1900, datetime.date.today().year)
         data["month"] = random.randrange(1, 12)
         self.assertTrue(CompendiumEntryForm(data=data).is_valid())
+
+
+@tag("compendium-entries")
+class BibTexCompendiumEntryUploadTestCase(UnitTest):
+    """
+    Test cases for adding a new compendium entry using BibTex.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.test_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "data", "test_data.bib"
+        )
+        with open(self.test_file, "r") as f:
+            self.test_bib = f.read()
+
+    def test_manually_entered_bibtex(self):
+        """
+        Ensure that the form can handle cases in which the BibTeX data was
+        uploaded by hand via the bibtex_entry field.
+        """
+        form = BibTexUploadForm(data={"bibtex_entry": self.test_bib})
+        self.assertTrue(form.is_valid())
+
+    def test_upload_bib_file(self):
+        """
+        The form should be able to accept a .bib file uploaded by the user.
+        """
+        with open(self.test_file, "rb") as f:
+            bibfile = SimpleUploadedFile(self.test_file, f.read())
+        # form = BibTexUploadForm()
 
 
 """
