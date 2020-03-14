@@ -255,23 +255,66 @@ class BibTexUploadForm(forms.Form):
         required=False,
     )
 
+    """
+    Validation functions
+    """
+
     def clean_bibtex_file(self):
         bibfile = self.cleaned_data.get("bibtex_file")
+
         if bibfile is None:
-            return []
+            return None
+
         else:
-            parser = BibTexParser(common_strings=True)
-            bib_db = parser.parse_file(bibfile)
-            return bib_db.entries
+            try:
+                parser = BibTexParser(common_strings=True)
+                bib_db = parser.parse_file(bibfile)
+                return bib_db.entries_dict
+            except Exception as ex:
+                raise forms.ValidationError(
+                    _("Error parsing BibTeX: %(msg)s"),
+                    params={"msg": str(ex)},
+                    code="invalid_bibtex",
+                )
 
     def clean_bibtex_entry(self):
         bibtex = self.cleaned_data.get("bibtex_entry")
+
         if bibtex is None or bibtex == "":
-            return []
+            return None
+
         else:
-            parser = BibTexParser(common_strings=True)
-            bib_db = parser.parse(bibtex)
-            return bib_db.entries
+            try:
+                parser = BibTexParser(common_strings=True)
+                bib_db = parser.parse(bibtex)
+                return bib_db.entries_dict
+            except Exception as ex:
+                raise forms.ValidationError(
+                    _("Error parsing BibTeX file: %(msg)s"),
+                    params={"msg": str(ex)},
+                    code="invalid_bibtex",
+                )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        bibfile = cleaned_data.get("bibtex_file")
+        bibentry = cleaned_data.get("bibtex_entry")
+
+        if bibfile is None and bibentry is None:
+            raise forms.ValidationError(
+                _("These fields cannot both be blank."), code="invalid_bibtex",
+            )
+
+        elif bibfile is not None and bibentry is not None:
+            raise forms.ValidationError(
+                _(
+                    "You may upload a .bib file or enter BibTeX manually, but "
+                    "not both."
+                ),
+                code="invalid_bibtex",
+            )
+
+        return cleaned_data
 
 
 """
