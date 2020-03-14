@@ -238,12 +238,12 @@ class BibTexCompendiumEntryUploadTestCase(UnitTest):
 
         ### Both forms should create the same results
         self.assertEqual(
-            manual_form.cleaned_data.get("bibtex_entry"),
-            bibfile_form.cleaned_data.get("bibtex_file"),
+            manual_form.cleaned_data.get("bibtex"),
+            bibfile_form.cleaned_data.get("bibtex"),
         )
 
         ### Manually check that the BibTeX was parsed correctly
-        bibtex = manual_form.cleaned_data.get("bibtex_entry")
+        bibtex = manual_form.cleaned_data.get("bibtex")
         self.assertEqual(len(bibtex), 2)
         self.assertTrue("susan_hennessey_judicial_2016" in bibtex)
         self.assertTrue("anonymous_flawed_1996" in bibtex)

@@ -314,7 +314,11 @@ class BibTexUploadForm(forms.Form):
                 code="invalid_bibtex",
             )
 
-        return cleaned_data
+        elif bibfile is None and bibentry is not None:
+            return {"bibtex": bibentry}
+
+        else:
+            return {"bibtex": bibfile}
 
 
 """
