@@ -19,14 +19,6 @@ footer {
   min-width: 80%;
 }
 
-.auth-form {
-  max-width: 500px;
-}
-
-.signup-form {
-  max-width: 700px;
-}
-
 .action-icon {
   display: inline-block;
   vertical-align: middle;
@@ -34,8 +26,36 @@ footer {
 }
 
 .tagname {
-  font-family: monospace, courier, sans-serif;
+  font-family: monospace, courier, sans-serif !important;
+}
+
+.monospace {
+  font-family: monospace, courier, sans-serif !important;
 }
 
 .site-navbar {
+}
+
+.uk-tab li a {
+  color: #444;
+}
+
+.uk-tab li a:hover {
+  color: #444;
+}
+
+/****************************
+ * CSS for forms
+ ****************************/
+
+/****************************
+ * CSS for auth-related components
+ ****************************/
+
+.auth-form {
+  max-width: 500px;
+}
+
+.signup-form {
+  max-width: 700px;
 }

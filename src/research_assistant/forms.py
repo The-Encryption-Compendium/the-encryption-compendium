@@ -233,6 +233,36 @@ class CompendiumEntryForm(forms.ModelForm):
         return cleaned_data
 
 
+class BibTeXUploadForm(forms.Form):
+    """
+    Form to upload BibTeX to add a new entry to the site.
+    """
+
+    # Form field that can be used to upload a .bib file
+    bibtex_file = forms.FileField(
+        widget=forms.ClearableFileInput(attrs={"class": "uk-text-middle"},)
+    )
+
+    # Form field to directly paste in BibTeX
+    bibtex_entry = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                "class": "monospace uk-width-1-1",
+                "placeholder": "Copy BibTeX here...",
+            }
+        ),
+    )
+
+    def clean_bibtex_file(self):
+        pass
+
+    def clean_bibtex_entry(self):
+        pass
+
+    def clean(self):
+        pass
+
+
 """
 ---------------------------------------------------
 Add a new tag to use with CompendiumEntry

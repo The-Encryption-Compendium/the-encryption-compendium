@@ -6,17 +6,26 @@ A form for uploading compendium entries as BibTeX
   {% csrf_token %}
 
   <div class="uk-margin-bottom">
-    <fieldset class="uk-margin-bottom">
-      {% for field in form %}
-        <h2 class="uk-h2 uk-text-bold">{{ field.label }}</h2>
+    <fieldset>
+      <div class="uk-grid uk-grid-divider">
+          {# File upload #}
+          <div class="uk-width-1-2">
+            <h2 class="uk-h2">
+              Upload a <span class="monospace">.bib</span> file
+            </h2>
+            {{ form.bibtex_file }}
+          </div>
 
-        {% if field.help_text %}
-          <p class="uk-text-break">{{ field.help_text }}</p>
-        {% endif %}
-
-        {{ field }}
-
-      {% endfor %}
+          {# Direct entry #}
+          <div class="uk-width-1-2">
+            <h2 class="uk-h2">
+              Enter BibTeX manually
+            </h2>
+            <div class="uk-width-1-1 uk-margin-top">
+              {{ form.bibtex_entry }}
+            </div>
+          </div>
+      </div>
     </fieldset>
   </div>
 </form>
