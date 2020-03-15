@@ -15,9 +15,22 @@ Template for the landing page for the site.
   {% include "includes/searchbar.html" %}
 </div>
 
-<div class="uk-grid uk-width-medium-8-10 uk-container-center uk-text-break uk-margin-top">
-  <a class="uk-panel uk-panel-box uk-panel-box-primary" href="#">
-    encryption
-  </a>
+<h2 class="uk-article-lead">
+  ... or search for the following tags:
+</h2>
+
+<div style="margin-top: 3rem;"></div>
+
+<div class="uk-width-medium-8-10 uk-container-center uk-text-break uk-margin-top">
+  <div class="uk-grid uk-grid-small" data-uk-grid-margin="">
+    {% for tag in tags %}
+    <div>
+      <a class="uk-panel uk-panel-box uk-panel-box-primary" href="#">
+        {{ tag.tagname }}
+      </a>
+    </div>
+    {% endfor %}
+  </div>
 </div>
+
 {% endblock %}
