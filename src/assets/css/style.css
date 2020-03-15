@@ -47,20 +47,20 @@ footer {
 /****************************
  * CSS for tags
  ****************************/
-.tag-selector-button {
+.tag-selector {
   color: black;
   border-color: black;
   background-color: #f8f8f8;
 }
 
-.tag-selector-button:hover {
+.tag-selector:hover {
   color: #f8f8f8;
   background-color: #999;
 }
 
-.tag-selector-button.uk-active {
+.tag-selector.uk-active {
   color: #f8f8f8;
-  background-color: #444444 !important;
+  background-color: #444 !important;
 }
 
 br.sep {

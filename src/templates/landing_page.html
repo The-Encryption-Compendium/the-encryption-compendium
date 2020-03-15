@@ -26,12 +26,9 @@ Template for the landing page for the site.
     <div id="tag-buttons" class="uk-grid uk-grid-small" data-uk-grid-margin="" data-uk-button-checkbox="">
       {% for tag in tags %}
       <div>
-        <a href="" class="tag-selector">
-          <label class="uk-panel uk-panel-box" for="id_tags_{{ tag.id }}">
-            <input id="id_tags_{{ tag.id }}" type="checkbox" name="tags" value="{{ tag.id }}" class="uk-hidden">
-            {{ tag.tagname }}
-          </label>
-        </a>
+        <button type="button" class="uk-button tag-selector">
+          {{ tag.tagname }}
+        </button>
       </div>
       {% endfor %}
     </div>
