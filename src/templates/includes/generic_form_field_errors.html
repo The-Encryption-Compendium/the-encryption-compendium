@@ -1,0 +1,10 @@
+{% comment %}
+A generic template for errors in a form's field. Used with the
+generic_form_field.html template.
+{% endcomment %}
+
+{% if errors %}
+<div class="uk-alert uk-alert-danger uk-width-medium-1-2" role="alert">
+  {{ errors }}
+</div>
+{% endif %}

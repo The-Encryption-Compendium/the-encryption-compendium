@@ -1,0 +1,17 @@
+{% comment %}
+A template for the generic head for a single field in a form. Used by
+the generic_form_field.html template.
+{% endcomment %}
+
+<h2 class="uk-h2 uk-text-bold">
+  {{ label }}
+  {% if required %}
+    <span class="uk-text-danger">*</span>
+  {% endif %}
+</h2>
+
+{% if help_text %}
+<p class="uk-text-break">
+  {{ help_text }}
+</p>
+{% endif %}

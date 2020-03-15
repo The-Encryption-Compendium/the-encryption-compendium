@@ -54,6 +54,9 @@ class CompendiumEntryForm(forms.ModelForm):
                 attrs={"ul_class": "uk-grid uk-grid-small uk-grid-width-medium-1-3"},
             ),
             "publisher_text": forms.TextInput(attrs={"class": "uk-form-width-large"}),
+            "day": DayWidget(),
+            "month": MonthWidget(),
+            "year": YearWidget(),
         }
 
         labels = {"url": "URL", "publisher_text": "Publisher"}

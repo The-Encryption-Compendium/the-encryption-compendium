@@ -2,6 +2,8 @@
 Custom widget classes for the research_assistant app.
 """
 
+import os
+
 from django import forms
 from encryption_compendium.widgets import IconTextInput
 
@@ -17,8 +19,89 @@ class TagCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
     Custom widget for selecting tags to add to a compendium entry.
     """
 
-    template_name = "widgets/tag_checkbox_select.html"
-    option_template_name = "widgets/tag_checkbox_option.html"
+    template_name = os.path.join("widgets", "tag_checkbox_select.html")
+    option_template_name = os.path.join("widgets", "tag_checkbox_option.html")
+
+
+"""
+---------------------------------------------------
+Widgets related to choosing dates
+---------------------------------------------------
+"""
+
+
+class DayWidget(forms.Select):
+    """
+    A widget for selecting the day
+    """
+
+    def days():
+        """
+        Get a list of all of the available values of 'day'.
+        """
+        return list(range(0, 32))
+
+    def day_choices():
+        """
+        Get a list of all of the value-label pairs for 'day'.
+        """
+        days = DayWidget.days()
+        choices = [(0, "")]
+        choices += list((d, d) for d in days[1:])
+        return choices
+
+    def __init__(self, *args, **kwargs):
+        choices = DayWidget.day_choices()
+        kwargs["choices"] = choices
+        super().__init__(*args, **kwargs)
+
+
+class MonthWidget(forms.Select):
+    """
+    A widget for selecting the month.
+    """
+
+    _months = [
+        "",
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ]
+
+    def months():
+        """
+        Get all of the available values of "month".
+        """
+        return MonthWidget._months
+
+    def month_choices():
+        """
+        Get all of the available value-label pairs for the "month" parameter.
+        """
+        return [c for c in enumerate(MonthWidget.months())]
+
+    def __init__(self, *args, **kwargs):
+        # Need to account for cases in which no month is selected
+        choices = MonthWidget.month_choices()
+        kwargs["choices"] = choices
+        super().__init__(*args, **kwargs)
+
+
+class YearWidget(forms.TextInput):
+    """
+    A widget for selecting the year
+    """
+
+    pass
 
 
 """

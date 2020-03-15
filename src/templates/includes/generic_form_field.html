@@ -1,0 +1,15 @@
+{% comment %}
+A generic template for a single field in a form.
+{% endcomment %}
+
+{% with help_text=field.help_text %}
+{% with label=field.label %}
+{% with required=field.required.required %}
+  {% include 'includes/generic_form_field_header.html' with label=label required=required help_text=help_text only %}
+{% endwith %}
+{% endwith %}
+{% endwith %}
+
+{% include 'includes/generic_form_field_errors.html' with errors=field.errors only %}
+
+{{ field }}
