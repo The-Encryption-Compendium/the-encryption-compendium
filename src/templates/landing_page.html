@@ -21,14 +21,17 @@ Template for the landing page for the site.
 
 <br class="sep">
 
-<form method="GET" class="uk-form">
+<form method="GET" class="uk-form" action="{% url 'search' %}">
   <div class="uk-width-medium-8-10 uk-container-center uk-text-break" style="min-height: 30em;">
-    <div class="uk-grid uk-grid-small" data-uk-grid-margin="" data-uk-button-checkbox="">
+    <div id="tag-buttons" class="uk-grid uk-grid-small" data-uk-grid-margin="" data-uk-button-checkbox="">
       {% for tag in tags %}
       <div>
-        <button type="button" class="uk-button tag-selector-button uk-button-large">
-          {{ tag.tagname }}
-        </button>
+        <a href="" class="tag-selector">
+          <label class="uk-panel uk-panel-box" for="id_tags_{{ tag.id }}">
+            <input id="id_tags_{{ tag.id }}" type="checkbox" name="tags" value="{{ tag.id }}" class="uk-hidden">
+            {{ tag.tagname }}
+          </label>
+        </a>
       </div>
       {% endfor %}
     </div>
@@ -36,7 +39,7 @@ Template for the landing page for the site.
     <br class="sep">
 
     <div class="uk-text-center">
-      <button class="uk-margin-top" type="submit" name="tag-search">
+      <button class="uk-margin-top" type="submit" name="tags">
         <span class="uk-article-lead">
           <i class="uk-icon-long-arrow-right"></i>
           Search
