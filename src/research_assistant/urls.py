@@ -15,8 +15,12 @@ urlpatterns = [
     url(r"^new-tag", research_add_tag, name="research add tag"),
     path("my-entries/", research_my_entries, name="research my entries"),
     path("list-my-entries/", research_list_my_entries, name="list my entries"),
-    url(r"edit-entries$", research_edit_entries, name="edit my entries"),
-    url(r"edit-entries/(?P<id>[0-9]+)", research_edit_entries, name="edit my entries"),
+    url(r"edit-entries$", EditCompendiumEntryView.as_view(), name="edit my entries"),
+    url(
+        r"edit-entries/(?P<id>[0-9]+)",
+        EditCompendiumEntryView.as_view(),
+        name="edit my entries",
+    ),
     path("settings/", include(settings_urls)),
     path("profile/", include(profile_url)),
 ]

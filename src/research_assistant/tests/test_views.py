@@ -522,18 +522,29 @@ class ChangePasswordViewTests(UnitTest):
 
 @tag("Edit", "Delete")
 class EditAndDeleteTests(UnitTest):
+    """
+    Tests for two views in the site:
+    - The view for editing existing compendium entries.
+    - The view for deleting entries.
+    """
+
     def setUp(self):
         super().setUp(preauth=True)
-        # create some compendium entries as user
-        CompendiumEntryTag.objects.create(tagname="test_tag")
-        Author.objects.create(authorname="test_author")
-        self.tag_id = CompendiumEntryTag.objects.get(tagname="test_tag").id
-        self.publisher = random_username(self.rd)
-        self.author_id = Author.objects.get(authorname="test_author").id
-        self.create_compendium_entries(3)
-        # logout user1
-        self.client.get(reverse("research logout"))
-        # create another user
+
+        # Create some compendium entries as user 1
+        test_tag = CompendiumEntryTag.objects.create(tagname="test_tag")
+        test_author = Author.objects.create(authorname="test_author")
+        self.data = {
+            "title": "test article",
+            "url": "https://www.example.com",
+            "edit-entry": "",
+            "tags": [test_tag.id],
+            "authors": [test_author.id],
+        }
+        self.create_compendium_entries(self.data, 3)
+        self.client.logout()
+
+        # Create a second user, and add some entries as that user
         email2 = random_email(self.rd)
         username2 = random_username(self.rd)
         password2 = random_password(self.rd)
@@ -541,21 +552,20 @@ class EditAndDeleteTests(UnitTest):
             email=email2, username=username2, password=password2
         )
         self.client.force_login(self.user2)
-        # create some entries as new user
-        self.create_compendium_entries(3)
+        self.create_compendium_entries(self.data, 3)
 
-    def create_compendium_entries(self, num_of_entries):
+    """
+    Internal helper functions
+    """
+
+    def create_compendium_entries(self, data, num_of_entries):
         for _ in range(num_of_entries):
-            data = {
-                "title": "test article",
-                "url": "https://www.example.com",
-                "tags": [self.tag_id],
-                "authors": [self.author_id],
-                "publisher": self.publisher,
-                "edit-entry": "",
-            }
-            self.new_entry_page = reverse("research new article")
-            response = self.client.post(self.new_entry_page, data)
+            new_entry_page = reverse("research new article")
+            response = self.client.post(new_entry_page, data)
+
+    """
+    Tests
+    """
 
     def test_compendium_entries_list_for_edit(self):
         # get list-my-entries page
@@ -571,8 +581,7 @@ class EditAndDeleteTests(UnitTest):
         # currently logged in as user2
         # test deleting entry that belongs to the user2
         entry_id = CompendiumEntry.objects.filter(owner=self.user2).first().id
-        data = {"entry_id": entry_id}
-        response = self.client.post(reverse("list my entries"), data)
+        response = self.client.post(reverse("list my entries"), {"entry_id": entry_id})
         self.assertNotEqual(
             CompendiumEntry.objects.filter(owner=self.user).first().id, entry_id
         )
@@ -591,13 +600,10 @@ class EditAndDeleteTests(UnitTest):
         # currently logged in as user2
         # test edit entry that belongs to the user2
         entry_id = CompendiumEntry.objects.filter(owner=self.user2).first().id
-        data = {
-            "title": "change article",
-            "url": "https://www.example.com",
-            "tags": [self.tag_id],
-            "authors": [self.author_id],
-            "publisher": random_username(self.rd),
-        }
+        data = self.data.copy()
+        data["title"] = "change article"
+        data["publisher"] = random_username(self.rd)
+
         response = self.client.post(
             reverse("edit my entries") + "/" + str(entry_id), data
         )
@@ -609,13 +615,8 @@ class EditAndDeleteTests(UnitTest):
         # currently logged in as user2
         # test edit entry that belongs to the user1
         entry_id = CompendiumEntry.objects.filter(owner=self.user).first().id
-        data = {
-            "title": "change article",
-            "url": "https://www.example.com",
-            "tags": [self.tag_id],
-        }
         response = self.client.post(
-            reverse("edit my entries") + "/" + str(entry_id), data
+            f"{reverse('edit my entries')}/{entry_id}", self.data
         )
         self.assertNotEqual(
             CompendiumEntry.objects.filter(id=entry_id).first().title, "change article"

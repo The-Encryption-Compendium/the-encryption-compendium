@@ -2,10 +2,12 @@
 Views related to adding, modifying, or deleting entries from the compendium.
 """
 
+import abc
 import json
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.decorators.http import require_http_methods
@@ -45,62 +47,6 @@ def research_add_tag(request):
     )
 
 
-@login_required
-@require_http_methods(["GET", "POST"])
-def research_edit_entries(request, **kwargs):
-    """
-    A view that allows users to edit entries that they've added to the site.
-    """
-
-    get_id = kwargs.get("id", None)
-    # allow only authorized user to edit
-    if get_id and CompendiumEntry.objects.get(id=get_id).owner == request.user:
-        entry = CompendiumEntry.objects.get(id=get_id)
-
-        authors = []
-        for author in entry.authors.all():
-            authors.append(author.authorname)
-
-        form = CompendiumEntryForm(instance=entry)
-        if request.POST:
-            form = CompendiumEntryForm(request.POST, instance=entry)
-            if form.is_valid():
-                article = form.save()
-
-                if not Publisher.objects.filter(
-                    publishername=article.publisher_text
-                ).exists():
-                    Publisher.objects.create(publishername=article.publisher_text)
-                publisher = Publisher.objects.filter(
-                    publishername=article.publisher_text
-                ).first()
-                article.publisher = publisher
-
-                authors_list = []
-                for author in request.POST.getlist("authors_text"):
-                    if not Author.objects.filter(authorname=author).exists():
-                        Author.objects.create(authorname=author)
-                    authors_list.append(
-                        Author.objects.filter(authorname=author).first()
-                    )
-                article.authors.set(authors_list)
-
-                article.save()
-                return redirect("research dashboard")
-        return render(
-            request,
-            "new_article.html",
-            context={
-                "form": form,
-                "edit": True,
-                "authors": json.dumps(authors),
-                "num_of_authors": len(authors),
-            },
-        )
-    else:
-        return redirect("list my entries")
-
-
 """
 ---------------------------------------------------
 Class-based views for the site
@@ -108,7 +54,9 @@ Class-based views for the site
 """
 
 
-class CompendiumEntryModificationView(LoginRequiredMixin, View):
+class AbstractCompendiumEntryModificationView(
+    LoginRequiredMixin, View, metaclass=abc.ABCMeta
+):
     """
     A generic view for adding new compendium entries or modifying existing
     compendium entries.
@@ -117,6 +65,14 @@ class CompendiumEntryModificationView(LoginRequiredMixin, View):
     abstract parent class whose children are actually used for constructing
     new views.
     """
+
+    @abc.abstractmethod
+    def get(self, request):
+        pass
+
+    @abc.abstractmethod
+    def post(self, request):
+        pass
 
     def _edit_entry(self, request):
         """
@@ -176,7 +132,7 @@ class CompendiumEntryModificationView(LoginRequiredMixin, View):
         return is_valid, bibtex_form
 
 
-class NewCompendiumEntryView(CompendiumEntryModificationView):
+class NewCompendiumEntryView(AbstractCompendiumEntryModificationView):
     """
     A view for creating new compendium entries on the site. This view presents
     two forms to users:
@@ -221,3 +177,87 @@ class NewCompendiumEntryView(CompendiumEntryModificationView):
             "new_article.html",
             context={"new_entry_form": new_entry_form, "bibtex_form": bibtex_form,},
         )
+
+
+class EditCompendiumEntryView(AbstractCompendiumEntryModificationView):
+    """
+    This class provides a view for editing entries in the compendium.
+    """
+
+    def get(self, request, **kwargs):
+        get_id = kwargs.get("id", None)
+
+        # Only authorized users are allowed to edit the entry
+        if get_id and CompendiumEntry.objects.get(id=get_id).owner == request.user:
+            entry = CompendiumEntry.objects.get(id=get_id)
+
+            authors = []
+            for author in entry.authors.all():
+                authors.append(author.authorname)
+
+            form = CompendiumEntryForm(instance=entry)
+            return render(
+                request,
+                "new_article.html",
+                context={
+                    "form": form,
+                    "edit": True,
+                    "authors": json.dumps(authors),
+                    "num_of_authors": len(authors),
+                },
+            )
+
+        else:
+            return HttpResponseForbidden()
+
+    def post(self, request, **kwargs):
+        get_id = kwargs.get("id", None)
+
+        # Only authorized users are allowed to edit the entry
+        if get_id and CompendiumEntry.objects.get(id=get_id).owner == request.user:
+            entry = CompendiumEntry.objects.get(id=get_id)
+
+            authors = []
+            for author in entry.authors.all():
+                authors.append(author.authorname)
+
+            form = CompendiumEntryForm(request.POST, instance=entry)
+
+            if form.is_valid():
+                article = form.save()
+
+                if not Publisher.objects.filter(
+                    publishername=article.publisher_text
+                ).exists():
+                    Publisher.objects.create(publishername=article.publisher_text)
+                publisher = Publisher.objects.filter(
+                    publishername=article.publisher_text
+                ).first()
+                article.publisher = publisher
+
+                authors_list = []
+                for author in request.POST.getlist("authors_text"):
+                    if not Author.objects.filter(authorname=author).exists():
+                        Author.objects.create(authorname=author)
+                    authors_list.append(
+                        Author.objects.filter(authorname=author).first()
+                    )
+                article.authors.set(authors_list)
+
+                article.save()
+                return redirect("research dashboard")
+
+            else:
+                return render(
+                    request,
+                    "new_article.html",
+                    context={
+                        "form": form,
+                        "edit": True,
+                        "authors": json.dumps(authors),
+                        "num_of_authors": len(authors),
+                    },
+                )
+
+        else:
+            return HttpResponseForbidden()
