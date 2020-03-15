@@ -5,8 +5,11 @@ Views related to adding, modifying, or deleting entries from the compendium.
 import json
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
+from django.views import View
 from django.views.decorators.http import require_http_methods
+from django.utils.decorators import method_decorator
 from research_assistant.forms import (
     BibTexUploadForm,
     CompendiumEntryForm,
@@ -18,75 +21,6 @@ from research_assistant.models import (
     Publisher,
     Author,
 )
-
-
-@login_required
-@require_http_methods(["GET", "POST"])
-def research_new_article(request):
-    """
-    Add a new compendium entry to the site. This view presents users with the
-    following forms for creating new compendium entries:
-    - A form that manually takes each of the fields of a compendium entry to
-      build a new compendium entry.
-    - A form that parses a .bib BibTeX file or a raw BibTeX string to
-      automatically generate new entries.
-    """
-    new_entry_form = CompendiumEntryForm(
-        request.POST if request.POST and "edit-entry" in request.POST else None
-    )
-    bibtex_form = BibTexUploadForm(
-        request.POST if request.POST and "bibtex-upload" in request.POST else None,
-        request.FILES if request.POST and "bibtex-upload" in request.POST else None,
-    )
-    context = {
-        "bibtex_form": bibtex_form,
-        "new_entry_form": new_entry_form,
-    }
-
-    if request.POST:
-        # User edited entry manually
-        if "edit-entry" in request.POST and new_entry_form.is_valid():
-            context["manual_entry_active"] = True
-            article = new_entry_form.save()
-
-            if not Publisher.objects.filter(
-                publishername=article.publisher_text
-            ).exists():
-                Publisher.objects.create(publishername=article.publisher_text)
-            publisher = Publisher.objects.filter(
-                publishername=article.publisher_text
-            ).first()
-            article.publisher = publisher
-
-            authors_list = []
-            for author in request.POST.getlist("authors_text"):
-                if not Author.objects.filter(authorname=author).exists():
-                    Author.objects.create(authorname=author)
-                authors_list.append(Author.objects.filter(authorname=author).first())
-            article.authors.set(authors_list)
-
-            article.owner = request.user
-            article.save()
-
-            return redirect("research dashboard")
-
-        elif "bibtex-upload" in request.POST and bibtex_form.is_valid():
-            context["bibtex_upload_active"] = True
-            bibtex = bibtex_form.cleaned_data.get("bibtex")
-
-            # Add a new entry to the compendium for each entry in the .bib file
-            for entry in bibtex.values():
-                fields = {
-                    "title": entry.get("title"),
-                    "url": entry.get("url"),
-                    "abstract": entry.get("abstract"),
-                    "year": int(entry["year"]) if "year" in entry else None,
-                }
-                CompendiumEntry.objects.create(**fields)
-
-            return redirect("research dashboard")
-
-    return render(request, "new_article.html", context=context)
 
 
 @login_required
@@ -165,3 +99,125 @@ def research_edit_entries(request, **kwargs):
         )
     else:
         return redirect("list my entries")
+
+
+"""
+---------------------------------------------------
+Class-based views for the site
+---------------------------------------------------
+"""
+
+
+class CompendiumEntryModificationView(LoginRequiredMixin, View):
+    """
+    A generic view for adding new compendium entries or modifying existing
+    compendium entries.
+
+    This class is not actually used directly for any views; rather, it is an
+    abstract parent class whose children are actually used for constructing
+    new views.
+    """
+
+    def _edit_entry(self, request):
+        """
+        Add or modify an entry in the Encryption Compendium using the form for
+        manual entry modification.
+        """
+
+        new_entry_form = CompendiumEntryForm(request.POST)
+
+        is_valid = new_entry_form.is_valid()
+        if is_valid:
+            article = new_entry_form.save()
+
+            if not Publisher.objects.filter(
+                publishername=article.publisher_text
+            ).exists():
+                Publisher.objects.create(publishername=article.publisher_text)
+            publisher = Publisher.objects.filter(
+                publishername=article.publisher_text
+            ).first()
+            article.publisher = publisher
+
+            authors_list = []
+            for author in request.POST.getlist("authors_text"):
+                if not Author.objects.filter(authorname=author).exists():
+                    Author.objects.create(authorname=author)
+                authors_list.append(Author.objects.filter(authorname=author).first())
+            article.authors.set(authors_list)
+
+            article.owner = request.user
+            article.save()
+
+        return is_valid, new_entry_form
+
+    def _create_entries_from_bibtex(self, request):
+        """
+        Create one or more new compendium entries using BibTeX that was uploaded
+        to the site.
+        """
+
+        bibtex_form = BibTexUploadForm(request.POST, request.FILES)
+
+        is_valid = bibtex_form.is_valid()
+        if bibtex_form.is_valid():
+            bibtex = bibtex_form.cleaned_data.get("bibtex")
+
+            # Add a new entry to the compendium for each entry in the .bib file
+            for entry in bibtex.values():
+                fields = {
+                    "title": entry.get("title"),
+                    "url": entry.get("url"),
+                    "abstract": entry.get("abstract"),
+                    "year": int(entry["year"]) if "year" in entry else None,
+                }
+                CompendiumEntry.objects.create(**fields)
+
+        return is_valid, bibtex_form
+
+
+class NewCompendiumEntryView(CompendiumEntryModificationView):
+    """
+    A view for creating new compendium entries on the site. This view presents
+    two forms to users:
+    - A form that allows users to create new compendium entries by hand.
+    - A form for creating compendium entries en masse using BibTeX.
+    """
+
+    def get(self, request):
+        new_entry_form = CompendiumEntryForm()
+        bibtex_form = BibTexUploadForm()
+        return render(
+            request,
+            "new_article.html",
+            context={"new_entry_form": new_entry_form, "bibtex_form": bibtex_form,},
+        )
+
+    def post(self, request):
+        context = {}
+        is_valid = False
+
+        if "edit-entry" in request.POST:
+            # User edited entry manually
+            is_valid, new_entry_form = self._edit_entry(request)
+            context["manual_entry_active"] = True
+        else:
+            new_entry_form = CompendiumEntryForm()
+
+        if "bibtex-upload" in request.POST:
+            # User uploaded BibTeX to the site
+            is_valid, bibtex_form = self._create_entries_from_bibtex(request)
+            context["bibtex_upload_active"] = True
+        else:
+            bibtex_form = BibTexUploadForm()
+
+        if is_valid:
+            return redirect("research dashboard")
+
+        context["new_entry_form"] = new_entry_form
+        context["bibtex_form"] = bibtex_form
+        return render(
+            request,
+            "new_article.html",
+            context={"new_entry_form": new_entry_form, "bibtex_form": bibtex_form,},
+        )
