@@ -613,11 +613,21 @@ class EditAndDeleteTests(UnitTest):
 
     def test_edit_others(self):
         # currently logged in as user2
-        # test edit entry that belongs to the user1
-        entry_id = CompendiumEntry.objects.filter(owner=self.user).first().id
-        response = self.client.post(
-            f"{reverse('edit my entries')}/{entry_id}", self.data
-        )
+        # We should be unable to edit an entry created by user 1. Attempts to do so
+        # should result in a 403 Forbidden response.
+
+        entry = CompendiumEntry.objects.filter(owner=self.user).first()
+        url = f"{reverse('edit my entries')}/{entry.id}"
+
+        ### Test GET request to access the edit form
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+
+        ### Test POST request to modify an entry through the edit form
+        data = self.data.copy()
+        data["title"] = "change article"
+        response = self.client.post(url, data)
         self.assertNotEqual(
-            CompendiumEntry.objects.filter(id=entry_id).first().title, "change article"
+            CompendiumEntry.objects.filter(id=entry.id).first().title, data["title"]
         )
+        self.assertEqual(response.status_code, 403)
