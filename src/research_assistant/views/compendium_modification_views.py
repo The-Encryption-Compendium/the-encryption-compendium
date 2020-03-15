@@ -34,18 +34,18 @@ def research_add_tag(request):
     to the site.
     """
     form = NewTagForm(request.POST if request.POST else None)
-    success = None
+    tags = CompendiumEntryTag.objects.order_by("tagname").all()
+
+    context = {
+        "form": form,
+        "tags": tags,
+    }
 
     if request.POST and form.is_valid():
         tag = form.save()
-        success = True
+        context["success"] = True
 
-    tags = CompendiumEntryTag.objects.all()
-    return render(
-        request,
-        "new_tag.html",
-        context={"form": form, "existing_tags": tags, "success": success},
-    )
+    return render(request, "new_tag.html", context=context,)
 
 
 """
