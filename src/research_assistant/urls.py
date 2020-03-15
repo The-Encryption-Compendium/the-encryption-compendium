@@ -18,7 +18,7 @@ urlpatterns = [
     url(r"edit-entries$", EditCompendiumEntryView.as_view(), name="edit my entries"),
     url(
         r"edit-entries/(?P<id>[0-9]+)",
-        EditCompendiumEntryView.as_view(),
+        EditCompendiumEntryView.as_view(extra_context={"edit": True}),
         name="edit my entries",
     ),
     path("settings/", include(settings_urls)),

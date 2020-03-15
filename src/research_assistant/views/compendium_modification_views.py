@@ -11,6 +11,7 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.decorators.http import require_http_methods
+from django.views.generic.base import ContextMixin
 from django.utils.decorators import method_decorator
 from research_assistant.forms import (
     BibTexUploadForm,
@@ -55,7 +56,7 @@ Class-based views for the site
 
 
 class AbstractCompendiumEntryModificationView(
-    LoginRequiredMixin, View, metaclass=abc.ABCMeta
+    ContextMixin, LoginRequiredMixin, View, metaclass=abc.ABCMeta
 ):
     """
     A generic view for adding new compendium entries or modifying existing
@@ -201,7 +202,6 @@ class EditCompendiumEntryView(AbstractCompendiumEntryModificationView):
                 "new_article.html",
                 context={
                     "form": form,
-                    "edit": True,
                     "authors": json.dumps(authors),
                     "num_of_authors": len(authors),
                 },
@@ -253,7 +253,6 @@ class EditCompendiumEntryView(AbstractCompendiumEntryModificationView):
                     "new_article.html",
                     context={
                         "form": form,
-                        "edit": True,
                         "authors": json.dumps(authors),
                         "num_of_authors": len(authors),
                     },
