@@ -26,7 +26,7 @@ Navigation bar across the top of the site for the researcher view.
 
       {# Navbar widget if the user is logged in #}
       {% if request.user.is_authenticated %}
-      <li class="uk-parent" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+      <li class="uk-parent" data-uk-dropdown="{'pos':'bottom-right'}" aria-haspopup="true" aria-expanded="false">
         <a id="user-profile-dropdown-button" href="#">
           {{ user.username }} <i class="uk-icon-caret-down"></i>
         </a>
