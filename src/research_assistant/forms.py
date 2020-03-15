@@ -1,3 +1,6 @@
+import bibtexparser
+
+from bibtexparser.bparser import BibTexParser
 from django import forms
 from django.conf import settings
 from django.contrib.auth import authenticate, login
@@ -231,6 +234,95 @@ class CompendiumEntryForm(forms.ModelForm):
             )
 
         return cleaned_data
+
+
+class BibTexUploadForm(forms.Form):
+    """
+    Form to upload BibTex to add a new entry to the site.
+    """
+
+    # Form field that can be used to upload a .bib file
+    bibtex_file = forms.FileField(required=False, max_length=5e6,)  # 5 Mb
+
+    # Form field to directly paste in BibTex
+    bibtex_entry = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                "class": "monospace uk-width-1-1",
+                "placeholder": "Copy BibTex here...",
+            }
+        ),
+        required=False,
+    )
+
+    """
+    Validation functions
+    """
+
+    def clean_bibtex_file(self):
+        bibfile = self.cleaned_data.get("bibtex_file")
+
+        if bibfile is None:
+            return None
+
+        else:
+            try:
+                parser = BibTexParser(common_strings=True)
+                bib_db = parser.parse_file(bibfile)
+                return bib_db.entries_dict
+            except Exception as ex:
+                raise forms.ValidationError(
+                    _("Error parsing BibTeX: %(msg)s"),
+                    params={"msg": str(ex)},
+                    code="invalid_bibtex",
+                )
+
+    def clean_bibtex_entry(self):
+        bibtex = self.cleaned_data.get("bibtex_entry")
+
+        if bibtex is None or bibtex == "":
+            return None
+
+        else:
+            try:
+                parser = BibTexParser(common_strings=True)
+                bib_db = parser.parse(bibtex)
+                return bib_db.entries_dict
+            except Exception as ex:
+                raise forms.ValidationError(
+                    _("Error parsing BibTeX file: %(msg)s"),
+                    params={"msg": str(ex)},
+                    code="invalid_bibtex",
+                )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        print(dir(self))
+        print("files:", self.files)
+        print("cleaned_data:", cleaned_data)
+
+        bibfile = cleaned_data.get("bibtex_file")
+        bibentry = cleaned_data.get("bibtex_entry")
+
+        if bibfile is None and bibentry is None:
+            raise forms.ValidationError(
+                _("These fields cannot both be blank."), code="invalid_bibtex",
+            )
+
+        elif bibfile is not None and bibentry is not None:
+            raise forms.ValidationError(
+                _(
+                    "You may upload a .bib file or enter BibTeX manually, but "
+                    "not both."
+                ),
+                code="invalid_bibtex",
+            )
+
+        elif bibfile is None and bibentry is not None:
+            return {"bibtex": bibentry}
+
+        else:
+            return {"bibtex": bibfile}
 
 
 """

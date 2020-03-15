@@ -354,6 +354,7 @@ class AddNewCompendiumEntryTestCase(UnitTest):
             "year": year,
             "month": month,
             "day": day,
+            "edit-entry": "",
         }
         response = self.client.post(self.new_entry_page, data)
         self.assertTrue(len(CompendiumEntry.objects.all()), 1)
@@ -383,6 +384,7 @@ class AddNewCompendiumEntryTestCase(UnitTest):
         data = {
             "title": "New compendium entry",
             "tags": [id_A, id_C],
+            "edit-entry": "",
         }
         self.client.post(self.new_entry_page, data)
         self.assertEqual(len(CompendiumEntry.objects.all()), 1)
@@ -550,6 +552,7 @@ class EditAndDeleteTests(UnitTest):
                 "tags": [self.tag_id],
                 "authors": [self.author_id],
                 "publisher": self.publisher,
+                "edit-entry": "",
             }
             self.new_entry_page = reverse("research new article")
             response = self.client.post(self.new_entry_page, data)

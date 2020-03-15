@@ -1,0 +1,45 @@
+{% comment %}
+A form for uploading compendium entries as BibTeX
+{% endcomment %}
+
+{% if form.non_field_errors %}
+<div class="uk-alert uk-alert-danger" role="alert">
+  {{ form.non_field_errors }}
+</div>
+{% endif %}
+
+<fieldset>
+  <div class="uk-grid uk-grid-divider">
+      {# File upload #}
+      <div class="uk-width-1-2">
+        <h2 class="uk-h2">
+          Upload a <span class="monospace">.bib</span> file
+        </h2>
+
+        {% if form.bibtex_file.errors %}
+          {{ form.bibtex_file.errors }}
+        {% endif %}
+
+        {{ form.bibtex_file }}
+      </div>
+
+      {# Direct entry #}
+      <div class="uk-width-1-2">
+        <h2 class="uk-h2">
+          Enter BibTeX manually
+        </h2>
+
+        {% if form.bibtex_entry.errors %}
+          {{ form.bibtex_entry.errors }}
+        {% endif %}
+
+        <div class="uk-width-1-1 uk-margin-top">
+          {{ form.bibtex_entry }}
+        </div>
+      </div>
+  </div>
+</fieldset>
+
+<button type="submit" class="uk-button" name="bibtex-upload">
+  Submit
+</button>
