@@ -605,7 +605,7 @@ class EditAndDeleteTests(UnitTest):
         data["publisher"] = random_username(self.rd)
 
         response = self.client.post(
-            reverse("edit my entries") + "/" + str(entry_id), data
+            reverse("edit my entries", kwargs={"id": entry_id}), data
         )
         self.assertEqual(
             CompendiumEntry.objects.filter(id=entry_id).first().title, "change article"
@@ -617,7 +617,7 @@ class EditAndDeleteTests(UnitTest):
         # should result in a 403 Forbidden response.
 
         entry = CompendiumEntry.objects.filter(owner=self.user).first()
-        url = f"{reverse('edit my entries')}/{entry.id}"
+        url = reverse("edit my entries", kwargs={"id": entry.id})
 
         ### Test GET request to access the edit form
         response = self.client.get(url)
