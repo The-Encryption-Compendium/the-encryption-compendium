@@ -171,14 +171,22 @@ def research_dashboard(request):
 @login_required
 @require_http_methods(["GET", "POST"])
 def research_new_article(request):
-    new_entry_form = CompendiumEntryForm(request.POST if request.POST else None)
-    bibtex_form = BibTexUploadForm(
-        request.POST if request.POST else None, request.FILES if request.FILES else None
+    new_entry_form = CompendiumEntryForm(
+        request.POST if request.POST and "edit-entry" in request.POST else None
     )
+    bibtex_form = BibTexUploadForm(
+        request.POST if request.POST and "bibtex-upload" in request.POST else None,
+        request.FILES if request.POST and "bibtex-upload" in request.POST else None,
+    )
+    context = {
+        "bibtex_form": bibtex_form,
+        "new_entry_form": new_entry_form,
+    }
 
     if request.POST:
         # User edited entry manually
         if "edit-entry" in request.POST and new_entry_form.is_valid():
+            context["manual_entry_active"] = True
             article = new_entry_form.save()
 
             if not Publisher.objects.filter(
@@ -202,15 +210,23 @@ def research_new_article(request):
 
             return redirect("research dashboard")
 
-        # User uploaded BibTeX to automatically generate the entry
         elif "bibtex-upload" in request.POST and bibtex_form.is_valid():
-            print(bibtex_form.cleaned_data)
+            context["bibtex_upload_active"] = True
+            bibtex = bibtex_form.cleaned_data.get("bibtex")
 
-    return render(
-        request,
-        "new_article.html",
-        context={"new_entry_form": new_entry_form, "bibtex_form": bibtex_form},
-    )
+            # Add a new entry to the compendium for each entry in the .bib file
+            for entry in bibtex.values():
+                fields = {
+                    "title": entry.get("title"),
+                    "url": entry.get("url"),
+                    "abstract": entry.get("abstract"),
+                    "year": int(entry["year"]) if "year" in entry else None,
+                }
+                CompendiumEntry.objects.create(**fields)
+
+            return redirect("research dashboard")
+
+    return render(request, "new_article.html", context=context)
 
 
 @login_required

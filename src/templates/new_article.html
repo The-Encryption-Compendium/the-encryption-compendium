@@ -25,10 +25,10 @@ the edit form, and another that allows you to display the form.
   </form>
 {% else %}
   <ul class="uk-tab" data-uk-tab="{connect:'#upload_form'}">
-    <li class="uk-active">
+    <li {% if manual_entry_active %}class="uk-active"{% endif %}>
       <a href="#">Enter manually</a>
     </li>
-    <li>
+    <li {% if bibtex_upload_active %}class="uk-active"{% endif %}>
       <a href="#">Upload BibTeX</a>
     </li>
   </ul>

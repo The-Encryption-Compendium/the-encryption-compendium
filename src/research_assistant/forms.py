@@ -297,6 +297,10 @@ class BibTexUploadForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
+        print(dir(self))
+        print("files:", self.files)
+        print("cleaned_data:", cleaned_data)
+
         bibfile = cleaned_data.get("bibtex_file")
         bibentry = cleaned_data.get("bibtex_entry")
 
