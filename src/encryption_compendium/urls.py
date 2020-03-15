@@ -27,5 +27,6 @@ urlpatterns = [
     url(r"^research/", include(research_urls)),
     ### URLs for the public-facing views
     url(r"", pubviews.landing_page, name="landing page"),
+    url(r"^search", pubviews.basic_search, name="search"),
     url(r"^advanced-search$", pubviews.advanced_search, name="advanced search"),
 ]

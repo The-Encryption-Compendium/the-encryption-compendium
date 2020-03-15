@@ -9,9 +9,21 @@ from research_assistant.models import CompendiumEntryTag
 
 @require_http_methods(["GET"])
 def landing_page(request):
-    # Get a list of all of the tags, sorted alphabetically
+    """
+    Landing page for the website.
+    """
     tags = CompendiumEntryTag.objects.order_by("tagname").all()
     return render(request, "landing_page.html", context={"tags": tags})
+
+
+@require_http_methods(["GET"])
+def basic_search(request):
+    """
+    Get a list of all of the compendium entries that match a particular
+    combination of tags.
+    """
+    # tag_ids = request.GET(
+    return render(request, "landing_page.html")
 
 
 @require_http_methods(["POST"])
