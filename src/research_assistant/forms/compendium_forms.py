@@ -44,10 +44,7 @@ class CompendiumEntryForm(forms.ModelForm):
         widgets = {
             "title": forms.TextInput(attrs={"class": "uk-form-width-large"}),
             "abstract": forms.Textarea(
-                attrs={
-                    # Use UIkit to render the abstract as Markdown
-                    "data-uk-htmleditor": "{markdown:true}",
-                }
+                attrs={"class": "uk-form-width-large uk-width-1-1",},
             ),
             "url": URLTextInput(attrs={"class": "uk-form-width-large"}),
             "tags": TagCheckboxSelectMultiple(

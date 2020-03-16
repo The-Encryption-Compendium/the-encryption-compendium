@@ -17,29 +17,8 @@ def research_dashboard(request):
     """
     View for the user's homepage.
     """
-    context = {"entries": []}
-    all_entries = CompendiumEntry.objects.all()
-    for entry in all_entries:
-        entry_dict = {
-            "id": entry.id,
-            "url": entry.url,
-            "title": entry.title,
-            "owner": entry.owner,
-        }
-        tags_query_set = entry.tags.all()
-        tags = []
-        for tag in tags_query_set:
-            tags.append(tag.tagname)
-        entry_dict["tags"] = ", ".join(tags)
-        entry_dict["publisher_name"] = (
-            entry.publisher.publishername if entry.publisher else "Not Known"
-        )
-        authors_query_set = entry.authors.all()
-        authors = []
-        for author in authors_query_set:
-            authors.append(author.authorname)
-        entry_dict["authors"] = ", ".join(authors)
-        context["entries"].append(entry_dict)
+    owned_entries = CompendiumEntry.objects.filter(owner=request.user)
+    context = {"entries": owned_entries}
     return render(request, "dashboard.html", context=context)
 
 
