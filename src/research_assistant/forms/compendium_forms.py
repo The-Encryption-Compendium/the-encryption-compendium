@@ -190,12 +190,17 @@ class BibTexUploadForm(forms.Form):
         """
 
         for entry in bibtex.values():
-            # Reformat the name string
             authors = entry.get("author")
             if authors is not None:
+                # Strip brackets { } from the author string
                 patt = re.compile(r"\{([^\}]+)\}")
                 names = patt.findall(authors)
                 entry["author"] = names
+
+            title = entry.get("title")
+            if title is not None:
+                # Strip brackets { } from the title
+                entry["title"] = title.replace("{", "").replace("}", "")
 
         return bibtex
 
