@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, reverse
 from django.views.generic.base import RedirectView
 from public_view import views as pubviews
+from search import urls as search_urls
 from research_assistant import urls as research_urls
 
 urlpatterns = [
@@ -26,7 +27,7 @@ urlpatterns = [
     ### URLs for the research_assistant app
     url(r"^research/", include(research_urls)),
     ### URLs for the public-facing views
-    url(r"", pubviews.landing_page, name="landing page"),
-    url(r"^search", pubviews.basic_search, name="search"),
-    url(r"^advanced-search$", pubviews.advanced_search, name="advanced search"),
+    url(r"^$", pubviews.landing_page, name="landing page"),
+    ### URLs for search
+    url(r"^search", include(search_urls)),
 ]

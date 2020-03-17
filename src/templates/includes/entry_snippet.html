@@ -2,37 +2,45 @@
 A template for displaying a brief summary of a compendium entry.
 {% endcomment %}
 
-<h3 class="uk-h3 uk-text-bold">
+<h2 class="uk-h2 uk-text-bold">
   {{ entry.title }}
-</h3>
+</h2>
+
+<div>
+  <span class="uk-text-break">
+    {{ entry.all_authors }}
+  </span>
+</div>
 
 {% with authors=entry.authors.all %}
 {% if authors %}
-<p>
+<div>
   <span class="uk-text-bold">Authors:</span>
   {% for author in authors %}
   {{ author.authorname }},
   {% endfor %}
-</p>
+</div>
 {% endif %}
 {% endwith %}
 
 {% if entry.year %}
-<p>
+<div>
   <span class="uk-text-bold">Published:</span>
   {% if entry.day %}{{ entry.day }}{% endif %}
   {% if entry.month %}{{ entry.month_name }}{% endif %}
   {{ entry.year }}
-</p>
+</div>
 {% endif %}
 
 {% with tags=entry.tags.all %}
 {% if tags %}
-<p>
+<div>
   <span class="uk-text-bold">Tags:</span>
   {% for tag in tags %}
   {{ tag.tagname }}
   {% endfor %}
-</p>
+</div>
 {% endif %}
 {% endwith %}
+
+<a href="#">See more</a>
