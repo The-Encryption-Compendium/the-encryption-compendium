@@ -46,7 +46,8 @@ br.sep {
  ****************************/
 
 .selected-tag {
-  background-color: #aaaaaa !important;
+  background-color: #222 !important;
+  color: #fff !important;
 }
 
 /****************************
