@@ -1,7 +1,7 @@
 /* Custom CSS for the site */
 
 html, body {
-  font-family: "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Roboto", Arial, sans-serif !important;
   height: 100%;
   margin: 0;
 }

@@ -1,4 +1,5 @@
 bibtexparser == 1.1.0
 django[argon2] == 3.0.3
+django-compressor == 2.4
 gunicorn == 20.0.4
 python-dotenv == 0.11.0

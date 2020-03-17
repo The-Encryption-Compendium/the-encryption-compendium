@@ -2,36 +2,27 @@
 Navigation bar across the top of the site for the researcher view.
 {% endcomment %}
 
-<nav class="site-navbar uk-navbar uk-navbar-attached" id="navbar">
+<nav class="site-navbar uk-navbar uk-navbar-container" id="navbar" uk-navbar="">
   {# Link back to landing page #}
-  <a class="uk-navbar-brand" href="{% url 'landing page' %}">
-    The Encryption Compendium
-  </a>
-
-  {% comment %}
-  {# Search bar #}
-  <div class="uk-navbar-content uk-hidden-small">
-    <form class="uk-form uk-margin-remove uk-display-inline-block">
-      <div class="uk-form-icon">
-        <i class="uk-icon-search"></i>
-        <input type="text" placeholder="Search...">
-      </div>
-      <button class="uk-button uk-button-primary uk-margin-left">Submit</button>
-    </form>
+  <div class="uk-navbar-left">
+    <ul class="uk-navbar-nav">
+      <li>
+        <a href="{% url 'landing page' %}">
+          The Encryption Compendium
+        </a>
+      </li>
+    </ul>
   </div>
-  {% endcomment %}
 
-  <div class="uk-navbar-flip">
+  <div class="uk-navbar-right">
     <ul class="uk-navbar-nav">
 
       {# Navbar widget if the user is logged in #}
       {% if request.user.is_authenticated %}
-      <li class="uk-parent" data-uk-dropdown="{'pos':'bottom-right'}" aria-haspopup="true" aria-expanded="false">
-        <a id="user-profile-dropdown-button" href="#">
-          {{ user.username }} <i class="uk-icon-caret-down"></i>
-        </a>
-        <div id="user-settings-dropdown-menu" class="uk-dropdown uk-dropdown-navbar uk-dropdown-top">
-          <ul class="uk-nav uk-nav-dropdown">
+      <li>
+        <a href="#">{{ user.username }}</a>
+        <div class="uk-navbar-dropdown">
+          <ul class="uk-nav uk-navbar-dropdown-nav">
             <li>
               <a href="{% url 'research dashboard' %}">Dashboard</a>
             </li>
