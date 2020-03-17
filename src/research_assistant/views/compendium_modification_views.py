@@ -127,6 +127,7 @@ class AbstractCompendiumEntryModificationView(
                     "url": entry.get("url"),
                     "abstract": entry.get("abstract"),
                     "year": int(entry["year"]) if "year" in entry else None,
+                    "publisher_text": entry.get("journal"),
                 }
                 compendium_entry = CompendiumEntry.objects.create(**fields)
 

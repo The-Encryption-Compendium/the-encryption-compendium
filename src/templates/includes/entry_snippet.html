@@ -25,6 +25,22 @@ A template for displaying a brief summary of a compendium entry.
 </div>
 {% endif %}
 
+{% if entry.publisher_text %}
+<div>
+  <span class="uk-text-break">
+    <span class="uk-text-bold">Published in:</span> {{ entry.publisher_text }}
+  </span>
+</div>
+{% endif %}
+
+{% if entry.abstract %}
+<div>
+  <span class="uk-text-break">
+    <span class="uk-text-bold">Abstract:</span> {{ entry.abstract }}
+  </span>
+</div>
+{% endif %}
+
 {% with tags=entry.tags.all %}
 {% if tags %}
 <div>
