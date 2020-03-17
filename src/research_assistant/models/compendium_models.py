@@ -6,7 +6,9 @@ from datetime import date
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
+from encryption_compendium.utils import month_name
 from research_assistant.models import User
+from research_assistant.widgets import MonthWidget
 
 """
 ---------------------------------------------------
@@ -176,12 +178,11 @@ class CompendiumEntry(models.Model):
     # Separate year, month, and day fields to specify when the compendium entry
     # was published.
     #
-    # The date is represented as three different fields because there may be cases
-    # in which e.g. the year of publication is known, but noth the month or day.
+    # The date is represented as three different fields because there may be
+    # cases in which e.g. the year of publication is known, but noth the month or
+    # day.
     year = models.PositiveSmallIntegerField(
-        validators=[MaxValueValidator(date.today().year), MinValueValidator(1900)],
-        blank=True,
-        null=True,
+        validators=[MinValueValidator(1900)], blank=True, null=True,
     )
     month = models.PositiveSmallIntegerField(
         validators=[MaxValueValidator(12), MinValueValidator(1)], blank=True, null=True
@@ -189,3 +190,16 @@ class CompendiumEntry(models.Model):
     day = models.PositiveSmallIntegerField(
         validators=[MaxValueValidator(31), MinValueValidator(1)], blank=True, null=True
     )
+
+    """
+    Class properties for use in templates.
+    """
+
+    @property
+    def month_name(self):
+        """
+        Returns the name of the month in which the CompendiumEntry was published.
+        Note that only the index of the month (1 to 12) is stored in the database
+        and not the actual name of the month itself.
+        """
+        return month_name(self.month)

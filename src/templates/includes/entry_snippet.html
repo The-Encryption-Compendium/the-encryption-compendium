@@ -17,14 +17,21 @@ A template for displaying a brief summary of a compendium entry.
 {% endif %}
 {% endwith %}
 
-<p class="uk-text-break">{{ entry.abstract }}</p>
+{% if entry.year %}
+<p>
+  <span class="uk-text-bold">Published:</span>
+  {% if entry.day %}{{ entry.day }}{% endif %}
+  {% if entry.month %}{{ entry.month_name }}{% endif %}
+  {{ entry.year }}
+</p>
+{% endif %}
 
 {% with tags=entry.tags.all %}
 {% if tags %}
 <p>
   <span class="uk-text-bold">Tags:</span>
   {% for tag in tags %}
-  {{ tag.tagname }},
+  {{ tag.tagname }}
   {% endfor %}
 </p>
 {% endif %}
