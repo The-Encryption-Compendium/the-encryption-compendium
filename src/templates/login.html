@@ -3,53 +3,45 @@
 {% block title %}Login | {{ block.super }}{% endblock %}
 
 {% block body %}
-<div class="uk-flex uk-margin-top uk-contrast">
-  <div class="uk-block uk-block-primary uk-border-rounded uk-container-center">
-    <form method="POST" class="uk-form uk-container">
-      <div>
-        {% csrf_token %}
+<form method="POST" class="uk-container uk-width-1-4@s">
+  {% csrf_token %}
 
-        <h1 class="uk-text-center">
-          Login
-        </h1>
+  <h1 class="uk-text-center">
+    Login
+  </h1>
 
-        {% if form.non_field_errors %}
-        <span class="uk-margin">
-          <div class="uk-alert uk-alert-danger" role="alert">
-            {% if form.non_field_errors|length == 1 %}
+  {% if form.non_field_errors %}
+  <span class="uk-margin">
+    <div class="uk-alert uk-alert-danger" role="alert">
+      {% if form.non_field_errors|length == 1 %}
 
-            <div class="text-center">
-              {% for error in form.non_field_errors %}
-              {{ error }}
-              {% endfor %}
-            </div>
-
-            {% else %}
-
-            Unable to log in. The following errors were encountered:
-            {{ form.non_field_errors }}
-
-            {% endif %}
-          </div>
-        </span>
-        {% endif %}
-
-        <fieldset>
-          {% for field in form %}
-          <div class="uk-form-row uk-container-center">
-            {{ field }}
-            {% include "includes/field_errors.html" with errors=field.errors only %}
-          </div>
-          {% endfor %}
-        </fieldset>
-
-        <div class="uk-container uk-flex uk-margin-top">
-          <button id="login-button" class="uk-button uk-container-center" type="submit">
-            Log in
-          </button>
-        </div>
+      <div class="text-center">
+        {% for error in form.non_field_errors %}
+        {{ error }}
+        {% endfor %}
       </div>
-    </form>
+
+      {% else %}
+
+      Unable to log in. The following errors were encountered:
+      {{ form.non_field_errors }}
+
+      {% endif %}
+    </div>
+  </span>
+  {% endif %}
+
+  {% for field in form %}
+  <div class="uk-form-row uk-container">
+    {{ field }}
+    {% include "includes/field_errors.html" with errors=field.errors only %}
   </div>
-</div>
+  {% endfor %}
+
+  <div class="uk-text-center uk-margin-top">
+    <button id="login-button" class="uk-button uk-button-default" type="submit">
+      Log in
+    </button>
+  </div>
+</form>
 {% endblock %}

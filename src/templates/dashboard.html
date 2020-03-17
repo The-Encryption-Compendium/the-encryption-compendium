@@ -7,38 +7,41 @@
 
 {{ block.super }}
 {% load static %}
-<ul class="uk-text-large uk-nav uk-nav-side uk-panel uk-panel-box uk-width-medium-3-10">
+<div class="uk-margin uk-container uk-text-center uk-width-1-3@l">
+  <div class="uk-card uk-card-body uk-card-secondary">
+    <ul class="uk-text-large uk-nav uk-nav-default uk-list-divider">
 
-  {# Button to add new compendium entries #}
-  <li>
-    <a id="new_article_link" href="{% url 'research new article' %}">
-      <i class="uk-icon-justify uk-icon-book"></i>
-      Add new compendium entry
-    </a>
-  </li>
+      {# Button to add new compendium entries #}
+      <li class="uk-nav-header uk-active">
+        <a id="new_article_link" href="{% url 'research new article' %}">
+          <span uk-icon="icon:pencil"></span>
+          Add new compendium entry
+        </a>
+      </li>
 
-  {# Button to add new tags #}
-  <li>
-    <a id="new_tag_link" href="{% url 'research add tag' %}">
-      <i class="uk-icon-justify uk-icon-tag"></i>
-      Add new tag
-    </a>
-  </li>
+      {# Button to add new tags #}
+      <li class="uk-nav-header uk-active">
+        <a id="new_tag_link" href="{% url 'research add tag' %}">
+          <span uk-icon="icon:tag"></span>
+          Add new tag
+        </a>
+      </li>
 
-  {% if request.user.is_staff %}
-  <li>
-    <a id="invite_user_button" href="{% url 'add new user' %}">
-      <i class="uk-icon-justify uk-icon-user"></i>
-      Invite a new user
-    </a>
-  </li>
-  {% endif %}
-</ul>
+      {% if request.user.is_staff %}
+      <li class="uk-nav-header uk-active">
+        <a id="invite_user_button" href="{% url 'add new user' %}">
+          <span uk-icon="icon:user"></span>
+          Invite a new user
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</div>
 
-<div class="uk-block uk-block-secondary uk-contrast">
+<div class="uk-section uk-section-muted">
   <div class="uk-container uk-container-center">
     <h2 class="uk-h2">
-      <i class="uk-icon-book"></i>
       Your compendium entries
     </h2>
     {% for entry in entries %}

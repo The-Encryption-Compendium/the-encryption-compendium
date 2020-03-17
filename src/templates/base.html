@@ -32,7 +32,7 @@
   <body>
     {% include "includes/navbar.html" %}
 
-    <div class="content uk-width-8-10 uk-container uk-container-center">
+    <div class="content uk-width-8-10 uk-container">
       {% block body %}
       {% endblock %}
     </div>
@@ -48,6 +48,7 @@
   {% block javascripts %}
   <script type="application/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
   <script type="application/javascript" src="{% static 'js/uikit.min.js' %}"></script>
+  <script src="{% static 'js/uikit-icons.min.js' %}"></script>
   {% endblock %}
 
 </html>

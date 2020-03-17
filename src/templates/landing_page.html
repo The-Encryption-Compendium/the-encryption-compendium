@@ -5,45 +5,41 @@ Template for the landing page for the site.
 {% endcomment %}
 
 {% block body %}
-<div class="uk-text-center uk-margin-top">
-  <h1 class="uk-heading-large uk-text-break">
-    Encryption Compendium
-  </h1>
-</div>
+<div class="uk-container">
+  <div class="uk-text-center uk-margin-top">
+    <h1 class="uk-heading-primary uk-text-break">
+      Encryption Compendium
+    </h1>
+  </div>
 
-<div class="uk-text-center uk-margin-top uk-container-center uk-width-medium-1-2">
-  {% include "includes/searchbar.html" %}
-</div>
+  <div class="uk-container uk-text-center uk-margin-top uk-width-1-3@m">
+    {% include "includes/searchbar.html" %}
+  </div>
 
-<h2 class="uk-article-lead">
-  ... or search for the following tags:
-</h2>
+  <h2 class="uk-text-lead">
+    ... or search for the following tags:
+  </h2>
 
-<br class="sep">
+  <form method="GET" action="{% url 'search' %}">
+    <div class="uk-width-8-10@m uk-text-break">
+      <div id="tag-buttons" class="uk-grid uk-grid-small" uk-grid="" data-uk-button-checkbox="">
+        {% for tag in tags %}
+        <div>
+          <button type="button" class="uk-button uk-button-default tag-selector">
+            {{ tag.tagname }}
+          </button>
+        </div>
+        {% endfor %}
+      </div>
 
-<form method="GET" class="uk-form" action="{% url 'search' %}">
-  <div class="uk-width-medium-8-10 uk-container-center uk-text-break" style="min-height: 30em;">
-    <div id="tag-buttons" class="uk-grid uk-grid-small" data-uk-grid-margin="" data-uk-button-checkbox="">
-      {% for tag in tags %}
-      <div>
-        <button type="button" class="uk-button tag-selector">
-          {{ tag.tagname }}
+      <br class="sep">
+
+      <div class="uk-text-center">
+        <button class="uk-margin-top uk-button uk-button-primary" type="submit" name="tags">
+          Search
         </button>
       </div>
-      {% endfor %}
     </div>
-
-    <br class="sep">
-
-    <div class="uk-text-center">
-      <button class="uk-margin-top" type="submit" name="tags">
-        <span class="uk-article-lead">
-          <i class="uk-icon-long-arrow-right"></i>
-          Search
-        </span>
-      </button>
-    </div>
-  </div>
-</form>
-
+  </form>
+</div>
 {% endblock %}

@@ -16,13 +16,13 @@ class ResearchLoginForm(forms.Form):
 
     username = forms.CharField(
         widget=forms.TextInput(
-            attrs={"class": "uk-width-1-1", "placeholder": "Username"}
+            attrs={"class": "uk-input uk-width-1-1", "placeholder": "Username"}
         ),
         help_text="Enter the username you registered with",
     )
     password = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={"class": "uk-width-1-1", "placeholder": "Password"}
+            attrs={"class": "uk-input uk-width-1-1", "placeholder": "Password"}
         ),
         help_text="Enter your password",
     )

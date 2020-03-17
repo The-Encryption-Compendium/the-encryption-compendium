@@ -2,7 +2,7 @@
 Navigation bar across the top of the site for the researcher view.
 {% endcomment %}
 
-<nav class="site-navbar uk-navbar uk-navbar-container" id="navbar" uk-navbar="">
+<nav class="uk-navbar-container" id="navbar" uk-navbar>
   {# Link back to landing page #}
   <div class="uk-navbar-left">
     <ul class="uk-navbar-nav">
@@ -15,7 +15,7 @@ Navigation bar across the top of the site for the researcher view.
   </div>
 
   <div class="uk-navbar-right">
-    <ul class="uk-navbar-nav">
+    <ul class="uk-navbar-nav uk-margin-right">
 
       {# Navbar widget if the user is logged in #}
       {% if request.user.is_authenticated %}
@@ -33,7 +33,7 @@ Navigation bar across the top of the site for the researcher view.
               <a href="{% url 'research settings' %}" id="user-settings">Settings</a>
             </li>
             <li>
-              <a class="dropdown-item" id="my-entries" href="{% url 'research my entries' %}">My entries</a>
+              <a id="my-entries" href="{% url 'research my entries' %}">My entries</a>
             </li>
             <li class="uk-nav-divider"></li>
             <li>
