@@ -42,26 +42,14 @@
   {% csrf_token %}
 
   {# Display all of the tags that already exist #}
-  <div class="uk-grid uk-grid-small">
+  <div class="uk-grid uk-grid-small uk-grid-row-small" uk-grid>
     {% for tag in tags %}
     <div>
       <div class="uk-card uk-card-secondary uk-card-body uk-card-small">
         {{ tag.tagname }}
-        <a href="#kill-tag-{{ tag.id }}" uk-toggle>
+        <a href="#kill-tag-{{ tag.id }}">
           <span class="uk-margin-left uk-text-danger" uk-icon="icon:close"></span>
         </a>
-      </div>
-    </div>
-
-    {# Modal that allows users to completely kill a tag #}
-    <div id="kill-tag-{{ tag.id }}" uk-modal>
-      <div class="uk-modal-dialog uk-modal-body">
-        <a class="uk-modal-close-default" href="" uk-close></a>
-        <div class="uk-modal-header">
-          <h3 class="uk-h3">
-            Are you sure you want to delete this tag?
-          </h3>
-        </div>
       </div>
     </div>
     {% endfor %}

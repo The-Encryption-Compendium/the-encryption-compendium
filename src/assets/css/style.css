@@ -37,27 +37,16 @@ footer {
   color: #444;
 }
 
+br.sep {
+  margin-top: 2em;
+}
+
 /****************************
  * CSS for tags
  ****************************/
-.tag-selector {
-  color: black;
-  border-color: black;
-  background-color: #f8f8f8;
-}
 
-.tag-selector:hover {
-  color: #f8f8f8;
-  background-color: #999;
-}
-
-.tag-selector.uk-active {
-  color: #f8f8f8;
-  background-color: #444 !important;
-}
-
-br.sep {
-  margin-top: 2em;
+.selected-tag {
+  background-color: #aaaaaa;
 }
 
 /****************************

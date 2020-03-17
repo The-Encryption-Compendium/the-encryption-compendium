@@ -25,7 +25,7 @@ Template for the landing page for the site.
       <div id="tag-buttons" class="uk-grid uk-grid-small" uk-grid="" data-uk-button-checkbox="">
         {% for tag in tags %}
         <div>
-          <button type="button" class="uk-button uk-button-default tag-selector">
+          <button type="button" id="tag-{{ tag.id }}" type="button" class="uk-button uk-button-default" onclick="toggle_tag({{ tag.id }})">
             {{ tag.tagname }}
           </button>
         </div>
@@ -51,4 +51,17 @@ Template for the landing page for the site.
   <br class="sep">
 
 </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ block.super }}
+<script>
+function toggle_tag(tag_id) {
+  // Deselect the active element so that it can change color
+  document.activeElement.blur();
+
+  let tag = document.getElementById("tag-" + tag_id);
+  tag.classList.toggle("selected-tag");
+}
+</script>
 {% endblock %}
