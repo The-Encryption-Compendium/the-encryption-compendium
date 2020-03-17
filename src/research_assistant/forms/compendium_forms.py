@@ -4,6 +4,7 @@ Forms related to creating, modifying, and deleting compendium entries.
 
 import bibtexparser
 import datetime
+import re
 
 from bibtexparser.bparser import BibTexParser
 from django import forms
@@ -179,6 +180,31 @@ class BibTexUploadForm(forms.Form):
     )
 
     """
+    Helper functions
+    """
+
+    def reformat_bibtex(self, bibtex: dict):
+        """
+        Reformat the BibTeX received by the form into a format that's more easily
+        digestible by other parts of the code.
+        """
+
+        for entry in bibtex.values():
+            authors = entry.get("author")
+            if authors is not None:
+                # Strip brackets { } from the author string
+                patt = re.compile(r"\{([^\}]+)\}")
+                names = patt.findall(authors)
+                entry["author"] = names
+
+            title = entry.get("title")
+            if title is not None:
+                # Strip brackets { } from the title
+                entry["title"] = title.replace("{", "").replace("}", "")
+
+        return bibtex
+
+    """
     Validation functions
     """
 
@@ -238,10 +264,10 @@ class BibTexUploadForm(forms.Form):
             )
 
         elif bibfile is None and bibentry is not None:
-            return {"bibtex": bibentry}
+            return {"bibtex": self.reformat_bibtex(bibentry)}
 
         else:
-            return {"bibtex": bibfile}
+            return {"bibtex": self.reformat_bibtex(bibfile)}
 
 
 class NewTagForm(forms.ModelForm):
