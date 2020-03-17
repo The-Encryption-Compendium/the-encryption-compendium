@@ -24,9 +24,9 @@ Navigation bar across the top of the site for the researcher view.
 
       {# Navbar widget if the user is logged in #}
       {% if request.user.is_authenticated %}
-      <li>
+      <li id="user-profile-dropdown-button">
         <a href="#">{{ user.username }}</a>
-        <div class="uk-navbar-dropdown">
+        <div id="user-profile-dropdown-menu" class="uk-navbar-dropdown">
           <ul class="uk-nav uk-navbar-dropdown-nav">
             <li>
               <a href="{% url 'research dashboard' %}">Dashboard</a>

@@ -136,7 +136,7 @@ class LoginFunctionalTestCase(FunctionalTest):
         profile_button = navbar.find_element_by_id("user-profile-dropdown-button")
         self.browser.execute_script("arguments[0].click();", profile_button)
 
-        menu = navbar.find_element_by_id("user-settings-dropdown-menu")
+        menu = navbar.find_element_by_id("user-profile-dropdown-menu")
         logout_button = menu.find_element_by_id("logout-button")
         self.browser.execute_script("arguments[0].click();", logout_button)
 
