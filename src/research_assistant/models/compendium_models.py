@@ -203,3 +203,15 @@ class CompendiumEntry(models.Model):
         and not the actual name of the month itself.
         """
         return month_name(self.month)
+
+    @property
+    def all_authors(self):
+        """
+        Retrieve a single string with all of the names of the authors of the compendium
+        entry.
+        """
+        authors = self.authors.all()
+        if len(authors) == 0:
+            return None
+        else:
+            return ", ".join(str(auth) for auth in authors)

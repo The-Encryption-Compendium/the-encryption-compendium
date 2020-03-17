@@ -128,7 +128,27 @@ class AbstractCompendiumEntryModificationView(
                     "abstract": entry.get("abstract"),
                     "year": int(entry["year"]) if "year" in entry else None,
                 }
-                CompendiumEntry.objects.create(**fields)
+                compendium_entry = CompendiumEntry.objects.create(**fields)
+
+                # Get all of the authors of the compendium entry. Due to some weirdness
+                # with how Zotero formats BibTeX outputs, we have to perform this regular
+                # expression in order to extract the authors.
+                names = entry.get("author", [])
+
+                # Set the authors of the compendium entry
+                authors_list = []
+                for name in names:
+                    author = Author.objects.filter(authorname=name)
+                    if not author.exists():
+                        author = Author.objects.create(authorname=name)
+                    else:
+                        author = author.first()
+
+                    authors_list.append(author)
+
+                compendium_entry.authors.set(authors_list)
+                compendium_entry.owner = request.user
+                compendium_entry.save()
 
         return is_valid, bibtex_form
 
