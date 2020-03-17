@@ -4,7 +4,7 @@ A generic template for a single field in a form.
 
 {% with help_text=field.help_text %}
 {% with label=field.label %}
-{% with required=field.required.required %}
+{% with required=field.field.required %}
   {% include 'includes/generic_form_field_header.html' with label=label required=required help_text=help_text only %}
 {% endwith %}
 {% endwith %}
