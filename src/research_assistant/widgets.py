@@ -5,6 +5,7 @@ Custom widget classes for the research_assistant app.
 import os
 
 from django import forms
+from encryption_compendium.utils import months
 from encryption_compendium.widgets import IconTextInput
 
 """
@@ -61,37 +62,24 @@ class MonthWidget(forms.Select):
     A widget for selecting the month.
     """
 
-    _months = [
-        "",
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-    ]
+    _months = ["", *months()]
 
-    def months():
+    def months(self):
         """
-        Get all of the available values of "month".
+        Get all of the available values of "month". Includes an empty string
+        (corresponding to no month being selected).
         """
         return MonthWidget._months
 
-    def month_choices():
+    def month_choices(self):
         """
         Get all of the available value-label pairs for the "month" parameter.
         """
-        return [c for c in enumerate(MonthWidget.months())]
+        return [c for c in enumerate(self.months())]
 
     def __init__(self, *args, **kwargs):
         # Need to account for cases in which no month is selected
-        choices = MonthWidget.month_choices()
+        choices = self.month_choices()
         kwargs["choices"] = choices
         super().__init__(*args, **kwargs)
 

@@ -115,6 +115,11 @@ Entry upload form tests
 
 @tag("compendium-entries", "tags")
 class CompendiumEntryFormTestCase(UnitTest):
+    """
+    Test for the CompendiumEntryForm, which serves as the interface for creating
+    and end editing compendium entries.
+    """
+
     def setUp(self):
         super().setUp()
 
@@ -186,25 +191,80 @@ class CompendiumEntryFormTestCase(UnitTest):
         data["publisher_text"] = random_username(self.rd)
         self.assertTrue(CompendiumEntryForm(data=data).is_valid())
 
-    def test_entry_with_date_field(self):
-        # test with complete date
-        data = self.data
-        data["year"] = random.randrange(1900, datetime.date.today().year)
-        data["month"] = random.randrange(1, 12)
-        data["day"] = random.randrange(1, 31)
+    def test_form_correctly_validates_date_field(self):
+        """
+        Ensure that the CompendiumEntryForm successfully validates correct dates.
+        In addition, it should clean each of its fields correctly, e.g. it should
+        store 'None' for the day field when the day is not specified.
+        """
+
+        ### The form should be able to handle a full day/month/year specification
+        data = self.data.copy()
+        data["day"] = 15
+        data["month"] = 8
+        data["year"] = 2000
         self.assertTrue(CompendiumEntryForm(data=data).is_valid())
 
-        # test with incomplete date
+        ### The form should be able to handle a month/year specification without
+        ### selecting a day.
+        data.pop("day")
+        form = CompendiumEntryForm(data=data)
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data.get("day"), None)
+
+        ### The form should be able to handle a year specification without either
+        ### a day or month.
+        data.pop("month")
+        form = CompendiumEntryForm(data=data)
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data.get("day"), None)
+        self.assertEqual(form.cleaned_data.get("month"), None)
+
+    def test_form_invalidates_bad_dates(self):
+        """
+        The form should invalidate dates that aren't correct, e.g. June 31st.
+        In addition, we need to enforce that the year of publication is selected
+        if the month is selected, and that both month and year are selected if the
+        day of publication has been specified.
+        """
+
+        # Ensure that the base data are okay
         data = self.data
-        data["year"] = random.randrange(1900, datetime.date.today().year)
-        data["month"] = random.randrange(1, 12)
+        self.assertTrue(CompendiumEntryForm(data=data).is_valid())
+
+        ### We cannot provide invalid dates (e.g. June 31) to the form
+        data = self.data.copy()
+        data["day"] = 31
+        data["month"] = 6
+        data["year"] = 2005
+        self.assertFalse(CompendiumEntryForm(data=data).is_valid())
+
+        data["day"] = 29
+        data["month"] = 2
+        data["year"] = 1900
+        self.assertFalse(CompendiumEntryForm(data=data).is_valid())
+
+        ### A form with the day specified must also have the month and year
+        data = self.data.copy()
+        data["day"] = 1
+        self.assertFalse(CompendiumEntryForm(data=data).is_valid())
+        data["month"] = 1
+        self.assertFalse(CompendiumEntryForm(data=data).is_valid())
+        data["year"] = 2000
+        self.assertTrue(CompendiumEntryForm(data=data).is_valid())
+
+        ### A form with the month specified must also have its year
+        data = self.data.copy()
+        data["month"] = 1
+        self.assertFalse(CompendiumEntryForm(data=data).is_valid())
+        data["year"] = 2000
         self.assertTrue(CompendiumEntryForm(data=data).is_valid())
 
 
 @tag("compendium-entries")
 class BibTexCompendiumEntryUploadTestCase(UnitTest):
     """
-    Test cases for adding a new compendium entry using BibTex.
+    Test cases for adding a new compendium entry using BibTeX.
     """
 
     def setUp(self):
@@ -336,7 +396,7 @@ class NewTagFormTestCase(UnitTest):
 
 
 @tag("auth")
-class ChangePasswordForm(UnitTest):
+class ChangePasswordFormTestCase(UnitTest):
     def setUp(self):
         super().setUp(preauth=True)
 
