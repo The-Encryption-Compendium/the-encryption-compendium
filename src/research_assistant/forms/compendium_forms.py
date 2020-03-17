@@ -44,15 +44,20 @@ class CompendiumEntryForm(forms.ModelForm):
         )
 
         widgets = {
-            "title": forms.TextInput(attrs={"class": "uk-form-width-large"}),
+            "title": forms.TextInput(attrs={"class": "uk-input uk-form-width-large"}),
             "abstract": forms.Textarea(
-                attrs={"class": "uk-form-width-large uk-width-1-1",},
+                attrs={"class": "uk-form-width-large uk-width-1-1 uk-textarea",},
             ),
-            "url": URLTextInput(attrs={"class": "uk-form-width-large"}),
+            "url": URLTextInput(attrs={"class": "uk-form-width-large uk-input"}),
             "tags": TagCheckboxSelectMultiple(
-                attrs={"ul_class": "uk-grid uk-grid-small uk-grid-width-medium-1-3"},
+                attrs={
+                    "ul_class": "uk-grid uk-grid-small uk-child-width-1-3@m",
+                    "class": "uk-checkbox",
+                },
             ),
-            "publisher_text": forms.TextInput(attrs={"class": "uk-form-width-large"}),
+            "publisher_text": forms.TextInput(
+                attrs={"class": "uk-form-width-large uk-input"}
+            ),
             "day": DayWidget(),
             "month": MonthWidget(),
             "year": YearWidget(),
@@ -172,7 +177,7 @@ class BibTexUploadForm(forms.Form):
     bibtex_entry = forms.CharField(
         widget=forms.Textarea(
             attrs={
-                "class": "monospace uk-width-1-1",
+                "class": "monospace uk-width-1-1 uk-textarea",
                 "placeholder": "Copy BibTex here...",
             }
         ),
@@ -281,6 +286,10 @@ class NewTagForm(forms.ModelForm):
         fields = ("tagname",)
 
         labels = {"tagname": "Tag name"}
+
+        widgets = {
+            "tagname": forms.TextInput(attrs={"class": "uk-input"}),
+        }
 
     def clean_tagname(self):
         """

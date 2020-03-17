@@ -19,12 +19,16 @@ the edit form, and another that allows you to display the form.
 {% endcomment %}
 
 {% if edit %}
-  <form class="uk-panel uk-panel-box uk-margin-top uk-form" method="POST">
+
+<div class="uk-container">
+  <form class="uk-margin-top" method="POST">
     {% csrf_token %}
     {% include "form_templates/compendium_entry_edit_form.html" with form=new_entry_form edit=edit only %}
   </form>
+</div>
+
 {% else %}
-  <ul class="uk-tab" data-uk-tab="{connect:'#upload_form'}">
+  <ul class="uk-tab" uk-tab="{connect:'#upload_form'}">
     <li {% if manual_entry_active %}class="uk-active"{% endif %}>
       <a href="#">Enter manually</a>
     </li>
@@ -35,13 +39,13 @@ the edit form, and another that allows you to display the form.
 
   <ul id="upload_form" class="uk-list uk-switcher">
     <li>
-      <form class="uk-panel uk-panel-box uk-margin-top uk-form" method="POST">
+      <form class="uk-margin-top" method="POST">
         {% csrf_token %}
         {% include "form_templates/compendium_entry_edit_form.html" with form=new_entry_form edit=edit only %}
       </form>
     </li>
     <li>
-      <form enctype="multipart/form-data" class="uk-panel uk-panel-box uk-margin-top uk-form" method="POST">
+      <form enctype="multipart/form-data" class="uk-margin-top" method="POST">
         {% csrf_token %}
         {% include "form_templates/bibtex_upload_form.html" with form=bibtex_form only %}
       </form>

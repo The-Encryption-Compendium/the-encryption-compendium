@@ -21,69 +21,65 @@ Form for creating new compendium entries, and for editing them.
     <span class="uk-text-danger">*</span> = required field
   </p>
 
-  <fieldset class="uk-margin-bottom">
-    {% include 'includes/generic_form_field.html' with field=form.title %}
+  {% include 'includes/generic_form_field.html' with field=form.title %}
 
-    {# -- START DATE SELECTOR WIDGET -- #}
+  {# -- START DATE SELECTOR WIDGET -- #}
 
-    {% comment %}
-    Construct the date selector widget manually
-    {% endcomment %}
+  {% comment %}
+  Construct the date selector widget manually
+  {% endcomment %}
 
-    {% with label="Publication date" %}
-    {% with help_text="Date the entry was published." %}
-      {% include 'includes/generic_form_field_header.html' with label=label help_text=help_text only %}
-    {% endwith %}
-    {% endwith %}
+  {% with label="Publication date" %}
+  {% with help_text="Date the entry was published." %}
+    {% include 'includes/generic_form_field_header.html' with label=label help_text=help_text only %}
+  {% endwith %}
+  {% endwith %}
 
-    {% include 'includes/generic_form_field_errors.html' with errors=form.day.errors only %}
-    {% include 'includes/generic_form_field_errors.html' with errors=form.month.errors only %}
-    {% include 'includes/generic_form_field_errors.html' with errors=form.year.errors only %}
+  {% include 'includes/generic_form_field_errors.html' with errors=form.day.errors only %}
+  {% include 'includes/generic_form_field_errors.html' with errors=form.month.errors only %}
+  {% include 'includes/generic_form_field_errors.html' with errors=form.year.errors only %}
 
-    <div class="uk-grid uk-grid-small uk-width-4-10" data-uk-margin="">
-      {# Labels #}
-      <div class="uk-width-2-10 uk-text-bold">
-        <label class="uk-form-label" for="day">{{ form.day.label }}</label>
-      </div>
-      <div class="uk-width-4-10 uk-text-bold">
-        <label for="month" class="uk-form-label">{{ form.month.label }}</label>
-      </div>
-      <div class="uk-width-4-10 uk-text-bold">
-        <label for="year" class="uk-form-label">{{ form.year.label }}</label>
-      </div>
-
-      {# Fields #}
-      <div class="uk-width-2-10">{{ form.day }}</div>
-      <div class="uk-width-4-10">{{ form.month }}</div>
-      <div class="uk-width-4-10">{{ form.year }}</div>
+  <div class="uk-grid-small uk-width-1-3@l uk-grid uk-child-width-1-3" uk-grid>
+    {# Labels #}
+    <div class="uk-first-column uk-text-bold">
+      <label class="uk-form-label" for="day">{{ form.day.label }}</label>
+    </div>
+    <div class="uk-text-bold">
+      <label for="month" class="uk-form-label">{{ form.month.label }}</label>
+    </div>
+    <div class="uk-text-bold">
+      <label for="year" class="uk-form-label">{{ form.year.label }}</label>
     </div>
 
-    {# -- END DATE SELECTOR WIDGET -- #}
+    {# Fields #}
+    <div class="uk-first-column">{{ form.day }}</div>
+    <div>{{ form.month }}</div>
+    <div>{{ form.year }}</div>
+  </div>
 
-    {% include 'includes/generic_form_field.html' with field=form.abstract %}
-    {% include 'includes/generic_form_field.html' with field=form.publisher_text %}
-    {% include 'includes/generic_form_field.html' with field=form.url %}
-    {% include 'includes/generic_form_field.html' with field=form.tags %}
+  {# -- END DATE SELECTOR WIDGET -- #}
 
-    {% if edit is True %}
-      <section class="uk-margin-top" id="author-input">
-        <h2 class="uk-h2 uk-text-bold">Authors</h2>
-        <input type="text" id="number-of-authors" name="number-of-authors" value="{{ num_of_authors }}">   Number of authors: (max. 20)<br />
-        <a href="#author-input" id="filldetails" onclick="addFields(true)">Edit Authors</a>
-        <div id="container"/>
-      </section>
-    {% else %}
-      <section class="uk-margin-top" id="author-input">
-        <h2 class="uk-h2 uk-text-bold">Authors</h2>
-        <input type="text" id="number-of-authors" name="number-of-authors" value="">   Number of authors: (max. 20)<br />
-        <a href="#author-input" id="filldetails" onclick="addFields()">Fill Details</a>
-        <div id="container"/>
-      </section>
-    {% endif %}
-  </fieldset>
+  {% include 'includes/generic_form_field.html' with field=form.abstract %}
+  {% include 'includes/generic_form_field.html' with field=form.publisher_text %}
+  {% include 'includes/generic_form_field.html' with field=form.url %}
+  {% include 'includes/generic_form_field.html' with field=form.tags %}
+
+  {% if edit is True %}
+  <section class="uk-margin-top" id="author-input">
+    <h2 class="uk-h2 uk-text-bold">Authors</h2>
+    <input class="uk-input uk-form-width-large" type="text" id="number-of-authors" name="number-of-authors" value="{{ num_of_authors }}">   Number of authors: (max. 20)<br />
+    <a href="#author-input" class="uk-link" id="filldetails" onclick="addFields(true)">Edit Authors</a>
+  </section>
+  {% else %}
+    <section class="uk-margin-top" id="author-input">
+      <h2 class="uk-h2 uk-text-bold">Authors</h2>
+      <input class="uk-input uk-form-width-large" type="text" id="number-of-authors" name="number-of-authors" value="">   Number of authors: (max. 20)<br />
+      <a href="#author-input" id="filldetails" onclick="addFields()">Fill Details</a>
+    </section>
+  {% endif %}
 </div>
 
-<button id="entry-submit-button" class="uk-button uk-margin-top" type="submit" name="edit-entry">
+<button id="entry-submit-button" class="uk-button uk-button-primary uk-margin-top" type="submit" name="edit-entry">
   {% if edit is True %}
   Edit entry
   {% else %}

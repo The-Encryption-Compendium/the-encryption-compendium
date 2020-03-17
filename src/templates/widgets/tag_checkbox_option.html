@@ -3,7 +3,7 @@ Checkbox used for selecting tags.
 {% endcomment %}
 
 {% if widget.wrap_label %}
-  <label{% if widget.attrs.id %} class="uk-text-middle tagname" for="{{ widget.attrs.id }}"{% endif %}>
+  <label{% if widget.attrs.id %} class="uk-text-middle" for="{{ widget.attrs.id }}"{% endif %}>
 {% endif %}
 {% include "django/forms/widgets/input.html" %}
 {% if widget.wrap_label %}

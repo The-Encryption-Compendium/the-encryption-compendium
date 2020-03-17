@@ -6,15 +6,12 @@
 {% block contents %}
 {% load static %}
 {{ block.super }}
-<form method="POST" class="uk-form">
+<form method="POST">
   {% csrf_token %}
 
   {% if created_user %}
-  <span class="d-flex justify-content-center">
-    <div class="alert alert-success mx-auto">
-      Your invite was sent!
-    </div>
-  </span>
+  <span class="uk-alert uk-alert-success">
+    Your invite was sent!  </span>
   {% endif %}
 
   {% if form.non_field_errors %}
@@ -23,38 +20,36 @@
   </div>
   {% endif %}
 
-  <fieldset>
-
-    {% for field in form %}
-    <div class="uk-form-row">
-      {{ field }}
+  {% for field in form %}
+    {{ field }}
+    <div class="uk-margin-top uk-width-1-3@m">
+      {% include "includes/field_errors.html" with errors=field.errors only %}
     </div>
-    {% include "includes/field_errors.html" with errors=field.errors only %}
-    {% endfor %}
+  {% endfor %}
 
-  </fieldset>
-  <button id="new_user_submit_button" class="uk-button" type="submit" name="create_user">
+  <button id="new_user_submit_button" class="uk-margin-top uk-button uk-button-primary" type="submit" name="create_user">
     Add new user
   </button>
-  </div>
 </form>
 
-<div class="uk-container">
-  <form class="uk-form" method="POST">
+<div class="uk-container uk-width-1-2@m">
+  <form method="POST">
     {% csrf_token %}
     {# Display all of the invites that haven't been accepted yet #}
-    <h2 class="text-center display-5 mb-4">Outstanding invites</h2>
+    <h2 class="uk-text-center">Outstanding invites</h2>
+    <hr>
 
-    <table class="uk-table">
-      <tbody>
-        {% for token in outstanding_tokens %}
-        <tr>
-          <td class="uk-width-1-10"><button name="del_email" value="{{ token.email }}" class="uk-close"></button></td>
-          <td class="uk-width-9-10"><p>{{ token.email }}</p></td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="uk-grid" uk-grid>
+      {% for token in outstanding_tokens %}
+      <div class="uk-text-center uk-width-3-4">
+        {{ token.email }}
+      </div>
+      <div class="uk-width-1-4">
+        <button class="uk-text-danger" name="del_email" value="{{ token.email }}" uk-close>
+        </button>
+      </div>
+      {% endfor %}
+    </div>
   </form>
 </div>
 {% endblock %}

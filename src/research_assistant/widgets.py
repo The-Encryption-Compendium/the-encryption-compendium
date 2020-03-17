@@ -54,6 +54,8 @@ class DayWidget(forms.Select):
     def __init__(self, *args, **kwargs):
         choices = DayWidget.day_choices()
         kwargs["choices"] = choices
+        kwargs.setdefault("attrs", {})
+        kwargs["attrs"].setdefault("class", "uk-select uk-form-width-small")
         super().__init__(*args, **kwargs)
 
 
@@ -81,6 +83,8 @@ class MonthWidget(forms.Select):
         # Need to account for cases in which no month is selected
         choices = self.month_choices()
         kwargs["choices"] = choices
+        kwargs.setdefault("attrs", {})
+        kwargs["attrs"].setdefault("class", "uk-select uk-form-width-small")
         super().__init__(*args, **kwargs)
 
 
@@ -89,7 +93,10 @@ class YearWidget(forms.TextInput):
     A widget for selecting the year
     """
 
-    pass
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("attrs", {})
+        kwargs["attrs"].setdefault("class", "uk-input uk-form-width-small")
+        super().__init__(*args, **kwargs)
 
 
 """
@@ -105,8 +112,13 @@ class EmailTextInput(IconTextInput):
     input is an email address.
     """
 
-    icon_name = "envelope"
+    icon_name = "mail"
     placeholder = "user@example.com"
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("attrs", {})
+        kwargs["attrs"].setdefault("class", "uk-input uk-form-width-large")
+        super().__init__(*args, **kwargs)
 
 
 class URLTextInput(IconTextInput):

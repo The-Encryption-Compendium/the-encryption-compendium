@@ -5,7 +5,7 @@
 
 {% block contents %}
 {{ block.super }}
-<form class="uk-form" method="POST">
+<form class="uk-width-1-3" method="POST">
   {% csrf_token %}
 
   {% if success %}
@@ -20,44 +20,43 @@
   </span>
   {% endif %}
 
-  <fieldset class="uk-margin-bottom">
-    {% for field in form %}
-      {% include 'includes/generic_form_field.html' with field=field %}
-    {% endfor %}
-  </fieldset>
+  {% for field in form %}
+    {% include 'includes/generic_form_field.html' with field=field %}
+  {% endfor %}
 
-  <button id="tag-submit-button" class="uk-button uk-button-primary" type="submit">
+  <button id="tag-submit-button" class="uk-margin-top uk-button uk-button-primary" type="submit">
     Add new tag
   </button>
 </form>
 
 <br class="sep">
 
-<div class="uk-width-1-1 uk-text-center uk-margin-bottom">
+<div class="uk-container uk-width-1-2@l uk-text-center uk-margin-bottom">
   <h2 class="uk-h2 uk-text-bold">
     Current tags
   </h2>
+  <hr class="uk-margin-bottom">
 </div>
 
-<form class="uk-form" method="POST">
+<form method="POST">
   {% csrf_token %}
 
   {# Display all of the tags that already exist #}
-  <div class="uk-grid uk-grid-small" data-uk-margin="">
+  <div class="uk-grid uk-grid-small">
     {% for tag in tags %}
     <div>
-      <div class="uk-panel uk-panel-box">
+      <div class="uk-card uk-card-secondary uk-card-body uk-card-small">
         {{ tag.tagname }}
-        <a href="#kill-tag-{{ tag.id }}" data-uk-modal="">
-          <i class="uk-margin-left uk-text-danger uk-icon-close"></i>
+        <a href="#kill-tag-{{ tag.id }}" uk-toggle>
+          <span class="uk-margin-left uk-text-danger" uk-icon="icon:close"></span>
         </a>
       </div>
     </div>
 
     {# Modal that allows users to completely kill a tag #}
-    <div id="kill-tag-{{ tag.id }}" class="uk-modal">
-      <div class="uk-modal-dialog">
-        <a class="uk-modal-close uk-close" href=""></a>
+    <div id="kill-tag-{{ tag.id }}" uk-modal>
+      <div class="uk-modal-dialog uk-modal-body">
+        <a class="uk-modal-close-default" href="" uk-close></a>
         <div class="uk-modal-header">
           <h3 class="uk-h3">
             Are you sure you want to delete this tag?

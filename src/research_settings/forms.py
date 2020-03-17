@@ -7,15 +7,30 @@ from research_assistant.models import User
 class PasswordChangeForm(forms.Form):
 
     oldpassword = forms.CharField(
-        widget=forms.PasswordInput(attrs={"placeholder": "Your old Password"}),
+        widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "Your old Password",
+                "class": "uk-input uk-form-width-large",
+            }
+        ),
         help_text="Enter your old password",
     )
     newpassword1 = forms.CharField(
-        widget=forms.PasswordInput(attrs={"placeholder": "New Password"}),
+        widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "New Password",
+                "class": "uk-input uk-form-width-large",
+            }
+        ),
         help_text="Enter a new password",
     )
     newpassword2 = forms.CharField(
-        widget=forms.PasswordInput(attrs={"placeholder": "Confirm New Password"}),
+        widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "Confirm New Password",
+                "class": "uk-input uk-form-width-large",
+            }
+        ),
         help_text="Re-enter the password",
     )
 

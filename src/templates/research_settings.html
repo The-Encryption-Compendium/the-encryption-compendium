@@ -5,18 +5,21 @@
 {% block body %}
 
 {% load static %}
-<div class="uk-container uk-grid uk-margin-top">
+<div class="uk-grid uk-margin-top">
+  <div class="uk-width-1-5@s">
+    <ul class="uk-tab-left" uk-tab="connect: #settings-switcher">
+      <li class="uk-active"><a href="#">Change password</a></li>
+      <li class="uk-active"><a href="#">Account settings</a></li>
+    </ul>
+  </div>
 
-  <ul class="uk-tab uk-tab-left uk-width-medium-1-5" data-uk-tab="{connect: '#settings_switcher'}">
-      <li class="uk-width-medium-5-5" aria-expanded="false"><a id="change-password-link" href="#">Password</a></li>
-  </ul>
-
-  <ul id="settings_switcher" class="uk-switcher uk-margin-left">
-    <li>
-      {% include 'includes/password_change_form.html' with form=passchange_form %}
-    </li>
-    <li></li>
-  </ul>
-
+  <div class="uk-width-4-5@s">
+    <ul id="settings-switcher" class="uk-switcher uk-margin">
+      <li>
+        {% include 'includes/password_change_form.html' with form=passchange_form %}
+      </li>
+      <li></li>
+    </ul>
+  </div>
 </div>
 {% endblock %}

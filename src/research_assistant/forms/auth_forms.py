@@ -73,7 +73,10 @@ class SignupForm(forms.ModelForm):
 
     password_2 = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={"class": "uk-width-1-1", "placeholder": "Enter your password again"},
+            attrs={
+                "class": "uk-input uk-width-1-1",
+                "placeholder": "Enter your password again",
+            },
         ),
         help_text="Enter your password again",
         label="",
@@ -91,10 +94,16 @@ class SignupForm(forms.ModelForm):
         widgets = {
             "email": EmailTextInput(attrs={"class": "uk-width-1-1"},),
             "username": forms.TextInput(
-                attrs={"class": "uk-width-1-1", "placeholder": "Pick a username"},
+                attrs={
+                    "class": "uk-input uk-width-1-1",
+                    "placeholder": "Pick a username",
+                },
             ),
             "password": forms.PasswordInput(
-                attrs={"class": "uk-width-1-1", "placeholder": "Choose your password"},
+                attrs={
+                    "class": "uk-input uk-width-1-1",
+                    "placeholder": "Choose your password",
+                },
             ),
         }
 

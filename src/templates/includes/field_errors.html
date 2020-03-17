@@ -3,7 +3,8 @@ Generic template for displaying errors in forms.
 {% endcomment %}
 
 {% if errors %}
-<div class="uk-alert uk-alert-danger" role="alert">
+<div class="uk-width-auto uk-alert uk-alert-danger" role="alert">
+  <span>
   {% if errors|length == 1 %}
     {% for error in errors %}
     {{ error|escape }}
@@ -11,5 +12,6 @@ Generic template for displaying errors in forms.
   {% else %}
     {{ errors }}
   {% endif %}
+  </span>
 </div>
 {% endif %}
