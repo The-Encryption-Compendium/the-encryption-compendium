@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+
+  gunicorn:
+    build:
+      context: .
+      dockerfile: deploy_tools/gunicorn/Dockerfile
+    environment:
+      DEVELOPMENT: "yes"
+    image: tec-gunicorn
+    container_name: tec-gunicorn
+    volumes:
+      - ./src:/var/src/:ro
+    ports:
+      - "5000:5000"
+    networks:
+      - tec-net
+
+networks:
+  tec-net:

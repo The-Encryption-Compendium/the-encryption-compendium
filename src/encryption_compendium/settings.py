@@ -56,7 +56,7 @@ if not SECRET_KEY:
             )
         )
 
-ALLOWED_HOSTS = ["127.0.0.1"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 if os.getenv("ALLOWED_HOSTS"):
     ALLOWED_HOSTS += os.getenv("ALLOWED_HOSTS").strip().replace(" ", "").split(",")
 
