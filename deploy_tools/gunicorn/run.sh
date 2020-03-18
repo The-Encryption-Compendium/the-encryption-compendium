@@ -3,9 +3,9 @@
 # Enable more verbose logging in development mode
 if [ "${DEVELOPMENT}" = "yes" ]
 then
-    LOG_LEVEL="debug"
+    ADDTL_OPTS="--reload --log-level debug"
 else
-    LOG_LEVEL="info"
+    ADDTL_OPTS="--log-level info"
 fi
 
 if [ -d /var/src ]
@@ -20,7 +20,5 @@ fi
 python3 manage.py migrate
 
 gunicorn encryption_compendium.wsgi \
-    --bind 0.0.0.0:5000 \
-    --access-logfile /dev/stdout \
-    --error-logfile /dev/stderr \
-    --log-level "${LOG_LEVEL}"
+    --config "${GUNICORN_CONFIG}" \
+    ${ADDTL_OPTS}

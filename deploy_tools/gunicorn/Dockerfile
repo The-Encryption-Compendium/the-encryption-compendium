@@ -24,8 +24,6 @@ RUN if [ ! "${DEVELOPMENT}" = "yes" ] && [ ! "${DEVELOPMENT}" = "no" ]; \
         exit 1; \
     fi
 
-
-
 COPY requirements.txt /tmp/requirements.txt
 COPY requirements.dev.txt /tmp/requirements.dev.txt
 COPY deploy_tools/gunicorn/setup.sh /tmp/setup.sh
@@ -42,6 +40,10 @@ ENV WWW_DIR="/var/www"
 RUN mkdir -p "${WWW_DIR}" \
     && chown -R www-data:www-data "${WWW_DIR}"
 ADD --chown=www-data:www-data src "${WWW_DIR}"
+
+# Install Gunicorn config file
+ENV GUNICORN_CONFIG=/etc/gunicorn/config.py
+COPY deploy_tools/gunicorn/config.py "${GUNICORN_CONFIG}"
 
 # Install script to be run as the www-data user
 COPY --chown=root:www-data deploy_tools/gunicorn/run.sh /run.sh
