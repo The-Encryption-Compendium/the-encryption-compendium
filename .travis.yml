@@ -170,17 +170,17 @@ install:
   - export PATH="~/.local/bin:$PATH"
   - if [ $(which python3) ]; then export PY=python3; else export PY=python; fi
   # MySQL environmental variables for tests that use a MySQL database
-  - export MYSQL_DATABASE="testdb"
+  - export MYSQL_DATABASE="tecdb"
   - export MYSQL_USER="root"
   - export MYSQL_PASSWORD=""
   - export DATABASE_HOST="localhost"
   # Postgres environmental variables for tests using a PostgreSQL database
-  - export POSTGRES_DB="testdb"
+  - export POSTGRES_DB="tecdb"
   - export POSTGRES_USER="postgres"
   - export POSTGRES_PASSWORD=""
   # Set up database
-  - if [ $DATABASE_ENGINE = "mysql" ]; then mysql -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"; fi
-  - if [ $DATABASE_ENGINE = "postgres" ]; then psql -c "CREATE DATABASE IF NOT EXISTS ${POSTGRES_DB};" -U "${POSTGRES_USER}"; fi
+  - if [ $DATABASE_ENGINE = "mysql" ]; then mysql -e "CREATE DATABASE ${MYSQL_DATABASE};"; fi
+  - if [ $DATABASE_ENGINE = "postgres" ]; then psql -c "CREATE DATABASE ${POSTGRES_DB};" -U "${POSTGRES_USER}"; fi
 
 script:
   # This script is run for all tests
