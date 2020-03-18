@@ -5,9 +5,9 @@ os: linux
 dist: bionic
 
 services:
-  - mysql
+  - postgresql
 env:
-  - DEVELOPMENT=no DATABASE_ENGINE=mysql
+  - DEVELOPMENT=no DATABASE_ENGINE=postgresql
 
 jobs:
 
@@ -59,7 +59,7 @@ jobs:
         firefox: latest
       services:
         - xvfb
-        - mysql
+        - postgresql
       before_script:
         # Selenium needs Geckodriver in order to test Firefox
         - URL='https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz'
@@ -78,10 +78,10 @@ jobs:
         firefox: latest-beta
       services:
         - xvfb
-        - mysql
+        - postgresql
       before_install:
         - export DEVELOPMENT=yes
-        - export DATABASE_ENGINE=mysql
+        - export DATABASE_ENGINE=postgresql
       before_script:
         # Selenium needs Geckodriver in order to test Firefox
         - URL='https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz'
@@ -100,7 +100,7 @@ jobs:
         chrome: stable
       services:
         - xvfb
-        - mysql
+        - postgresql
       before_script:
         # Selenium needs Chromedriver in order to test Chrome
         - URL='https://chromedriver.storage.googleapis.com/79.0.3945.36/chromedriver_linux64.zip'
@@ -120,10 +120,10 @@ jobs:
         chrome: beta
       services:
         - xvfb
-        - mysql
+        - postgresql
       before_install:
         - export DEVELOPMENT=yes
-        - export DATABASE_ENGINE=mysql
+        - export DATABASE_ENGINE=postgresql
       before_script:
         # Selenium needs Chromedriver in order to test Chrome
         - URL='https://chromedriver.storage.googleapis.com/80.0.3987.16/chromedriver_linux64.zip'
@@ -144,7 +144,7 @@ jobs:
         firefox: latest
       services:
         - xvfb
-        - mysql
+        - postgresql
       before_script:
         - pip3 install codecov
         # Selenium needs Geckodriver in order to test Firefox
@@ -174,7 +174,13 @@ install:
   - export MYSQL_USER="root"
   - export MYSQL_PASSWORD=""
   - export DATABASE_HOST="localhost"
+  # Postgres environmental variables for tests using a PostgreSQL database
+  - export POSTGRES_DB="testdb"
+  - export POSTGRES_USER="postgres"
+  - export POSTGRES_PASSWORD=""
+  # Set up database
   - if [ $DATABASE_ENGINE = "mysql" ]; then mysql -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"; fi
+  - if [ $DATABASE_ENGINE = "postgres" ]; then psql -c "CREATE DATABASE IF NOT EXISTS ${POSTGRES_DB};" -U "${POSTGRES_USER}"; fi
 
 script:
   # This script is run for all tests
