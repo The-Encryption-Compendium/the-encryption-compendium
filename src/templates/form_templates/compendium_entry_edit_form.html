@@ -63,18 +63,20 @@ Form for creating new compendium entries, and for editing them.
   {% include 'includes/generic_form_field.html' with field=form.publisher_text %}
   {% include 'includes/generic_form_field.html' with field=form.url %}
   {% include 'includes/generic_form_field.html' with field=form.tags %}
-
-  {% if edit is True %}
+  
+  {% if edit %}
   <section class="uk-margin-top" id="author-input">
     <h2 class="uk-h2 uk-text-bold">Authors</h2>
     <input class="uk-input uk-form-width-large" type="text" id="number-of-authors" name="number-of-authors" value="{{ num_of_authors }}">   Number of authors: (max. 20)<br />
     <a href="#author-input" class="uk-link" id="filldetails" onclick="addFields(true)">Edit Authors</a>
+    <div id="container"/>
   </section>
   {% else %}
     <section class="uk-margin-top" id="author-input">
       <h2 class="uk-h2 uk-text-bold">Authors</h2>
       <input class="uk-input uk-form-width-large" type="text" id="number-of-authors" name="number-of-authors" value="">   Number of authors: (max. 20)<br />
       <a href="#author-input" id="filldetails" onclick="addFields()">Fill Details</a>
+      <div id="container"/>
     </section>
   {% endif %}
 </div>

@@ -218,6 +218,7 @@ class EditCompendiumEntryView(AbstractCompendiumEntryModificationView):
                 authors.append(author.authorname)
 
             form = CompendiumEntryForm(instance=entry)
+            print(form.fields)
             return render(
                 request,
                 "new_article.html",
@@ -225,6 +226,7 @@ class EditCompendiumEntryView(AbstractCompendiumEntryModificationView):
                     "form": form,
                     "authors": json.dumps(authors),
                     "num_of_authors": len(authors),
+                    "edit": True,
                 },
             )
 

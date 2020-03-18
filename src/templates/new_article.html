@@ -23,7 +23,7 @@ the edit form, and another that allows you to display the form.
 <div class="uk-container">
   <form class="uk-margin-top" method="POST">
     {% csrf_token %}
-    {% include "form_templates/compendium_entry_edit_form.html" with form=new_entry_form edit=edit only %}
+    {% include "form_templates/compendium_entry_edit_form.html" with form=form edit=edit num_of_authors=num_of_authors only %}
   </form>
 </div>
 
