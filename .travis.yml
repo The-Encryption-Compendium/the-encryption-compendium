@@ -7,7 +7,7 @@ dist: bionic
 services:
   - postgresql
 env:
-  - DEVELOPMENT=no DATABASE_ENGINE=postgresql
+  - DEVELOPMENT=no DATABASE_ENGINE=postgres
 
 jobs:
 
@@ -81,7 +81,7 @@ jobs:
         - postgresql
       before_install:
         - export DEVELOPMENT=yes
-        - export DATABASE_ENGINE=postgresql
+        - export DATABASE_ENGINE=postgres
       before_script:
         # Selenium needs Geckodriver in order to test Firefox
         - URL='https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz'
@@ -123,7 +123,7 @@ jobs:
         - postgresql
       before_install:
         - export DEVELOPMENT=yes
-        - export DATABASE_ENGINE=postgresql
+        - export DATABASE_ENGINE=postgres
       before_script:
         # Selenium needs Chromedriver in order to test Chrome
         - URL='https://chromedriver.storage.googleapis.com/80.0.3987.16/chromedriver_linux64.zip'
