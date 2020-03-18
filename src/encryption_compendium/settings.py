@@ -136,8 +136,20 @@ elif DATABASE_ENGINE == "mysql":
             "PORT": os.getenv("DATABASE_HOST_PORT", "3306"),
         }
     }
+elif DATABASE_ENGINE == "postgres":
+    logging.info("Using Postgres database...")
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("POSTGRES_DB"),
+            "USER": os.getenv("POSTGRES_USER"),
+            "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+            "HOST": os.getenv("DATABASE_HOST"),
+            "PORT": os.getenv("DATABASE_HOST_PORT", "5432"),
+        }
+    }
 else:
-    raise Exception("DATABASE_ENGINE must be either sqlite3 or mysql.")
+    raise Exception("DATABASE_ENGINE must be either sqlite3, mysql, or postgres.")
 
 # Authentication options
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators

@@ -2,14 +2,29 @@ version: "3"
 
 services:
 
-  gunicorn:
+  tec-database:
+    image: postgres:12.2-alpine
+    container_name: tec-database
+    env_file:
+      - .env
+    volumes:
+      - site-db:/var/lib/postgresql/data:rw
+    ports:
+      - "5432:5432"
+    networks:
+      - tec-net
+
+  tec-gunicorn:
     build:
       context: .
       dockerfile: deploy_tools/gunicorn/Dockerfile
-    environment:
-      DEVELOPMENT: "yes"
     image: tec-gunicorn
     container_name: tec-gunicorn
+    environment:
+      DEVELOPMENT: "yes"
+      DATABASE_ENGINE: "postgres"
+    env_file:
+      - .env
     volumes:
       - ./src:/var/src/:ro
     ports:
@@ -19,3 +34,6 @@ services:
 
 networks:
   tec-net:
+
+volumes:
+  site-db:

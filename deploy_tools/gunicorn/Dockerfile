@@ -9,6 +9,7 @@ RUN apk update \
     && apk add --no-cache \
         libffi-dev \
         musl-dev \
+        postgresql-dev \
         python3 \
         python3-dev
 

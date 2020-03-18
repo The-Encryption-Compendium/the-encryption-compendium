@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# Enable more verbose logging in development mode
 if [ "${DEVELOPMENT}" = "yes" ]
 then
     LOG_LEVEL="debug"
@@ -14,6 +15,9 @@ then
     echo "----------------------------------------------"
     cd /var/src
 fi
+
+# Initialize the database
+python3 manage.py migrate
 
 gunicorn encryption_compendium.wsgi \
     --bind 0.0.0.0:5000 \
