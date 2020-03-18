@@ -21,7 +21,6 @@ services:
     image: tec-gunicorn
     container_name: tec-gunicorn
     environment:
-      DEVELOPMENT: "yes"
       DATABASE_ENGINE: "postgres"
     env_file:
       - .env

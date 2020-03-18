@@ -13,15 +13,24 @@ RUN apk update \
         python3 \
         python3-dev
 
+# Install pip packages. The packages we install will vary based
+# on whether we're running in production mode or development
+# mode.
+ARG DEVELOPMENT="yes"
+RUN if [ ! "${DEVELOPMENT}" = "yes" ] && [ ! "${DEVELOPMENT}" = "no" ]; \
+    then \
+        echo "Error: DEVELOPMENT must be yes or no, not \"${DEVELOPMENT}\"." \
+            >/dev/stderr; \
+        exit 1; \
+    fi
+
+
+
 COPY requirements.txt /tmp/requirements.txt
-RUN apk add --no-cache gcc \
-    && python3 -m pip install \
-        -r /tmp/requirements.txt \
-        --no-cache-dir \
-#
-# Clean up
-    && apk del gcc \
-    && rm /tmp/requirements.txt
+COPY requirements.dev.txt /tmp/requirements.dev.txt
+COPY deploy_tools/gunicorn/setup.sh /tmp/setup.sh
+
+RUN /tmp/setup.sh
 
 # Development purposes -- if the /var/src directory is non-empty, then we
 # assume that the code has been mounted there and run the code from there
@@ -41,6 +50,6 @@ USER www-data
 WORKDIR "${WWW_DIR}"
 
 # Set additional configuration options
-ENV DEVELOPMENT="yes"
+ENV DEVELOPMENT="${DEVELOPMENT}"
 
 CMD [ "/bin/sh", "/run.sh" ]
