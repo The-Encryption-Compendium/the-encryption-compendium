@@ -7,7 +7,7 @@ lists of entries that they've added, and so on.
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
-from research_assistant.forms import EntryDeleteForm
+from entries.forms import EntryDeleteForm
 from entries.models import CompendiumEntry
 
 

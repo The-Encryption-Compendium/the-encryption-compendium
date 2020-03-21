@@ -13,11 +13,8 @@ from django.views import View
 from django.views.decorators.http import require_http_methods
 from django.views.generic.base import ContextMixin
 from django.utils.decorators import method_decorator
-from research_assistant.forms import (
-    BibTexUploadForm,
-    CompendiumEntryForm,
-    NewTagForm,
-)
+from research_assistant.forms import BibTexUploadForm
+from entries.forms import CompendiumEntryForm, NewTagForm
 from entries.models import (
     CompendiumEntry,
     CompendiumEntryTag,

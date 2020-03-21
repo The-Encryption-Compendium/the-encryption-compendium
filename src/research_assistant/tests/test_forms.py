@@ -11,11 +11,8 @@ from encryption_compendium.test_utils import (
     UnitTest,
     random_username,
 )
-from research_assistant.forms import (
-    BibTexUploadForm,
-    CompendiumEntryForm,
-    NewTagForm,
-)
+from research_assistant.forms import BibTexUploadForm
+from entries.forms import CompendiumEntryForm, NewTagForm
 from entries.models import CompendiumEntryTag
 from users.forms import (
     AddNewUserForm,
