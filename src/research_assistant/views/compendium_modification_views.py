@@ -18,7 +18,7 @@ from research_assistant.forms import (
     CompendiumEntryForm,
     NewTagForm,
 )
-from research_assistant.models import (
+from entries.models import (
     CompendiumEntry,
     CompendiumEntryTag,
     Publisher,

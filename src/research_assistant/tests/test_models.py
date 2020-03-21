@@ -5,7 +5,7 @@ from django.test import tag
 from django.utils import timezone
 from encryption_compendium.test_utils import UnitTest, random_password, random_username
 from random import randrange
-from research_assistant.models import (
+from entries.models import (
     CompendiumEntry,
     CompendiumEntryTag,
 )

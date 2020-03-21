@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from research_assistant.forms import EntryDeleteForm
-from research_assistant.models import CompendiumEntry
+from entries.models import CompendiumEntry
 
 
 @login_required

@@ -16,7 +16,7 @@ from research_assistant.forms import (
     CompendiumEntryForm,
     NewTagForm,
 )
-from research_assistant.models import CompendiumEntryTag
+from entries.models import CompendiumEntryTag
 from users.forms import (
     AddNewUserForm,
     ResearchLoginForm,

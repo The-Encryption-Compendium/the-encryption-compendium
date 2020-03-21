@@ -9,7 +9,7 @@ import re
 from bibtexparser.bparser import BibTexParser
 from django import forms
 from django.utils.translation import gettext as _
-from research_assistant.models import (
+from entries.models import (
     CompendiumEntry,
     CompendiumEntryTag,
 )

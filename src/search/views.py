@@ -1,7 +1,7 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.views import View
-from research_assistant.models import CompendiumEntry
+from entries.models import CompendiumEntry
 
 
 class SearchView(View):

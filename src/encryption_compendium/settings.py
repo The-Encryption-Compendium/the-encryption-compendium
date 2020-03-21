@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     # django-compressor
     "compressor",
     # Apps developed in this repository
+    "entries",
     "public_view",
     "research_assistant",
     "search",

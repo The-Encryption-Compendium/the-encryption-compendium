@@ -4,7 +4,7 @@ Views for the public-facing side of the site.
 
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
-from research_assistant.models import CompendiumEntryTag
+from entries.models import CompendiumEntryTag
 
 
 @require_http_methods(["GET"])

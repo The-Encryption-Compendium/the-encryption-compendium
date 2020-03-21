@@ -11,7 +11,7 @@ from encryption_compendium.test_utils import (
     random_password,
     UnitTest,
 )
-from research_assistant.models import (
+from entries.models import (
     CompendiumEntry,
     CompendiumEntryTag,
     Author,

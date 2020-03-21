@@ -1,5 +1,9 @@
+"""
+Model administration through the Django admin interface
+"""
+
 from django.contrib import admin
-from research_assistant.models import CompendiumEntry
+from entries.models import CompendiumEntry
 from research_assistant.forms import CompendiumEntryForm
 
 

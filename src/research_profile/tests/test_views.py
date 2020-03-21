@@ -2,7 +2,8 @@ from django.contrib.auth import get_user
 from django.test import tag
 from django.urls import reverse
 from encryption_compendium.test_utils import UnitTest
-from research_assistant.models import CompendiumEntry, CompendiumEntryTag, User
+from entries.models import CompendiumEntry, CompendiumEntryTag
+from users.models import User
 
 from unittest import skip
 
