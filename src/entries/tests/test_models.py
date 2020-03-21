@@ -3,8 +3,9 @@ Tests for models in the 'entries' app
 """
 
 from datetime import date
+from django import db
 from django.utils import timezone
-from entries.models import CompendiumEntry
+from entries.models import CompendiumEntry, CompendiumEntryTag
 from encryption_compendium.test_utils import UnitTest, random_username
 from random import randrange
 
@@ -52,3 +53,20 @@ class CompendiumEntryModelTestCase(UnitTest):
         # TODO: URL not actually a URL
         # TODO: fields exceed maximum lengths
         pass
+
+
+class CompendiumEntryTagModelTestCase(UnitTest):
+    """
+    Model tests for CompendiumEntryTag
+    """
+
+    def test_create_new_tag(self):
+        self.assertEqual(len(CompendiumEntryTag.objects.all()), 0)
+        new_tag = CompendiumEntryTag.objects.create(tagname="my-new-tag")
+        self.assertEqual(len(CompendiumEntryTag.objects.all()), 1)
+        self.assertEqual(new_tag.tagname, "my-new-tag")
+
+        # Tag names should be unique. This is how we ensure that we can identify
+        # pairs of CompendiumEntries that share the same tags.
+        with self.assertRaises(db.utils.IntegrityError):
+            CompendiumEntryTag.objects.create(tagname="my-new-tag")

@@ -1,25 +1,21 @@
-from datetime import date
+"""
+Some tests for the models defined within the users app
+"""
+
 from django import db
 from django.contrib.auth import get_user
 from django.test import tag
 from django.utils import timezone
 from encryption_compendium.test_utils import UnitTest, random_password, random_username
-from random import randrange
-from entries.models import (
-    CompendiumEntry,
-    CompendiumEntryTag,
-)
 from users.models import SignupToken, User
-
-"""
----------------------------------------------------
-Custom user model tests
----------------------------------------------------
-"""
 
 
 @tag("auth", "users")
 class UserModelTestCase(UnitTest):
+    """
+    Tests for the custom user model
+    """
+
     def test_create_new_user(self):
         user = User.objects.create_user(
             username=self.username, email=self.email, password=self.password
@@ -104,3 +100,24 @@ class UserModelTestCase(UnitTest):
 
         self.client.login(username=self.username, password=self.password)
         self.assertFalse(get_user(self.client).is_authenticated)
+
+
+class SignupTokenModelTestCase(UnitTest):
+    """
+    Tests for the SignupToken model
+    """
+
+    def test_generate_new_token(self):
+        self.assertEqual(len(SignupToken.objects.all()), 0)
+        new_token = SignupToken.objects.create(email="user@example.com")
+        self.assertEqual(len(SignupToken.objects.all()), 1)
+
+    def test_emails_are_unique(self):
+        SignupToken.objects.create(email="user@example.com")
+        with self.assertRaises(db.utils.IntegrityError):
+            SignupToken.objects.create(email="user@example.com")
+
+    def test_tokens_are_unique(self):
+        new_token = SignupToken.objects.create(email="user@example.com")
+        with self.assertRaises(db.utils.IntegrityError):
+            SignupToken.objects.create(email="user2@example.com", token=new_token.token)
