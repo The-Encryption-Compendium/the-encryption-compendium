@@ -9,12 +9,7 @@ from django.core.mail import send_mail
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
-from research_assistant.forms import (
-    AddNewUserForm,
-    ResearchLoginForm,
-    SignupForm,
-    TokenDeleteForm,
-)
+from users.forms import AddNewUserForm, ResearchLoginForm, SignupForm, TokenDeleteForm
 from users.models import SignupToken
 
 

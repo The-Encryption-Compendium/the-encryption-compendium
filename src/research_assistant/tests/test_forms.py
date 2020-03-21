@@ -12,99 +12,18 @@ from encryption_compendium.test_utils import (
     random_username,
 )
 from research_assistant.forms import (
-    AddNewUserForm,
     BibTexUploadForm,
-    ResearchLoginForm,
     CompendiumEntryForm,
     NewTagForm,
-    SignupForm,
 )
-from research_settings.forms import PasswordChangeForm
 from research_assistant.models import CompendiumEntryTag
+from users.forms import (
+    AddNewUserForm,
+    ResearchLoginForm,
+    SignupForm,
+    PasswordChangeForm,
+)
 from users.models import SignupToken, User
-
-"""
----------------------------------------------------
-Auth-related forms
----------------------------------------------------
-"""
-
-
-@tag("auth", "login", "forms")
-class ResearchLoginFormTestCase(UnitTest):
-    def setUp(self):
-        super().setUp()
-        self.form_data = {"username": self.username, "password": self.password}
-
-    def test_login(self):
-        User.objects.create_user(
-            username=self.username, email=self.email, password=self.password
-        ).save()
-        form = ResearchLoginForm(data=self.form_data)
-        self.assertTrue(form.is_valid())
-
-    def test_invalid_login(self):
-        # Try to log in as a nonexistent user
-        form = ResearchLoginForm(data=self.form_data)
-        self.assertFalse(form.is_valid())
-
-        # Try to log in as a deactivated user
-        user = User.objects.create_user(
-            username=self.username, email=self.email, password=self.password
-        )
-        form = ResearchLoginForm(data=self.form_data)
-        self.assertTrue(form.is_valid())
-
-        user.is_active = False
-        user.save()
-
-        form = ResearchLoginForm(data=self.form_data)
-        self.assertFalse(form.is_valid())
-
-        # Try to log in with an invalid password
-        data = {"username": self.username, "password": random_password(self.rd)}
-        form = ResearchLoginForm(data=data)
-        self.assertFalse(form.is_valid())
-
-
-class AddNewUserFormTestCase(UnitTest):
-    def setUp(self):
-        super().setUp(create_user=True)
-
-    def test_validate_new_user(self):
-        data = {"email": random_email(self.rd)}
-        self.assertTrue(AddNewUserForm(data=data).is_valid())
-
-    def test_invalid_user_email(self):
-        data = {"email": "hello, world"}
-        self.assertFalse(AddNewUserForm(data=data).is_valid())
-        data = {"email": "user123@"}
-        self.assertFalse(AddNewUserForm(data=data).is_valid())
-
-        # Email must be specified
-        self.assertFalse(AddNewUserForm(data={}).is_valid())
-
-        # The email cannot already be in use by a user on the site.
-        data = {"email": self.email}
-        self.assertFalse(AddNewUserForm(data=data).is_valid())
-
-
-class SignUpFormTestCase(UnitTest):
-    def setUp(self):
-        super().setUp()
-        self.data = {
-            "email": self.email,
-            "username": self.username,
-            "password": self.password,
-            "password_2": self.password,
-        }
-
-    def test_validate_new_user(self):
-        self.assertTrue(SignupForm(data=self.data).is_valid())
-
-    def test_passwords_must_match(self):
-        self.data["password_2"] = random_password(self.rd)
-        self.assertFalse(SignupForm(data=self.data).is_valid())
 
 
 """
@@ -393,44 +312,4 @@ class NewTagFormTestCase(UnitTest):
         # Attempt to add a new tag with the same name (but different
         # capitalization).
         form = NewTagForm(data={"tagname": "Encryption"})
-        self.assertFalse(form.is_valid())
-
-
-@tag("auth")
-class ChangePasswordFormTestCase(UnitTest):
-    def setUp(self):
-        super().setUp(preauth=True)
-
-    def test_password_change(self):
-        # try to change password with correct credentials and valid new password
-        newpass = random_password(self.rd)
-        data = {
-            "oldpassword": self.password,
-            "newpassword1": newpass,
-            "newpassword2": newpass,
-        }
-        form = PasswordChangeForm(data=data)
-        self.assertTrue(form.is_valid())
-
-    def test_changing_to_weak_password(self):
-        # try to change to weak password
-        weak_pass = "".join(random.choice(string.ascii_lowercase) for i in range(4))
-        data = {
-            "oldpassword": self.password,
-            "newpassword1": weak_pass,
-            "newpassword2": weak_pass,
-        }
-        form = PasswordChangeForm(data=data)
-        self.assertFalse(form.is_valid())
-
-    def test_enter_diff_password_in_confirm_field(self):
-        # try changing password to weak password
-        newpass1 = random_password(self.rd)
-        newpass2 = random_password(self.rd)
-        data = {
-            "oldpassword": self.password,
-            "newpassword1": newpass1,
-            "newpassword2": newpass2,
-        }
-        form = PasswordChangeForm(data=data)
         self.assertFalse(form.is_valid())
