@@ -13,7 +13,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from uuid import UUID
 
-from research_assistant.models import User
+from users.models import User
 
 """
 ---------------------------------------------------

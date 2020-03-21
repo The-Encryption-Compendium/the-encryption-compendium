@@ -7,8 +7,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
 from encryption_compendium.utils import month_name
-from research_assistant.models import User
 from research_assistant.widgets import MonthWidget
+from users.models import User
 
 """
 ---------------------------------------------------

@@ -3,7 +3,7 @@ Forms for site administration.
 """
 
 from django import forms
-from research_assistant.models import User
+from users.models import User
 
 
 class UserAdminForm(forms.ModelForm):

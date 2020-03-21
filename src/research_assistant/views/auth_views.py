@@ -15,7 +15,7 @@ from research_assistant.forms import (
     SignupForm,
     TokenDeleteForm,
 )
-from research_assistant.models import SignupToken
+from users.models import SignupToken
 
 
 @require_http_methods(["GET", "POST"])

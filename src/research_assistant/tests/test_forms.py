@@ -20,7 +20,8 @@ from research_assistant.forms import (
     SignupForm,
 )
 from research_settings.forms import PasswordChangeForm
-from research_assistant.models import CompendiumEntryTag, SignupToken, User
+from research_assistant.models import CompendiumEntryTag
+from users.models import SignupToken, User
 
 """
 ---------------------------------------------------

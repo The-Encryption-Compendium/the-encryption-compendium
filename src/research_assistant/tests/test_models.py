@@ -1,16 +1,15 @@
+from datetime import date
 from django import db
 from django.contrib.auth import get_user
 from django.test import tag
 from django.utils import timezone
 from encryption_compendium.test_utils import UnitTest, random_password, random_username
+from random import randrange
 from research_assistant.models import (
     CompendiumEntry,
     CompendiumEntryTag,
-    SignupToken,
-    User,
 )
-from random import randrange
-from datetime import date
+from users.models import SignupToken, User
 
 """
 ---------------------------------------------------

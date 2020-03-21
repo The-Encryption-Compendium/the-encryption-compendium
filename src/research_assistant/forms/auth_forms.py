@@ -5,8 +5,8 @@ Code for forms related to authentication and signup
 from django import forms
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext as _
-from research_assistant.models import SignupToken, User, MAX_EMAIL_ADDRESS_LENGTH
 from research_assistant.widgets import EmailTextInput
+from users.models import User, SignupToken, MAX_EMAIL_ADDRESS_LENGTH
 
 
 class ResearchLoginForm(forms.Form):

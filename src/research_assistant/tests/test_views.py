@@ -1,3 +1,5 @@
+import datetime
+import random
 from django.contrib.auth import get_user
 from django.conf import settings
 from django.core import mail
@@ -12,12 +14,10 @@ from encryption_compendium.test_utils import (
 from research_assistant.models import (
     CompendiumEntry,
     CompendiumEntryTag,
-    SignupToken,
-    User,
     Author,
 )
 from unittest import skip
-import datetime, random
+from users.models import User, SignupToken
 
 """
 ---------------------------------------------------

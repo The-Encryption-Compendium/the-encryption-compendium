@@ -11,7 +11,7 @@ from encryption_compendium.test_utils import (
     random_email,
     random_password,
 )
-from research_assistant.models import SignupToken, User
+from users.models import SignupToken, User
 from selenium.webdriver.common.keys import Keys
 from unittest import skip
 

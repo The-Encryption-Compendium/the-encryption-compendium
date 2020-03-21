@@ -1,6 +1,7 @@
 from django.contrib import admin
-from research_assistant.models import User, CompendiumEntry
+from research_assistant.models import CompendiumEntry
 from research_assistant.forms import UserAdminForm, CompendiumEntryForm
+from users.models import User
 
 """
 ---------------------------------------------------
