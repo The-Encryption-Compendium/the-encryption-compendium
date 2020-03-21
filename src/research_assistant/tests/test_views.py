@@ -631,3 +631,48 @@ class EditAndDeleteTests(UnitTest):
             CompendiumEntry.objects.filter(id=entry.id).first().title, data["title"]
         )
         self.assertEqual(response.status_code, 403)
+
+
+"""
+---------------------------------------------------
+Tests for views related to account management
+---------------------------------------------------
+"""
+
+
+class ChangePasswordTestCase(UnitTest):
+    """
+    Test suite for the "change password" page
+    """
+
+    def setUp(self):
+        super().setUp(preauth=True)
+
+    def test_logout_on_password_change(self):
+        response = self.client.get(reverse("research settings"))
+        self.assertTemplateUsed(response, "base.html")
+        # try to change password with correct credentials
+        newpassword = random_password(self.rd)
+        data = {
+            "oldpassword": self.password,
+            "newpassword1": newpassword,
+            "newpassword2": newpassword,
+        }
+
+        self.client.post(reverse("research settings"), data)
+
+        self.assertFalse(get_user(self.client).is_authenticated)
+
+    def test_failed_pass_change_with_incorrect_old_password(self):
+        oldpassword = random_password(self.rd)
+        newpassword = random_password(self.rd)
+
+        data = {
+            "oldpassword": oldpassword,
+            "newpassword1": newpassword,
+            "newpassword2": newpassword,
+        }
+
+        self.client.post(reverse("research settings"), data)
+
+        self.assertTrue(get_user(self.client).is_authenticated)

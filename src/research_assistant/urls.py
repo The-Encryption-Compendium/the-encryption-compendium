@@ -2,7 +2,6 @@ from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from research_assistant.views import *
-from research_settings import urls as settings_urls
 from research_profile import urls as profile_url
 
 urlpatterns = [
@@ -21,6 +20,6 @@ urlpatterns = [
         EditCompendiumEntryView.as_view(extra_context={"edit": True}),
         name="edit my entries",
     ),
-    path("settings/", include(settings_urls)),
+    url(r"^settings", research_settings, name="research settings"),
     path("profile/", include(profile_url)),
 ]

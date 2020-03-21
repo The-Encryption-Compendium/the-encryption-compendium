@@ -75,7 +75,6 @@ INSTALLED_APPS = [
     # Apps developed in this repository
     "public_view",
     "research_assistant",
-    "research_settings",
     "search",
     "users",
 ]
