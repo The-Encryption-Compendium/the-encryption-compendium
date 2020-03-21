@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     "research_assistant",
     "research_settings",
     "search",
+    "users",
 ]
 
 MIDDLEWARE = [
