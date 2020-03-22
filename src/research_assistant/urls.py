@@ -2,7 +2,6 @@ from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from research_assistant.views import *
-from research_profile import urls as profile_url
 
 urlpatterns = [
     url(r"^add-user", add_new_user, name="add new user"),
@@ -21,5 +20,5 @@ urlpatterns = [
         name="edit my entries",
     ),
     url(r"^settings", research_settings, name="research settings"),
-    path("profile/", include(profile_url)),
+    url(r"^profile", researcher_profile, name="research profile"),
 ]
