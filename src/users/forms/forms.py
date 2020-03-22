@@ -6,8 +6,8 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext as _
-from research_assistant.widgets import EmailTextInput
 from users.models import User, SignupToken, MAX_EMAIL_ADDRESS_LENGTH
+from utils.widgets import EmailTextInput
 
 
 class ResearchLoginForm(forms.Form):

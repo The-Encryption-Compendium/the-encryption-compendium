@@ -10,7 +10,7 @@ from entries.models import (
     CompendiumEntry,
     CompendiumEntryTag,
 )
-from research_assistant.widgets import *
+from utils.widgets import *
 
 
 class CompendiumEntryForm(forms.ModelForm):
