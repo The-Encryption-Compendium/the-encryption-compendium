@@ -1,14 +1,8 @@
 """
-Various useful functions, constants, and so on for the project.
+Various utilities for handling dates and times.
 """
 
 import datetime
-
-"""
----------------------------------------------------
-Date / time helper functions
----------------------------------------------------
-"""
 
 
 def months():

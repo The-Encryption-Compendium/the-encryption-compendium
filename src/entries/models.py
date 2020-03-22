@@ -6,8 +6,8 @@ from datetime import date
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
-from encryption_compendium.utils import month_name
 from users.models import User
+from utils.dates import month_name
 from utils.widgets import MonthWidget
 
 """

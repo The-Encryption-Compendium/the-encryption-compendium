@@ -5,7 +5,7 @@ Custom widget classes for the research_assistant app.
 import os
 
 from django import forms
-from encryption_compendium.utils import months
+from utils.dates import months
 
 """
 ---------------------------------------------------
