@@ -154,3 +154,12 @@ class URLTextInput(IconTextInput):
 
     icon_name = "link"
     placeholder = "https://example.com"
+
+
+class SearchInput(IconTextInput):
+    """
+    Custom TextInput widget for search bars.
+    """
+
+    icon_name = "search"
+    placeholder = "Search..."
