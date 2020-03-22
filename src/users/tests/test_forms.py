@@ -3,7 +3,7 @@ Form tests
 """
 
 from django.test import tag
-from encryption_compendium.test_utils import random_email, random_password, UnitTest
+from utils.test_utils import random_email, random_password, UnitTest
 from users.forms import (
     ResearchLoginForm,
     AddNewUserForm,

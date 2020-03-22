@@ -5,7 +5,7 @@ Functional tests for the reesearch_assistant app
 from django.core import mail
 from django.test import tag
 from django.urls import reverse
-from encryption_compendium.test_utils import (
+from utils.test_utils import (
     FunctionalTest,
     random_username,
     random_email,

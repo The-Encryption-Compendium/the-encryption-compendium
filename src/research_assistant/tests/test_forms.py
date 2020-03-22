@@ -3,7 +3,7 @@ import random
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import tag
-from encryption_compendium.test_utils import UnitTest
+from utils.test_utils import UnitTest
 from research_assistant.forms import BibTexUploadForm
 
 """

@@ -6,7 +6,7 @@ from datetime import date
 from django import db
 from django.utils import timezone
 from entries.models import CompendiumEntry, CompendiumEntryTag
-from encryption_compendium.test_utils import UnitTest, random_username
+from utils.test_utils import UnitTest, random_username
 from random import randrange
 
 

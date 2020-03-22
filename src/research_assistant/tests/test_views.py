@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core import mail
 from django.test import tag
 from django.urls import reverse
-from encryption_compendium.test_utils import (
+from utils.test_utils import (
     random_email,
     random_username,
     random_password,

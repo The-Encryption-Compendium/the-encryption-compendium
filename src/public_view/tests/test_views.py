@@ -1,5 +1,5 @@
 from django.urls import reverse
-from encryption_compendium.test_utils import UnitTest
+from utils.test_utils import UnitTest
 from unittest import skip
 
 
