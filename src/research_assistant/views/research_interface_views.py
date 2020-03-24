@@ -23,16 +23,6 @@ def research_dashboard(request):
 
 
 @login_required
-@require_http_methods(["GET"])
-def research_my_entries(request):
-    """
-    A page that presents different options for users w.r.t. creating, editing,
-    and deleting compendium entries.
-    """
-    return render(request, "my_entries_options.html")
-
-
-@login_required
 @require_http_methods(["GET", "POST"])
 def research_list_my_entries(request):
     """

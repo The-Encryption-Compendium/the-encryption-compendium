@@ -11,7 +11,6 @@ urlpatterns = [
     url(r"^logout", research_logout, name="research logout"),
     url(r"^new-article", NewCompendiumEntryView.as_view(), name="research new article"),
     url(r"^new-tag", research_add_tag, name="research add tag"),
-    path("my-entries/", research_my_entries, name="research my entries"),
     path("list-my-entries/", research_list_my_entries, name="list my entries"),
     url(r"edit-entries$", EditCompendiumEntryView.as_view(), name="edit my entries"),
     url(
