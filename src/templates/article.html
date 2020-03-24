@@ -6,6 +6,69 @@
 
 {% load static %}
 <div class="uk-grid uk-margin-top">
-  {{ article.title }}
+  <div class="uk-container uk-container-center uk-section-muted">
+    <article class="uk-article uk-padding-small">
+
+      <h2 class="uk-article-title uk-text-bold">
+        {{ article.title }}
+      </h2>
+      
+      {% with authors=article.all_authors %}
+      {% if authors %}
+      <div>
+        <span class="uk-text-break">
+          <span class="uk-text-bold">Authors:</span> {{ authors }}
+        </span>
+      </div>
+      {% endif %}
+      {% endwith %}
+      
+      {% if article.year %}
+      <div>
+        <span class="uk-text-bold">Published:</span>
+        {% if article.day %}{{ article.day }}{% endif %}
+        {% if article.month %}{{ article.month_name }}{% endif %}
+        {{ article.year }}
+      </div>
+      {% endif %}
+      
+      {% if article.publisher_text %}
+      <div>
+        <span class="uk-text-break">
+          <span class="uk-text-bold">Published in:</span> {{ article.publisher_text }}
+        </span>
+      </div>
+      {% endif %}
+
+      {% with tags=article.tags.all %}
+      {% if tags %}
+      <div>
+        <span class="uk-text-bold">Tags:</span>
+        {% for tag in tags %}
+        {{ tag.tagname }}
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
+      
+      {% if article.abstract %}
+      <div class="uk-margin-medium">
+        <span class="uk-text-break">
+          <span class="uk-text-bold">Abstract:</span> {{ article.abstract }}
+        </span>
+      </div>
+      {% endif %}
+      
+      {% if article.url %}
+      <div>
+        <span class="uk-text-break">
+          <span class="uk-text-bold">URL:</span> <a href="{{ article.url }}"> {{ article.url }}</a>
+        </span>
+      </div>
+      {% endif %}
+
+    </article>
+  </div>
+
 </div>
 {% endblock %}
