@@ -9,6 +9,8 @@ from django.utils import timezone
 from users.models import User
 from utils.dates import month_name
 from utils.widgets import MonthWidget
+from django.db.models.signals import pre_save
+from utils.articles_slug import unique_slug_generator
 
 """
 ---------------------------------------------------
@@ -159,6 +161,7 @@ class CompendiumEntry(models.Model):
     """
 
     title = models.CharField(max_length=MAX_TITLE_LENGTH, blank=False, null=False)
+    slug = models.SlugField(max_length=250, blank=True, null=True)
     abstract = models.CharField(max_length=MAX_ABSTRACT_LENGTH, blank=True, null=True)
     url = models.URLField(max_length=MAX_URL_LENGTH, blank=True, null=True)
 
@@ -215,3 +218,11 @@ class CompendiumEntry(models.Model):
             return None
         else:
             return ", ".join(str(auth) for auth in authors)
+
+
+def slug_generator(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = unique_slug_generator(instance)
+
+
+pre_save.connect(slug_generator, sender=CompendiumEntry)

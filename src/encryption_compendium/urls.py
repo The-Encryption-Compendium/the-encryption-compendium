@@ -22,6 +22,7 @@ from django.views.generic.base import RedirectView
 from public_view import views as pubviews
 from search import urls as search_urls
 from research_assistant import urls as research_urls
+from public_view import urls as public_view_urls
 
 urlpatterns = [
     ### Admin view
@@ -32,6 +33,8 @@ urlpatterns = [
     url(r"^$", pubviews.landing_page, name="landing page"),
     ### URLs for search
     url(r"^search", include(search_urls)),
+    ### URLs for viewing articles
+    path("articles/", include(public_view_urls)),
 ]
 
 if settings.DEBUG:
