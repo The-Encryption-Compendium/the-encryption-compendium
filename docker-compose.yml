@@ -14,12 +14,29 @@ services:
     networks:
       - tec-net
 
+  tec-search:
+    build:
+      context: deploy_tools/solr/
+    container_name: tec-search
+    volumes:
+      - solrdata:/var/solr:rw
+    ports:
+      - "8983:8983"
+    networks:
+      - tec-net
+    command:
+      - solr-precreate
+      - gettingstarted
+
   tec-gunicorn:
     build:
       context: .
       dockerfile: deploy_tools/gunicorn/Dockerfile
     image: tec-gunicorn
     container_name: tec-gunicorn
+    depends_on:
+      - tec-database
+      - tec-search
     environment:
       DATABASE_ENGINE: "postgres"
     env_file:
@@ -31,8 +48,10 @@ services:
     networks:
       - tec-net
 
+
 networks:
   tec-net:
 
 volumes:
   site-db:
+  solrdata:
