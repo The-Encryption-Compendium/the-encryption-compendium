@@ -219,6 +219,10 @@ class CompendiumEntry(models.Model):
         else:
             return ", ".join(str(auth) for auth in authors)
 
+    class Meta:
+        # Manually specify the table name for the database
+        db_table = "compendium"
+
 
 def slug_generator(sender, instance, *args, **kwargs):
     if not instance.slug:
