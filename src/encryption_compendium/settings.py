@@ -126,18 +126,6 @@ if DATABASE_ENGINE == "sqlite3":
             "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
         }
     }
-elif DATABASE_ENGINE == "mysql":
-    logging.info("Using MySQL database...")
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": os.getenv("MYSQL_DATABASE"),
-            "USER": os.getenv("MYSQL_USER"),
-            "PASSWORD": os.getenv("MYSQL_PASSWORD"),
-            "HOST": os.getenv("DATABASE_HOST"),
-            "PORT": os.getenv("DATABASE_HOST_PORT", "3306"),
-        }
-    }
 elif DATABASE_ENGINE == "postgres":
     logging.info("Using Postgres database...")
     DATABASES = {
@@ -151,7 +139,7 @@ elif DATABASE_ENGINE == "postgres":
         }
     }
 else:
-    raise Exception("DATABASE_ENGINE must be either sqlite3, mysql, or postgres.")
+    raise Exception("DATABASE_ENGINE must be either sqlite3 or postgres.")
 
 # Authentication options
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -227,4 +215,10 @@ STATICFILES_FINDERS = (
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
-EMAIL_USE_TLS = bool(os.getenv("EMAIL_USE_TLS", True))
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "yes")
+if EMAIL_USE_TLS == "yes":
+    EMAIL_USE_TLS = True
+elif EMAIL_USE_TLS == "no":
+    EMAIL_USE_TLS = False
+else:
+    raise Exception("EMAIL_USE_TLS should be 'yes' or 'no'.")

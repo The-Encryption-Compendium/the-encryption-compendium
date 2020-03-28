@@ -1,0 +1,84 @@
+### Default configuration file. Used by the autogen_config script
+
+DEVELOPMENT:
+  default: "yes"
+  help: Whether or not to run the server in development mode.
+  choices:
+    - "yes"
+    - "no"
+
+DJANGO_SECRET_KEY:
+  help: >
+    Secret key used by Django for generating hashes. If a key is
+    not specified, one will be randomly generated.
+
+ALLOWED_HOSTS:
+  default: "localhost,127.0.0.1"
+  help: >
+    A comma-separated list of hostnames/IP addresses with which it
+    should be possible to access the server.
+
+DATABASE_ENGINE:
+  default: sqlite3
+  help: The database engine to use to run the site.
+  choices:
+    - sqlite3
+    - postgres
+
+POSTGRES_USER:
+  default: tec
+  help: >
+    A PostgreSQL user to use to access the database. Ignored when
+    DATABASE_ENGINE is not "postgres".
+
+POSTGRES_PASSWORD:
+  help: >
+    The password to use to access the database. If left unspecified
+    a password will be automatically generated for you, which can
+    then be used when running the site with docker-compose.
+
+POSTGRES_DB:
+  default: tecdb
+  help: >
+    The name of the PostgreSQL database to connect to. Ignored when
+    DATABASE_ENGINE is not "postgres".
+
+DATABASE_HOST:
+  default: tec-database
+  help: >
+    The host where the database is located. If you're using docker-compose
+    to run the site, this should probably be set to "tec-database".
+
+REDIRECT_HTTP_TO_HTTPS:
+  default: "no"
+  help: >
+    Whether or not to redirect HTTP traffic to HTTPS. If "yes" or "302"
+    is selected then users will be 302 (temporary) redirected to HTTPS.
+    If "301" is selected, users will be 301 (permanently) redirected
+    to HTTPS. Only use "301" if you're sure that you don't want to make
+    the site accessible over HTTP in the future.
+  choices:
+    - "no"
+    - "yes"
+    - "301"
+    - "302"
+
+EMAIL_HOST:
+  help: The hostname for the site's email provider.
+
+EMAIL_HOST_USER:
+  help: The username for the site's email.
+
+EMAIL_HOST_PASSWORD:
+  help: The password for the site's email address.
+
+EMAIL_PORT:
+  default: 587
+  help: The port on which to access the mail server.
+
+EMAIL_USE_TLS:
+  default: "yes"
+  help: Whether or not to use TLS to connect to the mail server.
+  choices:
+    - "yes"
+    - "no"

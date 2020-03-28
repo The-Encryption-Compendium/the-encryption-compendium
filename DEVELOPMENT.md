@@ -37,25 +37,23 @@ chmod +x .git/hooks/pre-commit
 ```
 
 ### Creating a `.env` file
-The site uses a `.env` file to define configuration options. The default `.env` file is [`env.dist`](https://github.com/The-Encryption-Compendium/the-encryption-compendium/blob/master/env.dist). Before you can start running the site, you should copy `env.dist` to `.env` and define any configuration options that you might want to use.
+The site uses a `.env` file to define configuration options. You can run the `deploy_tools/autogen_config.py` script in order to generate a new config file. You can see all of the available configuration options by running
 
-- **Testing locally**: if you're going to be testing the site locally with `manage.py`, you only really need to define the following variables:
-  - `DEVELOPMENT`: set to `yes`.
-  - `DJANGO_SECRET_KEY`: some random string. You can create one pretty easily in the Python REPL as follows:
+```
+$ python3 deploy_tools/autogen_config.py --help
+```
 
-    ```python
-    >>> import secrets, base64
-    >>> random_bytes = base64.b64encode(secrets.token_bytes())
-    >>> print(random_bytes.decode("utf-8"))
-    ```
+If you just want to get the site up and running locally as quickly as possible, you can just run
 
-    or, as a `bash` one-liner:
+```
+$ python3 deploy_tools/autogen_config.py
+```
 
-    ```
-    $ python3 -c "import base64 as b, secrets as s; print(b.b64encode(s.token_bytes()).decode('utf-8'))"
-    ```
+If you plan on testing locally with docker-compose, you should instead run
 
-  - `DATABASE_ENGINE`: you should probably just set this to `sqlite` (make sure you have [SQLite](https://sqlite.org/index.html) installed on your machine, of course).
+```
+$ python3 deploy_tools/autogen_config.py -DATABASE_ENGINE=postgres
+```
 
 ## Running tests
 This repository provides some basic unit tests and functional tests for development. To run these tests, follow the instructions for creating a development environment and create a `.env` file. Then run the following:
