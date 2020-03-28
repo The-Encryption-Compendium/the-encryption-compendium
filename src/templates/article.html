@@ -12,7 +12,7 @@
       <h2 class="uk-article-title uk-text-bold">
         {{ article.title }}
       </h2>
-      
+
       {% with authors=article.all_authors %}
       {% if authors %}
       <div>
@@ -22,7 +22,7 @@
       </div>
       {% endif %}
       {% endwith %}
-      
+
       {% if article.year %}
       <div>
         <span class="uk-text-bold">Published:</span>
@@ -31,7 +31,7 @@
         {{ article.year }}
       </div>
       {% endif %}
-      
+
       {% if article.publisher_text %}
       <div>
         <span class="uk-text-break">
@@ -50,7 +50,7 @@
       </div>
       {% endif %}
       {% endwith %}
-      
+
       {% if article.abstract %}
       <div class="uk-margin-medium">
         <span class="uk-text-break">
@@ -58,7 +58,7 @@
         </span>
       </div>
       {% endif %}
-      
+
       {% if article.url %}
       <div>
         <span class="uk-text-break">

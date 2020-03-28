@@ -20,18 +20,18 @@ jobs:
   include:
 
     #############################################################
-    ### Ensure that any code committed to the repository is
-    ### consistent with formatting guidelines set by Black. This
-    ### check is run first since it's pretty fast.
+    ### Ensure that all pre-commit hooks are satisfied (code
+    ### formatting, checking for private keys, etc).
     #############################################################
 
     - stage: "Run tests"
       name: "Code formatting matches guidelines"
       python: 3.7
       install:
-        - pip3 install black
+        - pip3 install pre-commit
+        - pre-commit install
       script:
-        - find ./src -type f -name "*.py" | xargs black --check --diff
+        - pre-commit run --all-files
 
     ########################################################
     ### Unit testing using a MySQL database.
