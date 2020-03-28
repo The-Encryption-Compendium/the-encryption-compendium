@@ -25,7 +25,7 @@ jobs:
     #############################################################
 
     - stage: "Run tests"
-      name: "Code formatting matches guidelines"
+      name: "Pre-commit hooks are all satisfied"
       python: 3.7
       install:
         - pip3 install pre-commit
