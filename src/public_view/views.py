@@ -2,19 +2,28 @@
 Views for the public-facing side of the site.
 """
 
+from django.http import HttpResponse
 from django.shortcuts import render
+from django.views import View
 from django.views.decorators.http import require_http_methods
 from entries.models import CompendiumEntryTag, CompendiumEntry
-from django.http import HttpResponse
+from search.views.mixins import BasicSearchMixin
 
 
-@require_http_methods(["GET"])
-def landing_page(request):
+class LandingPage(BasicSearchMixin, View):
     """
-    Landing page for the website.
+    Displays the landing page of the site. Includes a search form so
+    that users can immediately start searching the compendium.
     """
-    tags = CompendiumEntryTag.objects.order_by("tagname").all()
-    return render(request, "landing_page.html", context={"tags": tags})
+
+    def get(self, request):
+        search_form = self.create_search_form(request)
+        tags = CompendiumEntryTag.objects.order_by("tagname").all()
+        return render(
+            request,
+            "landing_page.html",
+            context={"tags": tags, "search_form": search_form},
+        )
 
 
 @require_http_methods(["GET"])

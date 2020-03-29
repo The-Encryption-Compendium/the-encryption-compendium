@@ -15,7 +15,15 @@ class BasicSearchForm(forms.Form):
     Solr.
     """
 
-    query = forms.CharField()
+    query = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "class": "uk-search-input uk-form-large",
+                "type": "search",
+                "placeholder": "Search...",
+            }
+        )
+    )
 
     def clean_query(self):
         """

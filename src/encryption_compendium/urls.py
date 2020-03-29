@@ -30,7 +30,7 @@ urlpatterns = [
     ### URLs for the research_assistant app
     url(r"^research/", include(research_urls)),
     ### URLs for the public-facing views
-    url(r"^$", pubviews.landing_page, name="landing page"),
+    url(r"^$", pubviews.LandingPage.as_view(), name="landing page"),
     ### URLs for search
     url(r"^search", include(search_urls)),
     ### URLs for viewing articles
