@@ -110,6 +110,10 @@
          If you don't need it, consider removing it and the corresponding copyField directive.
     -->
 
+    <dynamicField name="*_name" type="text_general" multiValued="false" indexed="true" stored="true" />
+    <field name="title" type="text_general" multiValued="false" indexed="true" stored="true" />
+    <field name="abstract" type="text_general" multiValued="false" indexed="true" stored="true" />
+
     <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" />
     <!-- docValues are enabled by default for long type so we don't need to index the version field  -->
     <field name="_version_" type="plong" indexed="false" stored="false"/>
