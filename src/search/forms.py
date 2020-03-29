@@ -24,10 +24,8 @@ class BasicSearchForm(forms.Form):
         """
         query = self.cleaned_data.get("query", None)
 
-        # If the query string was left empty, we'll just search the
-        # entire compendium.
         if query is None:
-            return ""
+            return []
 
         # Otherwise, we break the query into pieces and then construct
         # a query out of all of those pieces.
@@ -39,9 +37,15 @@ class BasicSearchForm(forms.Form):
         # Now tokenize the string:
         quoted_strings, remainder = self._extract_quoted_strings(query)
         words, _ = self._extract_words(remainder)
-        search_terms = quoted_strings + words
 
-        return search_terms
+        return {
+            "quoted_substrings": quoted_strings,
+            "words": words,
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        return cleaned_data.get("query", {})
 
     """
     Internal API
@@ -85,6 +89,7 @@ class BasicSearchForm(forms.Form):
         patt = re.compile(r"([\w\d\.\-\$]+)")
         words = patt.findall(query)
         remainder = patt.sub("", query)
+
         return words, remainder
 
 

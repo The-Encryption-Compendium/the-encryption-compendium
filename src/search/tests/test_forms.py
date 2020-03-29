@@ -22,7 +22,7 @@ class BasicSearchFormTest(UnitTest):
         query = "hello, world"
         form = BasicSearchForm(data={"query": query})
         self.assertTrue(form.is_valid())
-        self.assertEqual(form.cleaned_data["query"], ["hello", "world"])
+        self.assertEqual(form.cleaned_data["words"], ["hello", "world"])
 
     def test_extract_quoted_strings(self):
         """Test that the form extracts quoted strings from queries."""
@@ -30,9 +30,10 @@ class BasicSearchFormTest(UnitTest):
         query = '"hello, world!"'
         form = BasicSearchForm(data={"query": query})
         self.assertTrue(form.is_valid())
-        self.assertEqual(form.cleaned_data["query"], ["hello, world"])
+        self.assertEqual(form.cleaned_data["quoted_substrings"], ["hello, world"])
 
         query = 'a dog, "a cat", a horse'
         form = BasicSearchForm(data={"query": query})
         self.assertTrue(form.is_valid())
-        self.assertIn("a cat", form.cleaned_data["query"])
+        self.assertEqual(form.cleaned_data["quoted_substrings"], ["a cat"])
+        self.assertEqual(form.cleaned_data["words"], ["a", "dog", "a", "horse"])
