@@ -14,6 +14,26 @@ services:
     networks:
       - tec-net
 
+  tec-search:
+    build:
+      context: deploy_tools/solr/
+    image: tec-solr
+    container_name: tec-search
+    depends_on:
+      - tec-database
+    environment:
+      SOLR_HOST: "solr1"
+    volumes:
+      - solrdata:/var/solr:rw
+      - ./mydata:/compendium:ro
+    ports:
+      - "8983:8983"
+    networks:
+      - tec-net
+    command:
+      - solr-precreate
+      - compendium
+
   tec-gunicorn:
     build:
       context: .
