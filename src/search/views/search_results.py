@@ -2,6 +2,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.views import View
 from entries.models import CompendiumEntry
+from search.views.mixins import BasicSearchMixin
 
 
 class SearchView(View):
