@@ -15,7 +15,7 @@ class SearchEngine:
 
     def __init__(self):
         self.solr = pysolr.Solr(
-            "http://tec-search/solr/compendium", always_commit=False
+            "http://tec-search:8983/solr/compendium", always_commit=False
         )
 
     """
@@ -33,4 +33,4 @@ class SearchEngine:
 
         # Combine tokens into a single search query for Solr
         query = " && ".join(f"basic_search:{T!r}" for T in tokens)
-        return solr.search(query)
+        return self.solr.search(query)

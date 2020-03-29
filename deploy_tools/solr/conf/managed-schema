@@ -110,9 +110,21 @@
          If you don't need it, consider removing it and the corresponding copyField directive.
     -->
 
-    <dynamicField name="*_name" type="text_general" multiValued="false" indexed="true" stored="true" />
+    <!--
+    COMPENDIUM FIELDS
+    -->
+
     <field name="title" type="text_general" multiValued="false" indexed="true" stored="true" />
     <field name="abstract" type="text_general" multiValued="false" indexed="true" stored="true" />
+
+    <!-- Combine the "title" and "abstract" fields so that we search both when performing basic search -->
+    <copyField source="title" dest="basic_search" />
+    <copyField source="abstract" dest="basic_search" />
+    <field name="basic_search" type="text_general" />
+
+    <!--
+    END COMPENDIUM FIELDS
+    -->
 
     <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" />
     <!-- docValues are enabled by default for long type so we don't need to index the version field  -->
@@ -122,7 +134,7 @@
     <!-- for nested documents (minimal; points to root document) -->
     <field name="_root_" type="string" indexed="true" stored="false" docValues="false" />
     <!-- for nested documents (relationship tracking) -->
-    <field name="_nest_path_" type="_nest_path_" /><fieldType name="_nest_path_" class="solr.NestPathField" />
+  <field name="_nest_path_" type="_nest_path_" /><fieldType name="_nest_path_" class="solr.NestPathField" />
 
     <field name="_text_" type="text_general" indexed="true" stored="false" multiValued="true"/>
 
