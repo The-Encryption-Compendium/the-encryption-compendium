@@ -110,7 +110,7 @@ def create_config(args):
         if opt is None:
             opts.append(f"{opt_name}=")
         else:
-            opts.append(f"{opt_name}={opt!r}")
+            opts.append(f"{opt_name}={opt}")
 
     with open(args.output, "w") as f:
         f.write("\n".join(opts))

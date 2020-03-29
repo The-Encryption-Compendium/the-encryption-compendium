@@ -37,10 +37,7 @@ elif dev == "no":
     DEBUG = False
 else:
     raise Exception(
-        (
-            "The DEVELOPMENT variable must be set (as an environmental "
-            "variable or in the .env file) to either 'yes' or 'no'."
-        )
+        ("The DEVELOPMENT variable must be set to either 'yes' or " "'no'.")
     )
 
 # SECURITY WARNING: keep the secret key used in production secret!
