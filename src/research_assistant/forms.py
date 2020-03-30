@@ -4,11 +4,88 @@ apps won't work.
 """
 
 import bibtexparser
+import json
 import re
 
 from bibtexparser.bparser import BibTexParser
 from django import forms
 from django.utils.translation import gettext as _
+
+
+class JsonUploadForm(forms.Form):
+    """
+    Form for exporting data from Zotero in JSON format and then uploading
+    it to the site.
+    """
+
+    json_file = forms.FileField(required=False, max_length=5e6,)  # 5 Mb
+
+    """
+    Helper functions
+    """
+
+    def _read_json_file(self, json_file):
+        try:
+            return json.load(json_file)
+        except Exception as ex:
+            print("EXCEPTION:", ex)
+            raise forms.ValidationError(
+                _("Unable to parse JSON file."), code="invalid_json",
+            )
+
+    def _extract_date(self, item):
+        if "issued" in item:
+            year, month, day = item["issued"]["date-parts"][0]
+            return year, month, day
+        else:
+            return None, None, None
+
+    def _extract_authors(self, item):
+        authors = []
+        if "author" in item:
+            for author in item["author"]:
+                given = author.get("given", "")
+                family = author.get("family", "")
+                if given != "" and family != "":
+                    authors.append(f"{given} {family}")
+                elif given == "" and family != "":
+                    authors.append(family)
+                elif given != "" and family == "":
+                    authors.append(given)
+
+        return authors
+
+    """
+    Form validation
+    """
+
+    def clean_json_file(self):
+        json_file = self.cleaned_data.get("json_file")
+        data = self._read_json_file(json_file)
+
+        # Extract individual fields out of the file
+        entries = []
+        for item in data.get("items", []):
+            title = item.get("title")
+            abstract = item.get("abstract", None)
+            new_entry = {
+                "title": item.get("title"),
+                "abstract": item.get("abstract"),
+                "url": item.get("URL"),
+            }
+
+            # Convert date
+            year, month, day = self._extract_date(item)
+            new_entry["year"] = year
+            new_entry["month"] = month
+            new_entry["day"] = day
+
+            # Get all of the entry's authors
+            new_entry["authors"] = self._extract_authors(item)
+
+            entries.append(new_entry)
+
+        return entries
 
 
 class BibTexUploadForm(forms.Form):
