@@ -49,7 +49,7 @@ class BasicSearchAPIView(BasicSearchMixin, JsonView):
         if query is None:
             raise JsonAPIError("'query' parameter missing", status_code=422)
 
-        results = self.execute_basic_search({"query": query})
+        results = self.execute_basic_search(get_params)
         results = list(results)
 
         return results

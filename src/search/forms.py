@@ -25,6 +25,12 @@ class BasicSearchForm(forms.Form):
         )
     )
 
+    results_per_page = forms.IntegerField(
+        initial=20, widget=forms.HiddenInput(), required=False,
+    )
+
+    page = forms.IntegerField(initial=0, widget=forms.HiddenInput(), required=False,)
+
     def clean_query(self):
         """
         Validate the query string and break it into multiple pieces before
@@ -51,9 +57,25 @@ class BasicSearchForm(forms.Form):
             "words": words,
         }
 
+    def clean_results_per_page(self):
+        results_per_page = self.cleaned_data.get("results_per_page")
+        if results_per_page is None:
+            return 20
+        else:
+            return results_per_page
+
+    def clean_page(self):
+        page = self.cleaned_data.get("page")
+        if page is None:
+            return 0
+        else:
+            return page
+
     def clean(self):
         cleaned_data = super().clean()
-        return cleaned_data.get("query", {})
+        query_params = cleaned_data.pop("query")
+        cleaned_data.update(query_params)
+        return cleaned_data
 
     """
     Internal API

@@ -121,5 +121,7 @@ class BasicSearchMixin(metaclass=abc.ABCMeta):
         if form.is_valid():
             results = self.search_engine.basic_search(form.cleaned_data)
             results = list(results)
+        else:
+            raise Exception(str(form.errors))
 
         return results
