@@ -176,7 +176,10 @@ class CompendiumEntry(models.Model):
         Publisher, on_delete=models.SET_NULL, blank=True, null=True
     )
 
+    # authors: all of the authors associated with the entry
+    # authors_cs: a comma-separated string of all of the authors.
     authors = models.ManyToManyField(Author, blank=True)
+    authors_cs = models.CharField(max_length=1000, blank=True, null=True)
 
     # Separate year, month, and day fields to specify when the compendium entry
     # was published.
