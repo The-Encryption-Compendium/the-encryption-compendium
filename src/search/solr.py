@@ -38,7 +38,7 @@ class SearchEngine:
         kwargs = {
             "rows": query.get("results_per_page", 20),
             "start": query.get("page", 0),
-            "fl": "title, abstract",
+            "fl": "id, title, abstract",
         }
 
         return self.solr.search(query_str, **kwargs)
