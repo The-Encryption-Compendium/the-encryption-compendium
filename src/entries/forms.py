@@ -101,15 +101,6 @@ class CompendiumEntryForm(forms.ModelForm):
         """
         cleaned_data = super().clean()
 
-        # Check that at least one tag has been selected
-        tags = cleaned_data.get("tags")
-
-        if not tags or len(tags) == 0:
-            error = forms.ValidationError(
-                _("At least one tag must be specified."), code="invalid_tags",
-            )
-            self.add_error("tags", error)
-
         ### Check conditions on the day-month-year fields
         day = cleaned_data.get("day")
         month = cleaned_data.get("month")

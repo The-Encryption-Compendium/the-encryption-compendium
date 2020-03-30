@@ -70,13 +70,9 @@ class CompendiumEntryFormTestCase(UnitTest):
 
     def test_submit_entry_invalid_tags(self):
         """
-        The CompendiumEntryForm should enforce that inputs have at
-        least one tag, and that tags already exist in the database.
+        The CompendiumEntryForm should enforce that tags are already
+        in the database.
         """
-        ### Try to submit data without any tags
-        data = self.data
-        data.pop("tags")
-        self.assertFalse(CompendiumEntryForm(data=data).is_valid())
 
         ### Try to submit data with tags that don't exist
         invalid_tag_id = max(self.tag_ids) + 1
