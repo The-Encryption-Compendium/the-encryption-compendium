@@ -5,8 +5,18 @@ If you're interested in helping to develop The Encryption Compendium, please rea
 You should start by preparing a development environment for the site:
 
 - Create a Python virtual environment with all of the dependencies that you need.
-- Add a git hook to format your code (optional but requested if you want to commit code to this repository).
 - Create a `.env` file defining configuration options.
+- Add pre-commit hooks to check for formatting errors, private keys, and so on.
+
+```
+python3 -m venv venv \
+&& source venv/bin/activate \
+&& pip install -r requirements.txt -r requirements.dev.txt \
+&& python3 deploy_tools/autogen_config.py \
+&& pre-commit install
+```
+
+and make sure to install the latest release of [geckodriver](https://github.com/mozilla/geckodriver) to a location on your `PATH`.
 
 ### Creating a virtual environment
 In this repository's root directory, create a new virtual environment with the project dependencies using
@@ -24,17 +34,6 @@ pip install -r requirements.dev.txt
 ```
 
 If you want to run the functional tests you should also have [geckodriver](https://github.com/mozilla/geckodriver) installed. Download the [latest release of geckodriver](https://github.com/mozilla/geckodriver/releases) from its repository, and make sure that the `geckodriver` executable is somewhere on your system path.
-
-### Code formatting
-If you're planning on committing code to this repository, we ask that you use [Black](https://github.com/psf/black) to format your code, so that we have consistent code formatting across the project. We recommend using the script defined in [this gist](https://gist.github.com/kernelmethod/f324f9251faa29b7f042e40f710ab436) as a pre-commit hook; it will check that all of your Python files have correct syntax and that they are formatted appropriately before your code is committed. You can add this hook by running the following from the root directory of this repository:
-
-```
-mkdir .git/hooks
-wget \
-  "https://gist.githubusercontent.com/kernelmethod/f324f9251faa29b7f042e40f710ab436/raw/d58b6082ebc90d5e158656f70cea05dd000b5930/pre-commit" \
-  -O .git/hooks/pre-commit
-chmod +x .git/hooks/pre-commit
-```
 
 ### Creating a `.env` file
 The site uses a `.env` file to define configuration options. You can run the `deploy_tools/autogen_config.py` script in order to generate a new config file. You can see all of the available configuration options by running
@@ -54,6 +53,17 @@ If you plan on testing locally with docker-compose, you should instead run
 ```
 $ python3 deploy_tools/autogen_config.py -DATABASE_ENGINE=postgres
 ```
+
+### Pre-commit hooks
+If you're planning on committing code to this repository, we ask that you install the git hooks defined in `.pre-commit-config.yaml` (using the [pre-commit Python package](https://pre-commit.com/)). In addition to automatically formatting your code, these hooks will also check for syntax errors, look for secret keys you may have accidentally committed, and so on. The site's [CI system](https://travis-ci.com/github/The-Encryption-Compendium/the-encryption-compendium) will automatically check that the pre-commit hooks are satisfied whenever you push code to a branch.
+
+To install the hooks, run
+
+```
+$ pre-commit install
+```
+
+after installing the development requirements with `pip install -r requirements.dev.txt`.
 
 ## Running tests
 This repository provides some basic unit tests and functional tests for development. To run these tests, follow the instructions for creating a development environment and create a `.env` file. Then run the following:
