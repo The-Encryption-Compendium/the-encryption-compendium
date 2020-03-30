@@ -29,17 +29,20 @@ class JsonUploadForm(forms.Form):
         try:
             return json.load(json_file)
         except Exception as ex:
-            print("EXCEPTION:", ex)
             raise forms.ValidationError(
                 _("Unable to parse JSON file."), code="invalid_json",
             )
 
     def _extract_date(self, item):
         if "issued" in item:
-            year, month, day = item["issued"]["date-parts"][0]
-            return year, month, day
+            date = item["issued"]["date-parts"][0]
         else:
-            return None, None, None
+            date = []
+
+        while len(date) < 3:
+            date.append(None)
+
+        return date
 
     def _extract_authors(self, item):
         authors = []
@@ -90,7 +93,7 @@ class JsonUploadForm(forms.Form):
 
     def clean(self):
         """
-
+        Pass cleaned data from multiple CompendiumEntryForms.
         """
 
         cleaned_data = super().clean()

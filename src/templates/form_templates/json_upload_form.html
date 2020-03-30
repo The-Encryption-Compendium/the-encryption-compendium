@@ -1,0 +1,27 @@
+{% comment %}
+A form for uploading compendium entries as JSON
+{% endcomment %}
+
+{% if form.non_field_errors %}
+<div class="uk-alert uk-alert-danger" role="alert">
+  {{ form.non_field_errors }}
+</div>
+{% endif %}
+
+<div class="uk-width-1-2">
+  <h2 class="uk-h2">
+    Upload a JSON file
+  </h2>
+
+  {% if form.json_file.errors %}
+    {{ form.json_file.errors }}
+  {% endif %}
+
+  {{ form.json_file }}
+</div>
+
+<div class="uk-margin-top"></div>
+
+<button type="submit" class="uk-button uk-button-primary" name="json-upload">
+  Submit
+</button>

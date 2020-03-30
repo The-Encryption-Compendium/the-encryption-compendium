@@ -35,6 +35,9 @@ the edit form, and another that allows you to display the form.
     <li {% if bibtex_upload_active %}class="uk-active"{% endif %}>
       <a href="#">Upload BibTeX</a>
     </li>
+    <li {% if json_upload_active %}class="uk-active"{% endif %}>
+      <a href="#">Upload JSON</a>
+    </li>
   </ul>
 
   <ul id="upload_form" class="uk-list uk-switcher">
@@ -48,6 +51,12 @@ the edit form, and another that allows you to display the form.
       <form enctype="multipart/form-data" class="uk-margin-top" method="POST">
         {% csrf_token %}
         {% include "form_templates/bibtex_upload_form.html" with form=bibtex_form only %}
+      </form>
+    </li>
+    <li>
+       <form enctype="multipart/form-data" class="uk-margin-top" method="POST">
+        {% csrf_token %}
+        {% include "form_templates/json_upload_form.html" with form=json_form only %}
       </form>
     </li>
   </ul>

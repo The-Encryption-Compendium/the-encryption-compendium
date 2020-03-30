@@ -110,8 +110,25 @@ class AbstractCompendiumEntryModificationView(
         Create one or more new compendium entries via the JSON upload form.
         """
 
+        json_form = JsonUploadForm(request.POST, request.FILES)
+        is_valid = json_form.is_valid()
+
         if json_form.is_valid():
-            pass
+            for compendium_form in json_form.cleaned_data:
+                entry = compendium_form.cleaned_data
+                fields = {
+                    "title": entry.get("title"),
+                    "url": entry.get("url"),
+                    "abstract": entry.get("abstract"),
+                    "year": entry.get("year"),
+                    "month": entry.get("month"),
+                    "day": entry.get("day"),
+                }
+                compendium_entry = CompendiumEntry.objects.create(**fields)
+                compendium_entry.owner = request.user
+                compendium_entry.save()
+
+        return is_valid, json_form
 
     def _create_entries_from_bibtex(self, request):
         """
@@ -136,9 +153,9 @@ class AbstractCompendiumEntryModificationView(
                 }
                 compendium_entry = CompendiumEntry.objects.create(**fields)
 
-                # Get all of the authors of the compendium entry. Due to some weirdness
-                # with how Zotero formats BibTeX outputs, we have to perform this regular
-                # expression in order to extract the authors.
+                # Get all of the authors of the compendium entry. Due to some
+                # weirdness with how Zotero formats BibTeX outputs, we have to
+                # perform this regular expression in order to extract the authors.
                 names = entry.get("author", [])
 
                 # Set the authors of the compendium entry
@@ -170,10 +187,15 @@ class NewCompendiumEntryView(AbstractCompendiumEntryModificationView):
     def get(self, request):
         new_entry_form = CompendiumEntryForm()
         bibtex_form = BibTexUploadForm()
+        json_form = JsonUploadForm()
         return render(
             request,
             "new_article.html",
-            context={"new_entry_form": new_entry_form, "bibtex_form": bibtex_form,},
+            context={
+                "new_entry_form": new_entry_form,
+                "bibtex_form": bibtex_form,
+                "json_form": json_form,
+            },
         )
 
     def post(self, request):
@@ -194,16 +216,20 @@ class NewCompendiumEntryView(AbstractCompendiumEntryModificationView):
         else:
             bibtex_form = BibTexUploadForm()
 
+        if "json-upload" in request.POST:
+            # User uploaded JSON to the site
+            is_valid, json_form = self._create_entries_from_json(request)
+            context["json_upload_active"] = True
+        else:
+            json_form = JsonUploadForm()
+
         if is_valid:
             return redirect("research dashboard")
 
         context["new_entry_form"] = new_entry_form
         context["bibtex_form"] = bibtex_form
-        return render(
-            request,
-            "new_article.html",
-            context={"new_entry_form": new_entry_form, "bibtex_form": bibtex_form,},
-        )
+        context["json_form"] = json_form
+        return render(request, "new_article.html", context=context)
 
 
 class EditCompendiumEntryView(AbstractCompendiumEntryModificationView):
@@ -223,7 +249,6 @@ class EditCompendiumEntryView(AbstractCompendiumEntryModificationView):
                 authors.append(author.authorname)
 
             form = CompendiumEntryForm(instance=entry)
-            print(form.fields)
             return render(
                 request,
                 "new_article.html",
