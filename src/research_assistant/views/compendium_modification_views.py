@@ -13,7 +13,7 @@ from django.views import View
 from django.views.decorators.http import require_http_methods
 from django.views.generic.base import ContextMixin
 from django.utils.decorators import method_decorator
-from research_assistant.forms import BibTexUploadForm
+from research_assistant.forms import BibTexUploadForm, JsonUploadForm
 from entries.forms import CompendiumEntryForm, NewTagForm
 from entries.models import (
     CompendiumEntry,
@@ -104,6 +104,14 @@ class AbstractCompendiumEntryModificationView(
             article.save()
 
         return is_valid, new_entry_form
+
+    def _create_entries_from_json(self, request):
+        """
+        Create one or more new compendium entries via the JSON upload form.
+        """
+
+        if json_form.is_valid():
+            pass
 
     def _create_entries_from_bibtex(self, request):
         """

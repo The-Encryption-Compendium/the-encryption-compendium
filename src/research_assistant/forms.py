@@ -10,6 +10,7 @@ import re
 from bibtexparser.bparser import BibTexParser
 from django import forms
 from django.utils.translation import gettext as _
+from entries.forms import CompendiumEntryForm
 
 
 class JsonUploadForm(forms.Form):
@@ -81,11 +82,35 @@ class JsonUploadForm(forms.Form):
             new_entry["day"] = day
 
             # Get all of the entry's authors
-            new_entry["authors"] = self._extract_authors(item)
+            # new_entry["authors"] = self._extract_authors(item)
 
             entries.append(new_entry)
 
         return entries
+
+    def clean(self):
+        """
+
+        """
+
+        cleaned_data = super().clean()
+        new_entry_forms = []
+
+        # Loop over every entry we're creating and ensure that it's valid
+        for entry in cleaned_data["json_file"]:
+            # TODO: add more descriptive error messages in the case where
+            # we're invalid.
+            new_entry_form = CompendiumEntryForm(data=entry)
+            if not new_entry_form.is_valid():
+                raise forms.ValidationError(
+                    _("There was an error validating the form: %(err)s"),
+                    params={"err": repr(new_entry_form.errors)},
+                    code="compendium_entry_form_error",
+                )
+            else:
+                new_entry_forms.append(new_entry_form)
+
+        return new_entry_forms
 
 
 class BibTexUploadForm(forms.Form):
