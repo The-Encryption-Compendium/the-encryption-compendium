@@ -54,15 +54,32 @@ services:
       - .env
     volumes:
       - ./src:/var/src/:ro
+      - assets-volume:/opt/services/tec-gunicorn/assets
     ports:
       - "5000:5000"
     networks:
       - tec-net
+      - tec-nginx
+
+  # Proxyserver
+  tec-proxy:
+    image: nginx:1.17.9
+    ports:
+      - 8000:80
+    volumes:
+      - ./deploy_tools/nginx:/etc/nginx/conf.d
+      - assets-volume:/opt/services/tec-gunicorn/assets
+    depends_on:
+      - tec-gunicorn
+    networks:
+      - tec-nginx
 
 
 networks:
   tec-net:
+  tec-nginx:
 
 volumes:
   site-db:
   solrdata:
+  assets-volume:
