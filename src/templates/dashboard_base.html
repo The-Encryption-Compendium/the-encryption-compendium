@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
 {% block body %}
-{% block contents %}
-<h1 class="uk-h1 uk-margin-top">{% block page_header %}{% endblock %}</h1>
-<hr>
-{% endblock %}
+<div class="uk-container">
+  {% block contents %}
+  <div class="uk-container">
+    <h1 class="uk-h1 uk-margin-top">{% block page_header %}{% endblock %}</h1>
+    <br>
+  </div>
+  {% endblock %}
+</div>
 {% endblock %}

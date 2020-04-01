@@ -18,16 +18,16 @@ entry. Otherwise, we should display two forms: one for creating an entry through
 the edit form, and another that allows you to display the form.
 {% endcomment %}
 
+<div class="uk-container">
 {% if edit %}
 
-<div class="uk-container">
   <form class="uk-margin-top" method="POST">
     {% csrf_token %}
     {% include "form_templates/compendium_entry_edit_form.html" with form=form edit=edit num_of_authors=num_of_authors only %}
   </form>
-</div>
 
 {% else %}
+
   <ul class="uk-tab" uk-tab="{connect:'#upload_form'}">
     <li {% if manual_entry_active %}class="uk-active"{% endif %}>
       <a href="#">Enter manually</a>
@@ -61,6 +61,9 @@ the edit form, and another that allows you to display the form.
     </li>
   </ul>
 {% endif %}
+</div>
+
+<br>
 {% endblock %}
 
 {% block css %}

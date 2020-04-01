@@ -6,50 +6,52 @@
 {% block contents %}
 {% load static %}
 {{ block.super }}
-<form method="POST">
-  {% csrf_token %}
-
-  {% if created_user %}
-  <span class="uk-alert uk-alert-success">
-    Your invite was sent!  </span>
-  {% endif %}
-
-  {% if form.non_field_errors %}
-  <div class="uk-alert uk-alert-danger" role="alert">
-    {{ form.non_field_errors }}
-  </div>
-  {% endif %}
-
-  {% for field in form %}
-    {{ field }}
-    <div class="uk-margin-top uk-width-1-3@m">
-      {% include "includes/field_errors.html" with errors=field.errors only %}
-    </div>
-  {% endfor %}
-
-  <button id="new_user_submit_button" class="uk-margin-top uk-button uk-button-primary" type="submit" name="create_user">
-    Add new user
-  </button>
-</form>
-
-<div class="uk-container uk-width-1-2@m">
+<div class="uk-container">
   <form method="POST">
     {% csrf_token %}
-    {# Display all of the invites that haven't been accepted yet #}
-    <h2 class="uk-text-center">Outstanding invites</h2>
-    <hr>
 
-    <div class="uk-grid" uk-grid>
-      {% for token in outstanding_tokens %}
-      <div class="uk-text-center uk-width-3-4">
-        {{ token.email }}
-      </div>
-      <div class="uk-width-1-4">
-        <button class="uk-text-danger" name="del_email" value="{{ token.email }}" uk-close>
-        </button>
-      </div>
-      {% endfor %}
+    {% if created_user %}
+    <span class="uk-alert uk-alert-success">
+      Your invite was sent!  </span>
+    {% endif %}
+
+    {% if form.non_field_errors %}
+    <div class="uk-alert uk-alert-danger" role="alert">
+      {{ form.non_field_errors }}
     </div>
+    {% endif %}
+
+    {% for field in form %}
+      {{ field }}
+      <div class="uk-margin-top uk-width-1-3@m">
+        {% include "includes/field_errors.html" with errors=field.errors only %}
+      </div>
+    {% endfor %}
+
+    <button id="new_user_submit_button" class="uk-margin-top uk-button uk-button-primary" type="submit" name="create_user">
+      Add new user
+    </button>
   </form>
+
+  <div class="uk-container uk-width-1-2@m">
+    <form method="POST">
+      {% csrf_token %}
+      {# Display all of the invites that haven't been accepted yet #}
+      <h2 class="uk-text-center">Outstanding invites</h2>
+      <hr>
+
+      <div class="uk-grid" uk-grid>
+        {% for token in outstanding_tokens %}
+        <div class="uk-text-center uk-width-3-4">
+          {{ token.email }}
+        </div>
+        <div class="uk-width-1-4">
+          <button class="uk-text-danger" name="del_email" value="{{ token.email }}" uk-close>
+          </button>
+        </div>
+        {% endfor %}
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}

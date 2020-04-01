@@ -7,10 +7,6 @@ html, body {
   margin: 0;
 }
 
-html {
-  background-color: #f0f0f0;
-}
-
 body {
   display:flex;
   flex-direction:column;
@@ -22,12 +18,6 @@ footer {
 
 .content {
   min-width: 80%;
-}
-
-.action-icon {
-  display: inline-block;
-  vertical-align: middle;
-  height: 2rem;
 }
 
 .monospace {
@@ -44,6 +34,11 @@ footer {
 
 br.sep {
   margin-top: 2em;
+}
+
+.site-title {
+  font-weight: bold;
+  font-size: 4em;
 }
 
 /****************************
@@ -104,4 +99,5 @@ br.sep {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
+  background-color: #f0f0f0;
 }

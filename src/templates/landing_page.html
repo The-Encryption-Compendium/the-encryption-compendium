@@ -10,9 +10,10 @@ Template for the landing page for the site.
   {# Particle animation #}
   <div id="particles-js" class="particles-wrapper"></div>
 
-  <div class="uk-text-center uk-margin-top">
-    <h1 class="uk-heading-primary uk-text-break">
-      The Encryption Compendium
+  <div class="uk-margin-top">
+    <h1 class="site-title uk-text-center uk-heading-primary uk-text-break">
+      <p>The Encryption</p>
+      <p>Compendium</p>
     </h1>
   </div>
 
@@ -45,16 +46,30 @@ Template for the landing page for the site.
       </div>
     </div>
   </form>
-
-  <h2 class="uk-h2">
-    About us
-  </h2>
-
-  {% lorem 10 p %}
-
-  <br class="sep">
-
 </div>
+
+<div class="uk-margin-top" style="background-color: white;">
+  <div class="uk-container">
+    <br>
+    <h2 class="uk-h2">
+      About us
+    </h2>
+    {% lorem 5 p %}
+    <br>
+  </div>
+</div>
+
+<div class="uk-margin-top">
+  <div class="uk-container">
+    <br>
+    <h2 class="uk-h2">
+      Team
+    </h2>
+    {% lorem 3 p %}
+  </div>
+</div>
+
+<br class="sep">
 {% endblock %}
 
 {% block javascripts %}

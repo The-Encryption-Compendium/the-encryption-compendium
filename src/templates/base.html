@@ -32,11 +32,9 @@
   <body>
     {% include "includes/navbar.html" %}
 
-    <div class="content uk-container">
-      <div class="uk-width-7-10@m">
-        {% block body %}
-        {% endblock %}
-      </div>
+    <div class="content">
+      {% block body %}
+      {% endblock %}
     </div>
 
     {% include "includes/footer.html" %}
