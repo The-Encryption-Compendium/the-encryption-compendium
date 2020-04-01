@@ -4,7 +4,7 @@ input field.
 {% endcomment %}
 
 {% if widget.icon_name %}
-<div class="uk-inline">
+<div class="uk-inline uk-width-1-1">
   <span class="uk-form-icon" uk-icon="icon:{{ widget.icon_name }}"></span>
   <input type="text" name="{{ widget.name }}" {% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %} {% include "django/forms/widgets/attrs.html" %}>
 </div>

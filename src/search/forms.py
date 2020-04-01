@@ -6,6 +6,7 @@ to perform search.
 import re
 from django import forms
 from typing import List, Tuple
+from utils.widgets import SearchInput
 
 
 class BasicSearchForm(forms.Form):
@@ -16,18 +17,16 @@ class BasicSearchForm(forms.Form):
     """
 
     query = forms.CharField(
-        widget=forms.TextInput(
+        widget=SearchInput(
             attrs={
-                "class": "uk-search-input uk-form-large",
+                "class": "uk-input uk-form-large",
                 "type": "search",
                 "placeholder": "Search...",
             }
         )
     )
 
-    results_per_page = forms.IntegerField(
-        initial=20, widget=forms.HiddenInput(), required=False,
-    )
+    rows = forms.IntegerField(initial=20, widget=forms.HiddenInput(), required=False,)
 
     page = forms.IntegerField(initial=0, widget=forms.HiddenInput(), required=False,)
 
@@ -57,12 +56,12 @@ class BasicSearchForm(forms.Form):
             "words": words,
         }
 
-    def clean_results_per_page(self):
-        results_per_page = self.cleaned_data.get("results_per_page")
-        if results_per_page is None:
+    def clean_rows(self):
+        rows = self.cleaned_data.get("rows")
+        if rows is None:
             return 20
         else:
-            return results_per_page
+            return rows
 
     def clean_page(self):
         page = self.cleaned_data.get("page")

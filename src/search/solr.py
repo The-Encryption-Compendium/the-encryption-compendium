@@ -35,9 +35,21 @@ class SearchEngine:
         query_str = " && ".join(f"basic_search:{T!r}" for T in tokens)
 
         # Add pagination
+        page = query.get("page", 0)
+        rows = query.get("rows", 20)
+        start = page * rows
         kwargs = {
-            "rows": query.get("results_per_page", 20),
-            "start": query.get("page", 0),
+            "fl": "year,id,abstract,title",
+            "rows": rows,
+            "start": start,
         }
 
-        return self.solr.search(query_str, **kwargs)
+        results = self.solr.search(query_str, **kwargs)
+
+        # Add information about the start, page number, and rows for
+        # future handling
+        results.page = page
+        results.rows = rows
+        results.start = start
+
+        return results
