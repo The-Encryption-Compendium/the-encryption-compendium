@@ -43,6 +43,13 @@ br.sep {
 }
 
 /****************************
+ * Navbar
+ ****************************/
+.site-navbar {
+  background-color: #222 !important;
+}
+
+/****************************
  * CSS for tags
  ****************************/
 
@@ -71,4 +78,21 @@ br.sep {
   font-size: 1.5em;
   margin-top: auto;
   margin-bottom: 1em;
+}
+
+/****************************
+ * Animations
+ ****************************/
+
+.particles-wrapper {
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  position: fixed;
+  z-index: -1;
+  background-image: url("");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
 }

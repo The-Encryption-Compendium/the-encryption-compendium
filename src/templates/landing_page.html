@@ -6,6 +6,10 @@ Template for the landing page for the site.
 
 {% block body %}
 <div class="uk-container">
+
+  {# Particle animation #}
+  <div id="particles-js" class="particles-wrapper"></div>
+
   <div class="uk-text-center uk-margin-top">
     <h1 class="uk-heading-primary uk-text-break">
       The Encryption Compendium
@@ -46,7 +50,7 @@ Template for the landing page for the site.
     About us
   </h2>
 
-  {% lorem 3 p %}
+  {% lorem 10 p %}
 
   <br class="sep">
 
@@ -55,13 +59,7 @@ Template for the landing page for the site.
 
 {% block javascripts %}
 {{ block.super }}
-<script>
-function toggle_tag(tag_id) {
-  // Deselect the active element so that it can change color
-  document.activeElement.blur();
-
-  let tag = document.getElementById("tag-" + tag_id);
-  tag.classList.toggle("selected-tag");
-}
+{% load static %}
+<script type="application/javascript" src="{% static 'js/landing_page.js' %}">
 </script>
 {% endblock %}
