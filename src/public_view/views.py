@@ -2,6 +2,7 @@
 Views for the public-facing side of the site.
 """
 
+from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
@@ -16,9 +17,28 @@ class LandingPage(BasicSearchMixin, View):
     that users can immediately start searching the compendium.
     """
 
+    # Number of tags to display to users
+    n_tags = 40
+
     def get(self, request):
         search_form = self.create_search_form(request)
-        tags = CompendiumEntryTag.objects.order_by("tagname").all()
+
+        # Equivalent SQL query:
+        #
+        #   SELECT DISTINCT t.*, count(*)
+        #   FROM entries_compendiumentrytag as t, compendium_tags as c
+        #   WHERE t.id = c.compendiumentrytag_id
+        #   GROUP BY t.id
+        #   ORDER BY count DESC
+        #   LIMIT {n_tags};
+        #
+        tags = (
+            CompendiumEntryTag.objects.all()
+            .annotate(count=Count("compendiumentry"))
+            .order_by("-count")[: self.n_tags]
+        )
+        tags = sorted(tags, key=lambda tag: tag.tagname)
+
         return render(
             request,
             "landing_page.html",
