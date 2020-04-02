@@ -19,9 +19,9 @@ Configuration options
 """
 
 """CompendiumEntry model"""
-MAX_TITLE_LENGTH = 300
+MAX_TITLE_LENGTH = 500
 MAX_ABSTRACT_LENGTH = 10000
-MAX_URL_LENGTH = 300
+MAX_URL_LENGTH = 500
 
 """CompendiumEntryTag model"""
 MAX_TAG_LENGTH = 50

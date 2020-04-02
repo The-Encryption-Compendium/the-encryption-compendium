@@ -102,60 +102,52 @@ class BibTexCompendiumEntryUploadTestCase(UnitTest):
                 self.test_filename, self.bib.encode("utf-8"),
             )
 
-    def test_both_upload_methods_work_correctly(self):
-        """
-        Test the results of uploading the data manually versus uploading a
-        .bib file with all of the required data. Both methods should generate
-        the same results.
-        """
-        ### Form should be valid when entering data manually
-        manual_form = BibTexUploadForm(data={"bibtex_entry": self.bib})
-        self.assertTrue(manual_form.is_valid())
-
-        ### Form should be valid when uploading a .bib file
-        bibfile_form = BibTexUploadForm(
+        self.form = BibTexUploadForm(
             data={"bibtex_file": self.test_filename},
             files={"bibtex_file": self.bibfile},
         )
-        self.assertTrue(bibfile_form.is_valid())
+        self.assertTrue(self.form.is_valid())
 
-        ### Both forms should create the same results
+        # Ensure that the cleaned data are in the correct format
+        self.results = self.form.cleaned_data
+        self.assertTrue(isinstance(self.results, list))
+        self.assertTrue(all(isinstance(r, dict) for r in self.results))
+        self.assertEqual(len(self.results), 2)
+
+        # Within the ith dictionary there should be the following:
+        # - A CompendiumEntryForm with data for the ith entry
+        # - A list of authors
+        # - A list of tags
+        self.assertTrue(all(len(r.keys()) == 3 for r in self.results))
+        for key in ("form", "authors", "tags"):
+            self.assertTrue(all(key in r for r in self.results))
+
+        self.data = [r["form"].cleaned_data for r in self.results]
+
+    def test_forms_are_validated(self):
+        """Each CompendiumEntryForm should be valid"""
+        self.assertTrue(all(r["form"].is_valid() for r in self.results))
+
+    def test_titles_are_parsed_correctly(self):
+        self.assertTrue(self.data[0]["title"].startswith("A Judicial Framework"))
+        self.assertTrue(self.data[1]["title"].startswith("A Flawed Encryption Policy"))
+
+    def test_abstracts_are_parsed_correctly(self):
+        self.assertTrue(self.data[0]["abstract"].startswith("At Motherboard"))
+        self.assertTrue(self.data[1]["abstract"].startswith("An editorial"))
+
+    def test_dates_are_parsed_correctly(self):
+        self.assertEqual(self.data[0]["month"], 7)
+        self.assertEqual(self.data[0]["year"], 2016)
+        self.assertEqual(self.data[1]["month"], 4)
+        self.assertEqual(self.data[1]["year"], 1996)
+
+    def test_authors_are_parsed_correctly(self):
         self.assertEqual(
-            manual_form.cleaned_data.get("bibtex"),
-            bibfile_form.cleaned_data.get("bibtex"),
+            self.results[0]["authors"], ["Susan Hennessey", "Nicholas Weaver"]
         )
+        self.assertEqual(self.results[1]["authors"], ["Anonymous"])
 
-        ### Manually check that the BibTeX was parsed correctly
-        bibtex = manual_form.cleaned_data.get("bibtex")
-        self.assertEqual(len(bibtex), 2)
-        self.assertTrue("susan_hennessey_judicial_2016" in bibtex)
-        self.assertTrue("anonymous_flawed_1996" in bibtex)
-
-        entry = bibtex["susan_hennessey_judicial_2016"]
-        self.assertEqual(entry.get("year"), "2016")
-        self.assertEqual(entry.get("month"), "July")
-        self.assertEqual(entry.get("journal"), "Lawfare")
-
-        entry = bibtex["anonymous_flawed_1996"]
-        self.assertEqual(entry.get("year"), "1996")
-        self.assertEqual(entry.get("month"), "April")
-        self.assertEqual(entry.get("journal"), "New York Times")
-
-    def test_form_cannot_be_completely_blank(self):
-        """
-        At least one of the two fields (the .bib file upload or the BibTeX
-        textarea) must be non-empty.
-        """
-        form = BibTexUploadForm()
-        self.assertFalse(form.is_valid())
-
-    def test_cannot_use_both_upload_methods_simultaneously(self):
-        """
-        The user should be able to upload a BibTeX file, or enter BibTeX
-        manually, but not both.
-        """
-        form = BibTexUploadForm(
-            data={"bibtex_entry": self.bib, "bibtex_file": self.test_filename},
-            files={"bibtex_file": self.bibfile},
-        )
-        self.assertFalse(form.is_valid())
+    def test_tags_are_parsed_correctly(self):
+        self.assertEqual(self.results[0]["tags"], ["2010s", "Child Exploitation"])
+        self.assertEqual(self.results[1]["tags"], [])

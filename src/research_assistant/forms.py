@@ -173,7 +173,7 @@ class BibTexUploadForm(forms.Form):
     def _extract_publisher(self, entry):
         for key in ("publisher", "journal", "journaltitle"):
             if key in entry:
-                return key[entry]
+                return entry[key]
         return None
 
     def _extract_tags(self, entry):
@@ -207,6 +207,7 @@ class BibTexUploadForm(forms.Form):
                 {
                     "entry": {
                         "title": self._extract_title(entry),
+                        "abstract": entry.get("abstract"),
                         "publisher_text": self._extract_publisher(entry),
                         "year": year,
                         "month": month,
