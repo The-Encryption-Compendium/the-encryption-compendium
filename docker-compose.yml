@@ -64,6 +64,7 @@ services:
   # Proxyserver
   tec-proxy:
     image: nginx:1.17.9
+    container_name: tec-proxy
     ports:
       - 8000:80
     volumes:
