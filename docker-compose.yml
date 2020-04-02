@@ -28,8 +28,8 @@ services:
       - tec-database
     env_file:
       - .env
-    volumes:
-      - solrdata:/var/solr:rw
+    #volumes:
+    #  - solrdata:/var/solr:rw
     ports:
       - "8983:8983"
     networks:

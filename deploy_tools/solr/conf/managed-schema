@@ -116,6 +116,9 @@
 
     <field name="title" type="text_general" multiValued="false" indexed="true" stored="true" />
     <field name="abstract" type="text_general" multiValued="false" indexed="true" stored="true" />
+    <field name="year" type="pint" multiValued="false" indexed="true" stored="true" required="false" />
+    <field name="month" type="pint" multiValued="false" indexed="true" stored="true" required="false" />
+    <field name="day" type="pint" multiValued="false" indexed="true" stored="true" required="false" />
 
     <!-- Combine the "title" and "abstract" fields so that we search both when performing basic search -->
     <copyField source="title" dest="basic_search" />

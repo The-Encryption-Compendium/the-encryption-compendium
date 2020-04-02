@@ -32,16 +32,16 @@ class SearchEngine:
         tokens += query.get("words", [])
 
         # Combine tokens into a single search query for Solr
-        query_str = " && ".join(f"basic_search:{T!r}" for T in tokens)
+        query_str = " && ".join(f"(abstract:{T!r} || title:{T!r})" for T in tokens)
 
         # Add pagination
         page = query.get("page", 0)
         rows = query.get("rows", 20)
         start = page * rows
         kwargs = {
-            "fl": "year,id,abstract,title",
             "rows": rows,
             "start": start,
+            "fl": "id,title,abstract,year,month,day",
         }
 
         results = self.solr.search(query_str, **kwargs)
