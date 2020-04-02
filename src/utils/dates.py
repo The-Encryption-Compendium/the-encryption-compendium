@@ -2,6 +2,7 @@
 Various utilities for handling dates and times.
 """
 
+import calendar
 import datetime
 
 
@@ -24,3 +25,16 @@ def month_name(month_num: int):
         return date.strftime("%B")
     except:
         return None
+
+
+def month_num(month_name: str):
+    """
+    Get the number of a month (1 to 12) corresponding to its name.
+    Returns None if the input name is invalid.
+    """
+
+    for (num, name) in enumerate(calendar.month_name):
+        if name == month_name:
+            return num
+
+    return None

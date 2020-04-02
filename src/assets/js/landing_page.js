@@ -3,6 +3,7 @@ function toggle_tag(tag_id) {
   document.activeElement.blur();
 
   let tag = document.getElementById("tag-" + tag_id);
+  tag.classList.toggle("deselected-tag");
   tag.classList.toggle("selected-tag");
 }
 

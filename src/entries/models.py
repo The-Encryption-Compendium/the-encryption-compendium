@@ -24,7 +24,7 @@ MAX_ABSTRACT_LENGTH = 10000
 MAX_URL_LENGTH = 300
 
 """CompendiumEntryTag model"""
-MAX_TAG_LENGTH = 30
+MAX_TAG_LENGTH = 50
 
 """Authors model"""
 MAX_AUTHOR_NAME_LENGTH = 100

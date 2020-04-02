@@ -11,6 +11,7 @@ from bibtexparser.bparser import BibTexParser
 from django import forms
 from django.utils.translation import gettext as _
 from entries.forms import CompendiumEntryForm
+from utils.dates import month_num
 
 
 class JsonUploadForm(forms.Form):
@@ -19,7 +20,7 @@ class JsonUploadForm(forms.Form):
     it to the site.
     """
 
-    json_file = forms.FileField(required=False, max_length=5e6,)  # 5 Mb
+    json_file = forms.FileField(required=True, max_length=5e6,)  # 5 Mb
 
     """
     Helper functions
@@ -119,35 +120,78 @@ class JsonUploadForm(forms.Form):
 class BibTexUploadForm(forms.Form):
     """
     BibTexUploadForm is an input form that allows adding new compendium entries
-    to the site by either entering BibTeX manually, or uploading a .bib file.
+    to the site by uploading a .bib file.
 
     Fields
     ------
     bibtex_file : forms.FileField
         A form field that accepts a .bib file and parses BibTeX from that file.
-
-    bibtex_entry : forms.CharField
-        A form field that accepts raw BibTeX as text and parses it so that it
-        can be converted to a list of compendium entries.
     """
 
     # Form field that can be used to upload a .bib file
-    bibtex_file = forms.FileField(required=False, max_length=5e6,)  # 5 Mb
-
-    # Form field to directly paste in BibTex
-    bibtex_entry = forms.CharField(
-        widget=forms.Textarea(
-            attrs={
-                "class": "monospace uk-width-1-1 uk-textarea",
-                "placeholder": "Copy BibTex here...",
-            }
-        ),
-        required=False,
-    )
+    bibtex_file = forms.FileField(required=True, max_length=5e6,)  # 5 Mb
 
     """
     Helper functions
     """
+
+    def _read_bibtex_file(self, bibtex_file) -> dict:
+        parser = BibTexParser(common_strings=True)
+
+        try:
+            bib_db = parser.parse_file(bibtex_file)
+        except Exception as ex:
+            raise forms.ValidationError(
+                _("Error parsing BibTeX: %(msg)s"),
+                params={"msg": str(ex)},
+                code="invalid_bibtex",
+            )
+
+        return bib_db.entries_dict
+
+    """
+    Function for reading Zotero's BibTeX output
+    """
+
+    def _extract_date(self, entry):
+        # TODO: day
+        year = entry.get("year")
+        month = entry.get("month")
+        if year is not None:
+            year = int(year)
+        if month is not None:
+            month = month_num(month)
+        return year, month, None
+
+    def _extract_title(self, entry):
+        title = entry.get("title")
+        if title is not None:
+            # Strip brackets { } from the title
+            title = title.replace("{", "").replace("}", "")
+        return title
+
+    def _extract_publisher(self, entry):
+        for key in ("publisher", "journal", "journaltitle"):
+            if key in entry:
+                return key[entry]
+        return None
+
+    def _extract_tags(self, entry):
+        tags = entry.get("keywords")
+        if tags is not None:
+            tags = tags.split(", ")
+        else:
+            tags = []
+        return tags
+
+    def _extract_authors(self, entry):
+        authors = entry.get("author")
+        if authors is not None:
+            patt = re.compile(r"\{([^\}]+)\}")
+            authors = patt.findall(authors)
+        else:
+            authors = []
+        return authors
 
     def reformat_bibtex(self, bibtex: dict):
         """
@@ -155,20 +199,26 @@ class BibTexUploadForm(forms.Form):
         digestible by other parts of the code.
         """
 
+        entries = []
+
         for entry in bibtex.values():
-            authors = entry.get("author")
-            if authors is not None:
-                # Strip brackets { } from the author string
-                patt = re.compile(r"\{([^\}]+)\}")
-                names = patt.findall(authors)
-                entry["author"] = names
+            year, month, day = self._extract_date(entry)
+            entries.append(
+                {
+                    "entry": {
+                        "title": self._extract_title(entry),
+                        "publisher_text": self._extract_publisher(entry),
+                        "year": year,
+                        "month": month,
+                        "day": day,
+                        "url": entry.get("url"),
+                    },
+                    "authors": self._extract_authors(entry),
+                    "tags": self._extract_tags(entry),
+                }
+            )
 
-            title = entry.get("title")
-            if title is not None:
-                # Strip brackets { } from the title
-                entry["title"] = title.replace("{", "").replace("}", "")
-
-        return bibtex
+        return entries
 
     """
     Validation functions
@@ -176,61 +226,31 @@ class BibTexUploadForm(forms.Form):
 
     def clean_bibtex_file(self):
         bibfile = self.cleaned_data.get("bibtex_file")
+        bib_dict = self._read_bibtex_file(bibfile)
+        entries = self.reformat_bibtex(bib_dict)
 
-        if bibfile is None:
-            return None
-
-        else:
-            try:
-                parser = BibTexParser(common_strings=True)
-                bib_db = parser.parse_file(bibfile)
-                return bib_db.entries_dict
-            except Exception as ex:
-                raise forms.ValidationError(
-                    _("Error parsing BibTeX: %(msg)s"),
-                    params={"msg": str(ex)},
-                    code="invalid_bibtex",
-                )
-
-    def clean_bibtex_entry(self):
-        bibtex = self.cleaned_data.get("bibtex_entry")
-
-        if bibtex is None or bibtex == "":
-            return None
-
-        else:
-            try:
-                parser = BibTexParser(common_strings=True)
-                bib_db = parser.parse(bibtex)
-                return bib_db.entries_dict
-            except Exception as ex:
-                raise forms.ValidationError(
-                    _("Error parsing BibTeX file: %(msg)s"),
-                    params={"msg": str(ex)},
-                    code="invalid_bibtex",
-                )
+        return entries
 
     def clean(self):
         cleaned_data = super().clean()
-        bibfile = cleaned_data.get("bibtex_file")
-        bibentry = cleaned_data.get("bibtex_entry")
+        entries = cleaned_data.get("bibtex_file", [])
 
-        if bibfile is None and bibentry is None:
-            raise forms.ValidationError(
-                _("These fields cannot both be blank."), code="invalid_bibtex",
-            )
+        # Loop over every entry we're creating and use CompendiumEntryForm
+        # to ensure that it's valid.
+        new_entry_forms = []
+        for entry in entries:
+            entry_data = entry.pop("entry")
+            form = CompendiumEntryForm(data=entry_data)
+            if not form.is_valid():
+                # TODO: improved error message
+                raise forms.ValidationError(
+                    _("There was an error validating the form: %(err)s"),
+                    params={"err": repr(form.errors)},
+                    code="compendium_entry_form_error",
+                )
+            else:
+                new_entry_forms.append(
+                    {**entry, "form": form,}
+                )
 
-        elif bibfile is not None and bibentry is not None:
-            raise forms.ValidationError(
-                _(
-                    "You may upload a .bib file or enter BibTeX manually, but "
-                    "not both."
-                ),
-                code="invalid_bibtex",
-            )
-
-        elif bibfile is None and bibentry is not None:
-            return {"bibtex": self.reformat_bibtex(bibentry)}
-
-        else:
-            return {"bibtex": self.reformat_bibtex(bibfile)}
+        return new_entry_forms

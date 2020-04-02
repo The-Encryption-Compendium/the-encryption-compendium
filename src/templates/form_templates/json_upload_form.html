@@ -14,7 +14,9 @@ A form for uploading compendium entries as JSON
   </h2>
 
   {% if form.json_file.errors %}
+  <div class="uk-alert uk-alert-danger" role="alert">
     {{ form.json_file.errors }}
+  </div>
   {% endif %}
 
   {{ form.json_file }}

@@ -41,6 +41,11 @@ br.sep {
   font-size: 4em;
 }
 
+.tag-selector-button {
+  color: black;
+  background-color: white;
+}
+
 /****************************
  * Navbar
  ****************************/
@@ -51,6 +56,11 @@ br.sep {
 /****************************
  * CSS for tags
  ****************************/
+
+.deselected-tag {
+  background-color: white !important;
+  color: black !important;
+}
 
 .selected-tag {
   background-color: #222 !important;

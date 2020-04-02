@@ -30,7 +30,7 @@ Template for the landing page for the site.
       <div id="tag-buttons" class="uk-grid uk-grid-small" uk-grid="" data-uk-button-checkbox="">
         {% for tag in tags %}
         <div>
-          <button type="button" id="tag-{{ tag.id }}" type="button" class="uk-button uk-button-default" onclick="toggle_tag({{ tag.id }})">
+          <button type="button" id="tag-{{ tag.id }}" type="button" class="uk-button uk-button-default deselected-tag" onclick="toggle_tag({{ tag.id }})">
             {{ tag.tagname }}
           </button>
         </div>

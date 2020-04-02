@@ -113,7 +113,7 @@ class AbstractCompendiumEntryModificationView(
         json_form = JsonUploadForm(request.POST, request.FILES)
         is_valid = json_form.is_valid()
 
-        if json_form.is_valid():
+        if is_valid:
             for compendium_form in json_form.cleaned_data:
                 entry = compendium_form.cleaned_data
                 fields = {
@@ -137,40 +137,37 @@ class AbstractCompendiumEntryModificationView(
         """
 
         bibtex_form = BibTexUploadForm(request.POST, request.FILES)
-
         is_valid = bibtex_form.is_valid()
-        if bibtex_form.is_valid():
-            bibtex = bibtex_form.cleaned_data.get("bibtex")
 
-            # Add a new entry to the compendium for each entry in the .bib file
-            for entry in bibtex.values():
-                fields = {
-                    "title": entry.get("title"),
-                    "url": entry.get("url"),
-                    "abstract": entry.get("abstract"),
-                    "year": int(entry["year"]) if "year" in entry else None,
-                    "publisher_text": entry.get("journal"),
-                }
-                compendium_entry = CompendiumEntry.objects.create(**fields)
+        if is_valid:
+            for result in bibtex_form.cleaned_data:
+                compendium_form = result["form"]
+                entry = compendium_form.cleaned_data
 
-                # Get all of the authors of the compendium entry. Due to some
-                # weirdness with how Zotero formats BibTeX outputs, we have to
-                # perform this regular expression in order to extract the authors.
-                names = entry.get("author", [])
-
-                # Set the authors of the compendium entry
-                authors_list = []
-                for name in names:
+                # Get the authors of the compendium entry
+                authors = []
+                for name in result.get("authors", []):
                     author = Author.objects.filter(authorname=name)
                     if not author.exists():
                         author = Author.objects.create(authorname=name)
                     else:
                         author = author.first()
+                    authors.append(author)
 
-                    authors_list.append(author)
+                # Get the tags for the compendium entry
+                tags = []
+                for tagname in result.get("tags", []):
+                    tag = CompendiumEntryTag.objects.filter(tagname=tagname)
+                    if not tag.exists():
+                        tag = CompendiumEntryTag.objects.create(tagname=tagname)
+                    else:
+                        tag = tag.first()
+                    tags.append(tag)
 
-                compendium_entry.authors.set(authors_list)
+                compendium_entry = compendium_form.save()
                 compendium_entry.owner = request.user
+                compendium_entry.authors.set(authors)
+                compendium_entry.tags.set(tags)
                 compendium_entry.save()
 
         return is_valid, bibtex_form
