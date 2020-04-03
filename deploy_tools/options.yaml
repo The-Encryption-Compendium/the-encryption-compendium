@@ -49,6 +49,21 @@ DATABASE_HOST:
     The host where the database is located. If you're using docker-compose
     to run the site, this should probably be set to "tec-database".
 
+CACHE_BACKEND:
+  default:
+  help: >
+    The caching framework to use. Caching helps speed up the site by reducing
+    database queries and template generation.
+  options:
+    - memcached
+    - dummy
+
+MEMCACHED_HOSTS:
+  default: tec-cache
+  help: >
+    Comma-separated list of hosts running Memcached servers to be used with
+    Django's caching framework. Ignored when CACHE_BACKEND is not "memcached".
+
 REDIRECT_HTTP_TO_HTTPS:
   default: "no"
   help: >

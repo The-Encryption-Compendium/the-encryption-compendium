@@ -4,7 +4,7 @@ services:
 
   # PostgreSQL database for authentication, storing compendium content,
   # etc.
-  tec-database:
+  database:
     image: postgres:12.2-alpine
     container_name: tec-database
     env_file:
@@ -17,15 +17,15 @@ services:
       - tec-net
 
   # Apache Solr instance for text search
-  tec-search:
+  search:
     build:
-      context: deploy_tools/solr/
+      context: docker/solr/
       args:
         POSTGRES_JDBC_VERSION: "42.2.11"
-    image: tec-solr
+    image: tec-solr:latest
     container_name: tec-search
     depends_on:
-      - tec-database
+      - database
     env_file:
       - .env
     #volumes:
@@ -39,22 +39,22 @@ services:
       - compendium
 
   # Webserver
-  tec-gunicorn:
+  gunicorn:
     build:
       context: .
-      dockerfile: deploy_tools/gunicorn/Dockerfile
-    image: tec-gunicorn
+      dockerfile: docker/gunicorn/Dockerfile
+    image: tec-gunicorn:latest
     container_name: tec-gunicorn
     depends_on:
-      - tec-database
-      - tec-search
+      - database
+      - search
     environment:
       DATABASE_ENGINE: "postgres"
     env_file:
       - .env
     volumes:
       - ./src:/var/src/:ro
-      - assets-volume:/opt/services/tec-gunicorn/assets
+      - staticfiles:/var/www/static:rw
     ports:
       - "5000:5000"
     networks:
@@ -62,19 +62,26 @@ services:
       - tec-nginx
 
   # Proxyserver
-  tec-proxy:
-    image: nginx:1.17.9
+  proxy:
+    build:
+      context: docker/nginx/
+    image: tec-proxy:latest
     container_name: tec-proxy
     ports:
       - 8000:80
     volumes:
-      - ./deploy_tools/nginx:/etc/nginx/conf.d
-      - assets-volume:/opt/services/tec-gunicorn/assets
+      # Shared volume with the gunicorn server that allows us to
+      # serve static files.
+      - staticfiles:/opt/services/tec-gunicorn/staticfiles:ro
     depends_on:
-      - tec-gunicorn
+      - gunicorn
     networks:
       - tec-nginx
 
+  # Webserver cache
+  cache:
+    image: memcached:1.6-alpine
+    container_name: tec-cache
 
 networks:
   tec-net:
@@ -83,4 +90,4 @@ networks:
 volumes:
   site-db:
   solrdata:
-  assets-volume:
+  staticfiles:

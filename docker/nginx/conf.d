@@ -19,9 +19,9 @@ server {
         proxy_redirect off;
     }
 
-    location /assets/ {
+    location /static/ {
         # for static content
-        alias /opt/services/tec-gunicorn/assets/;
+        alias /opt/services/tec-gunicorn/staticfiles/;
     }
 
     location ~* /research/login {

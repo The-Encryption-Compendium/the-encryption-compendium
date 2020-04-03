@@ -138,6 +138,22 @@ elif DATABASE_ENGINE == "postgres":
 else:
     raise Exception("DATABASE_ENGINE must be either sqlite3 or postgres.")
 
+# Caching
+# https://docs.djangoproject.com/en/stable/topics/cache/
+backend = os.getenv("CACHE_BACKEND", "dummy")
+if backend == "memcached":
+    cache_location = os.getenv("MEMCACHED_HOST").split(",")
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.memcached.PyLibMCCache",
+            "LOCATION": cache_location,
+        }
+    }
+elif backend == "dummy":
+    CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache",}}
+else:
+    raise Exception("CACHE_BACKEND must be 'dummy' or 'memcached'")
+
 # Authentication options
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 

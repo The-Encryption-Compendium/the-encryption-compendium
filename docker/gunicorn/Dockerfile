@@ -8,10 +8,14 @@ RUN apk update \
     && apk upgrade \
     && apk add --no-cache \
         libffi-dev \
+        libmemcached-libs \
+        libmemcached-dev \
         musl-dev \
         postgresql-dev \
         python3 \
-        python3-dev
+        python3-dev \
+        zlib \
+        zlib-dev
 
 # Install pip packages. The packages we install will vary based
 # on whether we're running in production mode or development
@@ -26,7 +30,7 @@ RUN if [ ! "${DEVELOPMENT}" = "yes" ] && [ ! "${DEVELOPMENT}" = "no" ]; \
 
 COPY requirements.txt /tmp/requirements.txt
 COPY requirements.dev.txt /tmp/requirements.dev.txt
-COPY deploy_tools/gunicorn/setup.sh /tmp/setup.sh
+COPY docker/gunicorn/setup.sh /tmp/setup.sh
 
 RUN /tmp/setup.sh
 
@@ -43,10 +47,10 @@ ADD --chown=www-data:www-data src "${WWW_DIR}"
 
 # Install Gunicorn config file
 ENV GUNICORN_CONFIG=/etc/gunicorn/config.py
-COPY deploy_tools/gunicorn/config.py "${GUNICORN_CONFIG}"
+COPY docker/gunicorn/config.py "${GUNICORN_CONFIG}"
 
 # Install script to be run as the www-data user
-COPY --chown=root:www-data deploy_tools/gunicorn/run.sh /run.sh
+COPY --chown=root:www-data docker/gunicorn/run.sh /run.sh
 
 USER www-data
 WORKDIR "${WWW_DIR}"
