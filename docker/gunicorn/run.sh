@@ -8,14 +8,6 @@ else
     ADDTL_OPTS="--log-level info"
 fi
 
-if [ -d /var/src ]
-then
-    echo "----------------------------------------------"
-    echo "Changing directory into /var/src"
-    echo "----------------------------------------------"
-    cd /var/src
-fi
-
 # Initialize the database
 python3 manage.py migrate
 

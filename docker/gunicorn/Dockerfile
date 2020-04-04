@@ -34,11 +34,6 @@ COPY docker/gunicorn/setup.sh /tmp/setup.sh
 
 RUN /tmp/setup.sh
 
-# Development purposes -- if the /var/src directory is non-empty, then we
-# assume that the code has been mounted there and run the code from there
-# instead.
-VOLUME /var/src
-
 # Install code
 ENV WWW_DIR="/var/www"
 RUN mkdir -p "${WWW_DIR}" \
