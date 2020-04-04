@@ -68,7 +68,8 @@ services:
     image: tec-proxy:latest
     container_name: tec-proxy
     ports:
-      - 8000:80
+      - "80:80"
+      - "443:443"
     volumes:
       # Shared volume with the gunicorn server that allows us to
       # serve static files.
