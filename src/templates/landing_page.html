@@ -68,7 +68,52 @@ Template for the landing page for the site.
     <h2 class="uk-h2">
       <a class="anchor" id="team">Team</a>
     </h2>
-    {% lorem 3 p %}
+    <div class="uk-margin-top uk-grid-large uk-text-middle" uk-grid>
+      <div class="uk-width-1-2@l">
+        <b class="uk-text-emphasis">Silicon Flatirons Researcher Team</b>
+        <br>
+        <b class="uk-text-bold">Led by Amie Stepanovich, Silicon Flatirons Director</b>
+        <ul class="uk-list uk-list-bullet">
+          <li>
+            Shannon Brunston
+            <br>
+            <small class="uk-text-small">TCP Program Student</small>
+          </li>
+          <li>
+            Slate Herman
+            <br>
+            <small class="uk-text-small">2L Colorado Law</small>
+          </li>
+          <li>
+            Jordan Regenie
+            <br>
+            <small class="uk-text-small">3L Colorado Law</small>
+          </li>
+          <li>
+            Stacey Weber
+            <br>
+            <small class="uk-text-small">1L Colorado Law</small>
+          </li>
+      </ul>
+      </div>
+      <div class="uk-width-1-2@l">
+        <b class="uk-text-emphasis">TCP Web Development Team</b>
+        <br>
+        <b class="uk-text-bold">Led by Dr. Dan Massey Director, TCP Program Director</b>
+        <ul class="uk-list uk-list-bullet">
+          <li>
+            Will Shand
+            <br>
+            <small class="uk-text-small">TCP Program Student</small>
+          </li>
+          <li>
+            Pranav Gummaraj Srinivas
+            <br>
+            <small class="uk-text-small">TCP Program Student</small>
+          </li>
+        </ul>
+      </div>
+  </div>
     <br>
   </div>
 </div>
@@ -81,3 +126,4 @@ Template for the landing page for the site.
 <script type="application/javascript" src="{% static 'js/landing_page.js' %}">
 </script>
 {% endblock %}
+
