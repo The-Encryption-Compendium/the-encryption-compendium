@@ -5,11 +5,23 @@ upstream encryption_compendium_server {
 
 limit_req_zone $binary_remote_addr zone=mylimit:10m rate=60r/m;
 
-# main server
 server {
+    listen 443 ssl default_server;
 
-    listen 80;
-    server_name encryption_compendium.com;
+    # Add expires headers
+    expires 7d;
+
+    client_max_body_size 4G;
+    server_name _;
+
+    #ssl_certificate ${SSL_CERT};
+    #ssl_certificate_key ${SSL_KEY};
+
+    keepalive_timeout 70;
+
+    # Absolute path to site
+    root /var/www/public/;
+    index index.html;
 
     location / {
         # everything is passed to Gunicorn
@@ -33,5 +45,4 @@ server {
         proxy_set_header Host $host;
         proxy_redirect off;
     }
-
 }

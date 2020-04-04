@@ -74,6 +74,7 @@ services:
       # Shared volume with the gunicorn server that allows us to
       # serve static files.
       - staticfiles:/opt/services/tec-gunicorn/static:ro
+      - letsencrypt:/etc/letsencrypt:rw
     depends_on:
       - gunicorn
     networks:
@@ -93,3 +94,4 @@ volumes:
   site-db:
   solrdata:
   staticfiles:
+  letsencrypt:
