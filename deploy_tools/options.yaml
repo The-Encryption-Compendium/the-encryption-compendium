@@ -50,7 +50,7 @@ DATABASE_HOST:
     to run the site, this should probably be set to "tec-database".
 
 CACHE_BACKEND:
-  default:
+  default: memcached
   help: >
     The caching framework to use. Caching helps speed up the site by reducing
     database queries and template generation.
