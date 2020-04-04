@@ -142,7 +142,7 @@ else:
 # https://docs.djangoproject.com/en/stable/topics/cache/
 backend = os.getenv("CACHE_BACKEND", "dummy")
 if backend == "memcached":
-    cache_location = os.getenv("MEMCACHED_HOST").split(",")
+    cache_location = os.getenv("MEMCACHED_HOSTS").split(",")
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.memcached.PyLibMCCache",
