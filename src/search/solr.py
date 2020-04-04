@@ -41,7 +41,7 @@ class SearchEngine:
         kwargs = {
             "rows": rows,
             "start": start,
-            "fl": "id,title,abstract,year,month,day",
+            "fl": "id,title,abstract,slug,year,month,day",
         }
 
         results = self.solr.search(query_str, **kwargs)

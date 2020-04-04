@@ -20,7 +20,7 @@ cat > "${DATA_CONFIG}" <<- EOXML
     password="$POSTGRES_PASSWORD" />
 
   <document name="entries">
-    <entity name="compendium" query="select id, title, abstract, url, year, month, day from compendium" />
+    <entity name="compendium" query="select id, title, abstract, slug, url, year, month, day from compendium" />
   </document>
 
 </dataConfig>
