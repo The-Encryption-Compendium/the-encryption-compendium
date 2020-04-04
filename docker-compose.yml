@@ -67,6 +67,8 @@ services:
       context: docker/nginx/
     image: tec-proxy:latest
     container_name: tec-proxy
+    environment:
+      SERVER_NAME: encryptioncompendium.org
     ports:
       - "80:80"
       - "443:443"
@@ -74,7 +76,7 @@ services:
       # Shared volume with the gunicorn server that allows us to
       # serve static files.
       - staticfiles:/opt/services/tec-gunicorn/static:ro
-      - letsencrypt:/etc/letsencrypt:rw
+      - letsencrypt:/tls:rw
     depends_on:
       - gunicorn
     networks:
