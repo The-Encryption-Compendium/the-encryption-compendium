@@ -54,7 +54,7 @@ services:
       - .env
     volumes:
       - ./src:/var/src/:ro
-      - staticfiles:/var/www/static:rw
+      # - staticfiles:/var/src/assets:rw
     ports:
       - "5000:5000"
     networks:
@@ -69,10 +69,10 @@ services:
     container_name: tec-proxy
     ports:
       - 8000:80
-    volumes:
-      # Shared volume with the gunicorn server that allows us to
-      # serve static files.
-      - staticfiles:/opt/services/tec-gunicorn/staticfiles:ro
+    # volumes:
+    #   # Shared volume with the gunicorn server that allows us to
+    #   # serve static files.
+    #   - staticfiles:/opt/services/tec-gunicorn/assets:ro
     depends_on:
       - gunicorn
     networks:
@@ -90,4 +90,4 @@ networks:
 volumes:
   site-db:
   solrdata:
-  staticfiles:
+  # staticfiles:
