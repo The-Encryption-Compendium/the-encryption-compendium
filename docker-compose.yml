@@ -30,8 +30,6 @@ services:
       - .env
     #volumes:
     #  - solrdata:/var/solr:rw
-    ports:
-      - "8983:8983"
     networks:
       - tec-net
     command:
