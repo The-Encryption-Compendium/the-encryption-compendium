@@ -11,6 +11,9 @@ fi
 # Initialize the database
 python3 manage.py migrate
 
+# Collect static files into /var/www/static
+python3 manage.py collectstatic --noinput
+
 gunicorn encryption_compendium.wsgi \
     --config "${GUNICORN_CONFIG}" \
     ${ADDTL_OPTS}
