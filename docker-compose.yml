@@ -45,6 +45,7 @@ services:
       dockerfile: docker/gunicorn/Dockerfile
     image: tec-gunicorn:latest
     container_name: tec-gunicorn
+    user: www-data
     depends_on:
       - database
       - search

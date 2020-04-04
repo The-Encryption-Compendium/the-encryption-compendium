@@ -40,6 +40,10 @@ RUN mkdir -p "${WWW_DIR}" \
     && chown -R www-data:www-data "${WWW_DIR}"
 ADD --chown=www-data:www-data src "${WWW_DIR}"
 
+# Set up directory for static files
+RUN mkdir -p /var/www/static \
+    && chown -R www-data:www-data "/var/www/static"
+
 # Install Gunicorn config file
 ENV GUNICORN_CONFIG=/etc/gunicorn/config.py
 COPY docker/gunicorn/config.py "${GUNICORN_CONFIG}"
