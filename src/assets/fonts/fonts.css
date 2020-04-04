@@ -2,3 +2,8 @@
   font-family: "Roboto";
   src: url("Roboto-Regular.ttf") format("truetype");
 }
+
+@font-face {
+  font-family: "Nobile";
+  src: url("Nobile-Medium.ttf") format("truetype");
+}
