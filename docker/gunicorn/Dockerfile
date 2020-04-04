@@ -35,7 +35,7 @@ COPY docker/gunicorn/setup.sh /tmp/setup.sh
 RUN /tmp/setup.sh
 
 # Install code
-ENV WWW_DIR="/var/www"
+ENV WWW_DIR="/var/www/src"
 RUN mkdir -p "${WWW_DIR}" \
     && chown -R www-data:www-data "${WWW_DIR}"
 ADD --chown=www-data:www-data src "${WWW_DIR}"

@@ -54,7 +54,7 @@ services:
       - .env
     volumes:
       - staticfiles:/var/www/static:rw
-      - ./src:/var/www/:ro
+      - ./src:/var/www/src:ro
     ports:
       - "5000:5000"
     networks:
@@ -71,7 +71,7 @@ services:
     volumes:
       # Shared volume with the gunicorn server that allows us to
       # serve static files.
-      - staticfiles:/opt/services/tec-gunicorn/assets:ro
+      - staticfiles:/opt/services/tec-gunicorn/static:ro
     depends_on:
       - gunicorn
     networks:
