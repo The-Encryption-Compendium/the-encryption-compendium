@@ -1,3 +1,5 @@
 FROM nginx:alpine
 
-COPY conf.d /etc/nginx
+RUN rm /etc/nginx/conf.d/default.conf
+
+COPY proxy.conf /etc/nginx/conf.d/proxy.conf
