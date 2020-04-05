@@ -20,11 +20,11 @@ class SearchView(BasicSearchMixin, View):
     default_pagination = 10
 
     def get(self, request):
-        query = request.GET.dict()
-        query.setdefault("query", "")
+        req = request.GET.dict()
+        query = req.setdefault("query", "")
         self.search_logger.info(f"QUERY = {query}")
-        results = self.execute_basic_search(query)
-        search_form = self.create_search_form(query)
+        results = self.execute_basic_search(req)
+        search_form = self.create_search_form(req)
 
         # Populate some CompendiumEntry objects with the data that we found
         # from Solr
@@ -33,11 +33,6 @@ class SearchView(BasicSearchMixin, View):
 
         hits = results["response"]["numFound"]
         rows = results["meta"]["rows"]  # Entries per page
-        page = results["meta"]["page"]
-
-        # Start/end result numbers
-        start = min(results["response"]["start"] + 1, hits)
-        end = results["response"]["start"] + len(entries)
 
         if hits == 0:
             n_pages = 0
@@ -49,14 +44,13 @@ class SearchView(BasicSearchMixin, View):
             "search_form": search_form,
             "qtime": results["responseHeader"]["QTime"],
             "hits": hits,
-            "page": page,
+            "page": results["meta"]["page"],
             "n_pages": n_pages,
             "rows": rows,
-            "start": start,
-            "end": end,
+            # Start/end result numbers
+            "start": results["response"]["start"] + 1,
+            "end": results["response"]["start"] + len(entries),
             "entries": entries,
-            "start": start,
-            "rows": rows,
         }
 
         # Check spelling
@@ -88,8 +82,6 @@ class SearchView(BasicSearchMixin, View):
             A suggested query to replace the input query. Returns as None
             if no suggested query could be generated.
         """
-
-        self.search_logger.info(results)
 
         hits = results["response"]["numFound"]
         correctly_spelled = results.get("spellcheck", {}).get("correctlySpelled", True)
