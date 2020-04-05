@@ -4,6 +4,7 @@ Views related to adding, modifying, or deleting entries from the compendium.
 
 import abc
 import json
+import logging
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -63,6 +64,8 @@ class AbstractCompendiumEntryModificationView(
     abstract parent class whose children are actually used for constructing
     new views.
     """
+
+    compendium_logger = logging.getLogger("compendium")
 
     @abc.abstractmethod
     def get(self, request):
@@ -128,6 +131,10 @@ class AbstractCompendiumEntryModificationView(
                 compendium_entry.owner = request.user
                 compendium_entry.save()
 
+                self.compendium_logger.info(
+                    f"Created new compendium entry (id={compendium_entry.id})"
+                )
+
         return is_valid, json_form
 
     def _create_entries_from_bibtex(self, request):
@@ -140,6 +147,7 @@ class AbstractCompendiumEntryModificationView(
         is_valid = bibtex_form.is_valid()
 
         if is_valid:
+            # TODO: bulk insert of authors, tags, and compendium entries
             for result in bibtex_form.cleaned_data:
                 compendium_form = result["form"]
                 entry = compendium_form.cleaned_data
@@ -164,11 +172,16 @@ class AbstractCompendiumEntryModificationView(
                         tag = tag.first()
                     tags.append(tag)
 
-                compendium_entry = compendium_form.save()
-                compendium_entry.owner = request.user
+                compendium_entry = CompendiumEntry.objects.create(
+                    owner=request.user, **entry
+                )
                 compendium_entry.authors.set(authors)
                 compendium_entry.tags.set(tags)
                 compendium_entry.save()
+
+                self.compendium_logger.info(
+                    f"Created new compendium entry (id={compendium_entry.id})"
+                )
 
         return is_valid, bibtex_form
 
