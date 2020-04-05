@@ -2,11 +2,14 @@
 Tests for views that are used to modify the compendium.
 """
 
+import datetime
 import os
+import random
+
 from django.urls import reverse
 from django.test import tag
 from entries.models import CompendiumEntry, CompendiumEntryTag, Author
-from utils.test_utils import UnitTest
+from utils.test_utils import UnitTest, random_username
 
 
 @tag("compendium-modification")
