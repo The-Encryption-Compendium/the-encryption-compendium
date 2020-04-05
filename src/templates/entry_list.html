@@ -14,7 +14,18 @@ Display a list of entries from the compendium
     <hr>
 
     <div class="uk-container">
-      <p>Seeing results {{ start }} - {{ end }} out of {{ hits }}</p>
+      <div class="uk-grid-match" uk-grid>
+        <div class="uk-width-1-2@m">
+          <h3>Seeing results {{ start }} - {{ end }} out of {{ hits }}</h3>
+        </div>
+        <div class="uk-width-1-2@m uk-text-right uk-text-small">
+          <span class="monospace uk-text-muted">Search finished in {{ qtime }}ms</span>
+        </div>
+      </div>
+
+      <div class="uk-container uk-width-1-2@m uk-text-center">
+        {% include "includes/searchbar.html" with form=search_form only %}
+      </div>
 
       {% for entry in entries %}
         {% include "includes/entry_snippet.html" with entry=entry only %}
@@ -29,6 +40,20 @@ Display a list of entries from the compendium
   search results.
   {% endcomment %}
 
+  {% if hits == 0 %}
+  <div class="uk-text-center">
+    <h3>No results were found matching the query</h3>
+  </div>
+  {% endif %}
+
+  {% if suggested_query %}
+  <p class="uk-text-lead">
+    Did you mean to search for
+    <a href="?query={{ suggested_query }}&rows={{ rows }}" class="uk-text-italic">{{ suggested_query }}</a>?
+  </p>
+  {% endif %}
+
+  {% if hits > 0 %}
   <div>
     <div class="uk-grid uk-text-center uk-width-1-1 paginator">
       {# Display options to go to the next and previous page(s) #}
@@ -37,7 +62,7 @@ Display a list of entries from the compendium
         <a href="?query={{ query }}&rows={{ rows }}&page=0">
           <span uk-icon="icon:chevron-double-left;ratio:1.5"></span> first
         </a> |
-        <a href="?query={{ query }}&rows={{ rows }}page={{ page|add:-1 }}">previous</a>
+        <a href="?query={{ query }}&rows={{ rows }}&page={{ page|add:-1 }}">previous</a>
       {% endif %}
       </div>
 
@@ -55,6 +80,7 @@ Display a list of entries from the compendium
       </div>
     </div>
   </div>
+  {% endif %}
 
 </div>
 {% endblock %}
