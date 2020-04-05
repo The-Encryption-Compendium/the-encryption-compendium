@@ -16,15 +16,18 @@
     Note that templates that override this block will need to insert
     {{ block.super }} if they want to keep the CSS that's inserted below.
     {% endcomment %}
-    {% block css %}
 
-    {# UIkit stylesheet #}
-    <link rel="stylesheet" href="{% static 'css/uikit.min.css' %}"/>
+    {% load compress %}
+    {% compress css %}
+      {% block css %}
+      {# UIkit stylesheet #}
+      <link rel="stylesheet" href="{% static 'css/uikit.min.css' %}"/>
 
-    {# Custom stylesheets #}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
-    <link rel="stylesheet" href="{% static 'fonts/fonts.css' %}"/>
-    {% endblock %}
+      {# Custom stylesheets #}
+      <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+      <link rel="stylesheet" href="{% static 'fonts/fonts.css' %}"/>
+      {% endblock %}
+    {% endcompress %}
 
     {% block head %}{% endblock %}
   </head>
@@ -45,12 +48,15 @@
   Note that templates that override the 'javascripts' block will need to insert
   {{ block.super }} to keep the JavaScript that's inserted below.
   {% endcomment %}
-  {% block javascripts %}
-  <script type="application/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-  <script type="application/javascript" src="{% static 'js/uikit.min.js' %}"></script>
-  <script type="application/javascript" src="{% static 'js/particles.min.js' %}"></script>
-  <script src="{% static 'js/uikit-icons.min.js' %}"></script>
-  {% endblock %}
+
+  {% compress js %}
+    {% block javascripts %}
+    <script type="application/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script type="application/javascript" src="{% static 'js/uikit.min.js' %}"></script>
+    <script type="application/javascript" src="{% static 'js/particles.min.js' %}"></script>
+    <script src="{% static 'js/uikit-icons.min.js' %}"></script>
+    {% endblock %}
+  {% endcompress %}
 
 </html>
 {% endspaceless %}

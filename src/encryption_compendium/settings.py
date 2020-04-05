@@ -224,7 +224,20 @@ STATICFILES_FINDERS = (
     "compressor.finders.CompressorFinder",
 )
 
-# Email options
+### Compression settings for django-compressor
+# COMPRESS_ENABLED: whether or not to compress files. Defaults to the
+# opposite of DEBUG.
+# COMPRESS_ENABLED = not DEBUG
+
+# Filters to apply during compression
+COMPRESS_FILTERS = {
+    "css": [
+        "compressor.filters.css_default.CssAbsoluteFilter",
+        "compressor.filters.cssmin.CSSCompressorFilter",
+    ],
+}
+
+### Email options
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
