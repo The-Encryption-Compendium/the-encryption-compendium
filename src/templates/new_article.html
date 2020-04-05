@@ -65,14 +65,6 @@ the edit form, and another that allows you to display the form.
 
 <br>
 {% endblock %}
-
-{% block css %}
-{{ block.super }}
-{% load static %}
-<link rel="stylesheet" href="{% static 'codemirror/lib/codemirror.css' %}">
-<link rel="stylesheet" href="{% static 'css/components/htmleditor.min.css' %}">
-{% endblock %}
-
 {% block javascripts %}
 {{ block.super }}
 {% load static %}
