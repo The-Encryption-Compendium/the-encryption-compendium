@@ -27,6 +27,19 @@ Display a list of entries from the compendium
         {% include "includes/searchbar.html" with form=search_form only %}
       </div>
 
+      {% if hits == 0 %}
+      <div class="uk-text-center">
+        <h3>No results were found matching the query</h3>
+      </div>
+      {% endif %}
+
+      {% if suggested_query %}
+      <p class="uk-text-lead">
+        Did you mean to search for
+        <a href="?query={{ suggested_query }}&rows={{ rows }}" class="uk-text-italic">{{ suggested_query }}</a>?
+      </p>
+      {% endif %}
+
       {% for entry in entries %}
         {% include "includes/entry_snippet.html" with entry=entry only %}
       {% endfor %}
@@ -39,19 +52,6 @@ Display a list of entries from the compendium
   Pagination controls; allow user to go to next or previous page of
   search results.
   {% endcomment %}
-
-  {% if hits == 0 %}
-  <div class="uk-text-center">
-    <h3>No results were found matching the query</h3>
-  </div>
-  {% endif %}
-
-  {% if suggested_query %}
-  <p class="uk-text-lead">
-    Did you mean to search for
-    <a href="?query={{ suggested_query }}&rows={{ rows }}" class="uk-text-italic">{{ suggested_query }}</a>?
-  </p>
-  {% endif %}
 
   {% if hits > 0 %}
   <div>
