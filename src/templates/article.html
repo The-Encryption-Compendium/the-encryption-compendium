@@ -5,27 +5,18 @@
 {% block body %}
 
 {% load static %}
-<div class="uk-grid uk-margin-top">
-  <div class="uk-container uk-container-center uk-section-muted">
+<div class="uk-grid uk-margin-top uk-margin-bottom">
+  <div class="uk-width-1-1">
+    <div class="uk-container uk-container-center uk-section-muted uk-align-center">
     <article class="uk-article uk-padding-small">
 
       <h2 class="uk-article-title uk-text-bold">
         {{ article.title }}
       </h2>
 
-      {% with authors=article.all_authors %}
-      {% if authors %}
-      <div>
-        <span class="uk-text-break">
-          <span class="uk-text-bold">Authors:</span> {{ authors }}
-        </span>
-      </div>
-      {% endif %}
-      {% endwith %}
-
       {% if article.year %}
       <div>
-        <span class="uk-text-bold">Published:</span>
+        <span class="uk-text-bold uk-text-emphasis">Published:</span>
         {% if article.day %}{{ article.day }}{% endif %}
         {% if article.month %}{{ article.month_name }}{% endif %}
         {{ article.year }}
@@ -35,15 +26,25 @@
       {% if article.publisher_text %}
       <div>
         <span class="uk-text-break">
-          <span class="uk-text-bold">Published in:</span> {{ article.publisher_text }}
+          <span class="uk-text-bold uk-text-emphasis">Published in:</span> {{ article.publisher_text }}
         </span>
       </div>
       {% endif %}
 
+      {% with authors=article.all_authors %}
+      {% if authors %}
+      <div>
+        <span class="uk-text-break">
+          <span class="uk-text-bold uk-text-emphasis">Authors:</span> {{ authors }}
+        </span>
+      </div>
+      {% endif %}
+      {% endwith %}
+
       {% with tags=article.tags.all %}
       {% if tags %}
       <div>
-        <span class="uk-text-bold">Tags:</span>
+        <span class="uk-text-bold uk-text-emphasis">Tags:</span>
         {% for tag in tags %}
         {{ tag.tagname }}
         {% endfor %}
@@ -54,7 +55,9 @@
       {% if article.abstract %}
       <div class="uk-margin-medium">
         <span class="uk-text-break">
-          <span class="uk-text-bold">Abstract:</span> {{ article.abstract }}
+          <span class="uk-text-bold">Abstract:</span>
+          <br>
+          {{ article.abstract }}
         </span>
       </div>
       {% endif %}
@@ -68,6 +71,7 @@
       {% endif %}
 
     </article>
+  </div>
   </div>
 
 </div>
