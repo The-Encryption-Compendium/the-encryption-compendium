@@ -19,11 +19,12 @@ class BasicSearchForm(forms.Form):
     query = forms.CharField(
         widget=SearchInput(
             attrs={
-                "class": "uk-input uk-form-large",
+                "class": "searchbar uk-input uk-form-large",
                 "type": "search",
                 "placeholder": "Search...",
             }
-        )
+        ),
+        required=False,
     )
 
     rows = forms.IntegerField(initial=20, widget=forms.HiddenInput(), required=False,)
@@ -72,7 +73,7 @@ class BasicSearchForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        query_params = cleaned_data.pop("query")
+        query_params = cleaned_data.pop("query", {})
         cleaned_data.update(query_params)
         return cleaned_data
 

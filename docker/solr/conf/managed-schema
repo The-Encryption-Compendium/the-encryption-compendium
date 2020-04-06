@@ -124,7 +124,7 @@
     <!-- Combine the "title" and "abstract" fields so that we search both when performing basic search -->
     <copyField source="title" dest="basic_search" />
     <copyField source="abstract" dest="basic_search" />
-    <field name="basic_search" type="text_general" />
+    <field name="basic_search" type="text_general" indexed="true" stored="false" />
 
     <!--
     END COMPENDIUM FIELDS

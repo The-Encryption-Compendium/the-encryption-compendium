@@ -70,7 +70,7 @@ class AbstractTestCase(abc.ABC):
     def fail(self, *args, **kwargs):
         pass
 
-    def wait_for(self, test, max_wait=5, interval=0.1):
+    def wait_for(self, test, max_wait=10, interval=0.25):
         """
         Wait for a test to pass. When it passes we can continue execution. If the
         wait exceeds the time limit, then we throw an error.

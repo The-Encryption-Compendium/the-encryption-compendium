@@ -37,9 +37,7 @@ br.sep {
 }
 
 .site-title {
-  font-weight: bold;
-  font-size: 4.5em;
-  font-family: "Nobile", Roboto, arial, monospace;
+  font-family: "Nobile", Roboto, Arial, sans-serif !important;
 }
 
 .tag-selector-button {
@@ -50,6 +48,14 @@ br.sep {
 .landing-page-searchbar {
   margin-top: auto;
   margin-bottom: auto;
+}
+
+
+/****************************
+ * Background colors
+ ****************************/
+.bg-white {
+  background-color: white;
 }
 
 /****************************
@@ -113,7 +119,7 @@ a.anchor:hover {
 
 .searchbar {
   background-color: white;
-  border: 4px black;
+  border: 1px solid black;
 }
 
 /****************************

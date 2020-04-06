@@ -224,7 +224,20 @@ STATICFILES_FINDERS = (
     "compressor.finders.CompressorFinder",
 )
 
-# Email options
+### Compression settings for django-compressor
+# COMPRESS_ENABLED: whether or not to compress files. Defaults to the
+# opposite of DEBUG.
+# COMPRESS_ENABLED = not DEBUG
+
+# Filters to apply during compression
+COMPRESS_FILTERS = {
+    "css": [
+        "compressor.filters.css_default.CssAbsoluteFilter",
+        "compressor.filters.cssmin.CSSCompressorFilter",
+    ],
+}
+
+### Email options
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
@@ -235,3 +248,47 @@ elif EMAIL_USE_TLS == "no":
     EMAIL_USE_TLS = False
 else:
     raise Exception("EMAIL_USE_TLS should be 'yes' or 'no'.")
+
+### Logging configuration
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
+            "format": "[{asctime}] [{process:d}] [{levelname}] {message}",
+            "style": "{",
+        },
+        "verbose": {
+            "format": "[{asctime}] {module} {process:d} {thread:d} [{levelname}] {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {"class": "logging.StreamHandler", "formatter": "default",},
+        "console_debug": {"class": "logging.StreamHandler", "formatter": "verbose",},
+    },
+    "root": {"handlers": ["console"], "level": "INFO" if DEBUG else "WARNING"},
+    "loggers": {
+        # Search loggers
+        "search": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_SEARCH_LOGLEVEL", "INFO"),
+        },
+        "search.solr": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_SEARCH_LOGLEVEL", "DEBUG" if DEBUG else "INFO"),
+            "propagate": False,
+        },
+        # Authentication loggers
+        "auth": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_AUTH_LOGLEVEL", "DEBUG" if DEBUG else "INFO"),
+        },
+        "auth.login": {"handlers": ["console"], "level": "INFO",},
+        # Compendium loggers
+        "compendium": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_COMPENDIUM_LOGLEVEL", "INFO"),
+        },
+    },
+}

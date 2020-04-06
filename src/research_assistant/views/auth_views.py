@@ -2,37 +2,56 @@
 Authentication-related views.
 """
 
+import logging
+
 from django.conf import settings
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.mail import send_mail
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect
+from django.views import View
 from django.views.decorators.http import require_http_methods
 from users.forms import AddNewUserForm, ResearchLoginForm, SignupForm, TokenDeleteForm
 from users.models import SignupToken
 
 
-@require_http_methods(["GET", "POST"])
-def research_login(request):
+class LoginView(View):
     """
-    Login page for the site.
+    Class-based view for logging in.
     """
-    if request.user.is_authenticated:
-        return redirect("research dashboard")
 
-    # On a POST request, attempt to login
-    form = ResearchLoginForm(request.POST if request.POST else None)
-    if request.POST and form.is_valid():
-        user = form.login(request)
-        if user:
-            # Login and redirect based on the 'next' URL parameter (if
-            # it exists).
-            login(request, user)
-            redirect_url = request.GET.get("next", "research dashboard")
-            return redirect(redirect_url)
+    auth_logger = logging.getLogger("auth.login")
 
-    return render(request, "login.html", context={"form": form})
+    def get(self, request, **kwargs):
+        if request.user.is_authenticated:
+            return redirect("research dashboard")
+
+        form = ResearchLoginForm()
+        return render(request, "login.html", context={"form": form})
+
+    def post(self, request, **kwargs):
+        if request.user.is_authenticated:
+            return redirect("research dashboard")
+
+        form = ResearchLoginForm(request.POST)
+
+        if form.is_valid():
+            user = form.login(request)
+            if user:
+                self.auth_logger.warn(f"User {user.username!r} logged in")
+
+                # Login and redirect based on the "next" parameter in the
+                # URL (if it exists).
+                login(request, user)
+                redirect_url = request.GET.get("next", "research dashboard")
+                return redirect(redirect_url)
+
+        else:
+            username = request.POST.get("username", "")
+            self.auth_logger.info(f"Failed login attempt for user {username!r}")
+
+        return render(request, "login.html", context={"form": form})
 
 
 @require_http_methods(["GET"])

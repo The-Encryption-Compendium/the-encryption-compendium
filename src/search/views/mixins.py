@@ -4,6 +4,7 @@ Mixins for class-based views in the search app.
 
 import abc
 import json
+import logging
 
 from django.core import serializers
 from django.db.models import QuerySet
@@ -89,7 +90,13 @@ class BasicSearchMixin(metaclass=abc.ABCMeta):
     in them.
     """
 
+    # Parent logger for search-related components
+    search_logger = logging.getLogger("search")
+
+    # Name of the button used to perform search
     basic_search_button_name = "search"
+
+    # Wrapper class for querying Solr
     search_engine = SearchEngine()
 
     def check_basic_search(self, request) -> bool:
@@ -102,23 +109,28 @@ class BasicSearchMixin(metaclass=abc.ABCMeta):
 
         return request.method == "GET" and self.basic_search_button_name in request.GET
 
-    def create_search_form(self, request):
+    def create_search_form(self, data):
         """
         Return a form to display a basic search input on the page.
         """
-        form = BasicSearchForm(data=request.GET)
-        return form
+        if isinstance(data, dict):
+            self.search_logger.info(f"Received search params: {data}")
+            return BasicSearchForm(data=data)
+        else:
+            self.search_logger.info(f"Received search params: {data.GET.dict()}")
+            return BasicSearchForm(data=data.GET)
 
-    def execute_basic_search(self, params):
+    def execute_basic_search(self, request):
         """
         Run a basic search request. Return all compendium entries matching
         the input query.
         """
 
-        form = BasicSearchForm(data=params)
+        form = self.create_search_form(request)
 
         # TODO: more robust error checking
         if form.is_valid():
+            self.search_logger.debug(f"Cleaned search params: {form.cleaned_data}")
             results = self.search_engine.basic_search(form.cleaned_data)
         else:
             raise Exception(str(form.errors))
