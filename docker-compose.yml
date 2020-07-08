@@ -2,24 +2,6 @@ version: "3"
 
 services:
 
-  # Apache Solr instance for text search
-  search:
-    build:
-      context: docker/solr/
-      args:
-        POSTGRES_JDBC_VERSION: "42.2.11"
-    image: tec-solr:latest
-    container_name: tec-search
-    env_file:
-      - .env
-    #volumes:
-    #  - solrdata:/var/solr:rw
-    networks:
-      - tec-net
-    command:
-      - solr-precreate
-      - compendium
-
   # Webserver
   gunicorn:
     build:
@@ -28,8 +10,6 @@ services:
     image: tec-gunicorn:latest
     container_name: tec-gunicorn
     user: www-data
-    depends_on:
-      - search
     env_file:
       - .env
     volumes:
@@ -72,7 +52,5 @@ networks:
   tec-net:
 
 volumes:
-  site-db:
-  solrdata:
   staticfiles:
   letsencrypt:
