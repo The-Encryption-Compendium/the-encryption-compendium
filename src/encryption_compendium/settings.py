@@ -114,29 +114,13 @@ FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASE_ENGINE = os.getenv("DATABASE_ENGINE", "sqlite3")
-if DATABASE_ENGINE == "sqlite3":
-    logging.info("Using SQLite3 database...")
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-        }
+logging.info("Using SQLite3 database...")
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
-elif DATABASE_ENGINE == "postgres":
-    logging.info("Using Postgres database...")
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("POSTGRES_DB"),
-            "USER": os.getenv("POSTGRES_USER"),
-            "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-            "HOST": os.getenv("DATABASE_HOST"),
-            "PORT": os.getenv("DATABASE_HOST_PORT", "5432"),
-        }
-    }
-else:
-    raise Exception("DATABASE_ENGINE must be either sqlite3 or postgres.")
+}
 
 # Caching
 # https://docs.djangoproject.com/en/stable/topics/cache/

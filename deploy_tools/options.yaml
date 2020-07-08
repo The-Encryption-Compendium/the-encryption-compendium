@@ -18,37 +18,6 @@ ALLOWED_HOSTS:
     A comma-separated list of hostnames/IP addresses with which it
     should be possible to access the server.
 
-DATABASE_ENGINE:
-  default: sqlite3
-  help: The database engine to use to run the site.
-  choices:
-    - sqlite3
-    - postgres
-
-POSTGRES_USER:
-  default: tec
-  help: >
-    A PostgreSQL user to use to access the database. Ignored when
-    DATABASE_ENGINE is not "postgres".
-
-POSTGRES_PASSWORD:
-  help: >
-    The password to use to access the database. If left unspecified
-    a password will be automatically generated for you, which can
-    then be used when running the site with docker-compose.
-
-POSTGRES_DB:
-  default: tecdb
-  help: >
-    The name of the PostgreSQL database to connect to. Ignored when
-    DATABASE_ENGINE is not "postgres".
-
-DATABASE_HOST:
-  default: tec-database
-  help: >
-    The host where the database is located. If you're using docker-compose
-    to run the site, this should probably be set to "tec-database".
-
 CACHE_BACKEND:
   default: memcached
   help: >

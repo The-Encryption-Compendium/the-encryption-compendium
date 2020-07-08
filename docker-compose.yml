@@ -2,20 +2,6 @@ version: "3"
 
 services:
 
-  # PostgreSQL database for authentication, storing compendium content,
-  # etc.
-  database:
-    image: postgres:12.2-alpine
-    container_name: tec-database
-    env_file:
-      - .env
-    volumes:
-      - site-db:/var/lib/postgresql/data:rw
-    ports:
-      - "5432:5432"
-    networks:
-      - tec-net
-
   # Apache Solr instance for text search
   search:
     build:
@@ -24,8 +10,6 @@ services:
         POSTGRES_JDBC_VERSION: "42.2.11"
     image: tec-solr:latest
     container_name: tec-search
-    depends_on:
-      - database
     env_file:
       - .env
     #volumes:
@@ -45,10 +29,7 @@ services:
     container_name: tec-gunicorn
     user: www-data
     depends_on:
-      - database
       - search
-    environment:
-      DATABASE_ENGINE: "postgres"
     env_file:
       - .env
     volumes:
